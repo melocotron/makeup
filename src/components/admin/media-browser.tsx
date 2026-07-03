@@ -21,7 +21,12 @@ const FOLDERS = [
   { value: "perfil", label: "Perfil" },
 ];
 
-export function MediaBrowser() {
+interface MediaBrowserProps {
+  selectable?: boolean;
+  onSelect?: (item: MediaItem) => void;
+}
+
+export function MediaBrowser({ selectable, onSelect }: MediaBrowserProps) {
   const [folder, setFolder] = React.useState("");
   const [search, setSearch] = React.useState("");
   const [searchInput, setSearchInput] = React.useState("");
@@ -54,13 +59,12 @@ export function MediaBrowser() {
     setTotal((t) => t - 1);
   }
 
-  function handleUpload() {
-    load();
-  }
-
   return (
     <div className="space-y-6">
-      <MediaUploader folder={folder || "general"} onUploadComplete={handleUpload} />
+      <MediaUploader
+        folder={folder || "general"}
+        onUploadComplete={() => load()}
+      />
 
       {/* Filtros */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -122,7 +126,13 @@ export function MediaBrowser() {
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {items.map((item) => (
-            <MediaCard key={item.id} item={item} onDelete={handleDelete} />
+            <MediaCard
+              key={item.id}
+              item={item}
+              onDelete={selectable ? undefined : handleDelete}
+              selectable={selectable}
+              onSelect={onSelect}
+            />
           ))}
         </div>
       )}

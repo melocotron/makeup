@@ -359,7 +359,7 @@ model HomeCarousel {
 
 model AboutContent {
   id            String   @id @default(cuid())
-  bio           Json     // { es, en }
+  bio           Json?
   signatureText String?
   image         String?
   createdAt     DateTime @default(now())
