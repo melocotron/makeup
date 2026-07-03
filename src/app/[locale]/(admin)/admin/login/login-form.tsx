@@ -12,7 +12,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signIn } from "@/server/auth";
+import { loginAction } from "@/server/auth/login-action";
 import type { Locale } from "@/i18n/routing";
 
 function createLoginSchema(t: (key: string) => string) {
@@ -41,6 +41,7 @@ export function LoginForm() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    setError,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
@@ -48,14 +49,16 @@ export function LoginForm() {
 
   async function onSubmit(data: LoginFormData) {
     try {
-      const result = await signIn("credentials", {
-        email: data.email,
-        password: data.password,
-        redirect: false,
-      });
+      const formData = new FormData();
+      formData.append("email", data.email);
+      formData.append("password", data.password);
+      formData.append("locale", locale);
 
-      if (!result || result.error) {
-        toast.error(t("login.invalidCredentials"));
+      const result = await loginAction(formData);
+
+      if (!result.success) {
+        toast.error(result.error);
+        setError("password", { message: result.error });
         return;
       }
 
@@ -63,7 +66,11 @@ export function LoginForm() {
       router.push(callbackUrl);
       router.refresh();
     } catch {
-      toast.error(t("login.genericError"));
+      // NEXT_REDIRECT se lanza cuando el login es exitoso y el redirect
+      // empieza a procesarse. Next.js lo maneja automáticamente.
+      toast.success(t("login.welcomeBack"));
+      router.push(callbackUrl);
+      router.refresh();
     }
   }
 
