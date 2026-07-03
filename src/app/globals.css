@@ -3,6 +3,10 @@
 /* ============================================================================
    DESIGN TOKENS — Kinetic Enterprise / Radiant Beauty Pro
    Extraídos de los system designs de Stitch
+
+   IMPORTANTE en Tailwind v4:
+   - --spacing-* NO debe redefinirse (lo usa para w-*, h-*, max-w-*, p-*, m-*)
+   - Las variables en @theme exponen utilities (color-X → bg-X, text-X, etc.)
    ============================================================================ */
 
 @theme {
@@ -61,18 +65,7 @@
   --color-inverse-surface: #2d3133;
   --color-inverse-on-surface: #eff1f3;
 
-  /* ===== SPACING (grilla 8px + extras para landing) ===== */
-  --spacing-base: 4px;
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
-  --spacing-xxl: 64px;
-  --spacing-3xl: 96px;
-  --spacing-gutter: 20px;
-
-  /* ===== BORDER RADIUS ===== */
+  /* ===== BORDER RADIUS (estos sí están OK, no chocan con defaults) ===== */
   --radius-sm: 0.125rem;
   --radius-md: 0.375rem;
   --radius-lg: 0.5rem;
@@ -114,13 +107,19 @@
   --text-code: 13px;
   --text-code--line-height: 18px;
   --text-code--font-weight: 400;
+}
 
-  /* ===== SHADOWS (tonal layers, no sombras pesadas) ===== */
+/* ===== CUSTOM SPACING (NO van en @theme porque chocan con defaults de Tailwind) ===== */
+:root {
+  --space-base: 4px;
+  --space-xxl: 64px;
+  --space-3xl: 96px;
+  --space-gutter: 20px;
+  --container-max: 1440px;
+
+  /* Shadows */
   --shadow-level-1: 0 0 0 1px rgb(0 0 0 / 0.04);
   --shadow-level-2: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-
-  /* ===== CONTAINER ===== */
-  --container-max: 1440px;
 }
 
 /* ===== DARK MODE (slate tiered surfaces) ===== */
