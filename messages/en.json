@@ -119,6 +119,20 @@
       "content": "Content",
       "system": "System"
     },
+    "nav": {
+      "dashboard": "Dashboard",
+      "appointments": "Appointments",
+      "services": "Services",
+      "packages": "Packages",
+      "clients": "Clients",
+      "promotions": "Promotions",
+      "loyalty": "Loyalty",
+      "home": "Home",
+      "media": "Media",
+      "blog": "Blog",
+      "reports": "Reports",
+      "settings": "Settings"
+    },
     "media": {
       "title": "Media library",
       "description": "Upload and organize all the images used across your website."

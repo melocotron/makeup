@@ -119,6 +119,20 @@
       "content": "Contenido",
       "system": "Sistema"
     },
+    "nav": {
+      "dashboard": "Panel",
+      "appointments": "Citas",
+      "services": "Servicios",
+      "packages": "Paquetes",
+      "clients": "Clientes",
+      "promotions": "Promociones",
+      "loyalty": "Fidelidad",
+      "home": "Inicio",
+      "media": "Medios",
+      "blog": "Blog",
+      "reports": "Reportes",
+      "settings": "Ajustes"
+    },
     "media": {
       "title": "Biblioteca de medios",
       "description": "Sube y organiza todas las imágenes que usarás en tu sitio web."
