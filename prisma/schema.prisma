@@ -531,6 +531,7 @@ model Settings {
   cancelHours     Int     @default(24)
   // maintenance
   maintenanceMode Boolean @default(false)
+  maintenanceMessage String?
   updatedAt       DateTime @updatedAt
 
   @@map("settings")

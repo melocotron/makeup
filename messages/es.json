@@ -118,6 +118,67 @@
       "marketing": "Marketing",
       "content": "Contenido",
       "system": "Sistema"
+    },
+    "media": {
+      "title": "Biblioteca de medios",
+      "description": "Sube y organiza todas las imágenes que usarás en tu sitio web."
+    },
+    "settings": {
+      "title": "Ajustes del sitio",
+      "description": "Configura el nombre, contacto, redes y comportamiento de tu sitio.",
+      "saved": "Ajustes guardados correctamente",
+      "tab": {
+        "general": "General",
+        "contact": "Contacto",
+        "social": "Redes sociales",
+        "features": "Funcionalidades",
+        "maintenance": "Mantenimiento"
+      },
+      "general": {
+        "title": "Información general",
+        "description": "Datos básicos del sitio y políticas de reservas.",
+        "siteName": "Nombre del sitio",
+        "minAdvance": "Anticipación mínima (horas)",
+        "cancelHours": "Horas para cancelar sin penalización",
+        "metaTitle": "Meta título (SEO)",
+        "metaDesc": "Meta descripción (SEO)"
+      },
+      "contact": {
+        "title": "Datos de contacto",
+        "description": "Información que verán los clientes para contactarte.",
+        "phone": "Teléfono",
+        "whatsapp": "WhatsApp (con prefijo país)",
+        "address": "Dirección"
+      },
+      "social": {
+        "title": "Redes sociales",
+        "description": "URLs completas de tus perfiles (deja vacío si no usas alguna)."
+      },
+      "features": {
+        "title": "Funcionalidades del sitio",
+        "description": "Activa o desactiva secciones completas según tu negocio.",
+        "blog": "Mostrar blog",
+        "blogDesc": "Si está activo, los artículos se muestran en /blog",
+        "offers": "Mostrar ofertas",
+        "offersDesc": "Si está activo, se ve la sección /ofertas con promociones vigentes",
+        "loyalty": "Programa de fidelidad",
+        "loyaltyDesc": "Si está activo, los clientes acumulan puntos por sus compras"
+      },
+      "maintenance": {
+        "title": "Modo mantenimiento",
+        "description": "Bloquea el acceso al sitio público temporalmente.",
+        "mode": "Activar mantenimiento",
+        "modeDesc": "El sitio público mostrará un mensaje en vez del contenido normal",
+        "message": "Mensaje para visitantes"
+      }
+    },
+    "profile": {
+      "title": "Perfil profesional",
+      "description": "Información que se mostrará en la sección 'Sobre mí'."
+    },
+    "carousel": {
+      "title": "Carrusel del inicio",
+      "description": "Slides que aparecen en la página principal."
     }
   },
   "auth": {

@@ -118,6 +118,67 @@
       "marketing": "Marketing",
       "content": "Content",
       "system": "System"
+    },
+    "media": {
+      "title": "Media library",
+      "description": "Upload and organize all the images used across your website."
+    },
+    "settings": {
+      "title": "Site settings",
+      "description": "Configure your site name, contact info, social links and behaviors.",
+      "saved": "Settings saved successfully",
+      "tab": {
+        "general": "General",
+        "contact": "Contact",
+        "social": "Social",
+        "features": "Features",
+        "maintenance": "Maintenance"
+      },
+      "general": {
+        "title": "General information",
+        "description": "Basic site data and booking policies.",
+        "siteName": "Site name",
+        "minAdvance": "Minimum advance (hours)",
+        "cancelHours": "Hours to cancel without penalty",
+        "metaTitle": "Meta title (SEO)",
+        "metaDesc": "Meta description (SEO)"
+      },
+      "contact": {
+        "title": "Contact details",
+        "description": "Information visible to clients to reach you.",
+        "phone": "Phone",
+        "whatsapp": "WhatsApp (with country code)",
+        "address": "Address"
+      },
+      "social": {
+        "title": "Social media",
+        "description": "Full URLs of your profiles (leave empty if you don't use one)."
+      },
+      "features": {
+        "title": "Site features",
+        "description": "Enable or disable entire sections based on your business.",
+        "blog": "Show blog",
+        "blogDesc": "When active, posts are visible at /blog",
+        "offers": "Show offers",
+        "offersDesc": "When active, /offers section shows current promotions",
+        "loyalty": "Loyalty program",
+        "loyaltyDesc": "When active, clients accumulate points on purchases"
+      },
+      "maintenance": {
+        "title": "Maintenance mode",
+        "description": "Temporarily block access to the public site.",
+        "mode": "Enable maintenance",
+        "modeDesc": "Public site will show a message instead of normal content",
+        "message": "Message for visitors"
+      }
+    },
+    "profile": {
+      "title": "Professional profile",
+      "description": "Information shown on the 'About me' section."
+    },
+    "carousel": {
+      "title": "Home carousel",
+      "description": "Slides displayed on the homepage."
     }
   },
   "auth": {
