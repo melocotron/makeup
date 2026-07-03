@@ -60,7 +60,7 @@ export function PackageList({ initialData, locale }: PackageListProps) {
         <p className="mt-4 text-sm font-semibold text-on-surface">{t("emptyTitle")}</p>
         <p className="mt-1 max-w-sm text-xs text-on-surface-variant">{t("emptyDesc")}</p>
         <Button asChild className="mt-4">
-          <Link href={`/${locale}/admin/paquetes/nuevo`}>
+          <Link href={`/${locale}/admin/packages/nuevo`}>
             <Plus className="h-4 w-4" />
             {t("newPackage")}
           </Link>
@@ -73,7 +73,7 @@ export function PackageList({ initialData, locale }: PackageListProps) {
     <div className="space-y-4">
       <div className="flex justify-end">
         <Button asChild>
-          <Link href={`/${locale}/admin/paquetes/nuevo`}>
+          <Link href={`/${locale}/admin/packages/nuevo`}>
             <Plus className="h-4 w-4" />
             {t("newPackage")}
           </Link>
@@ -132,7 +132,7 @@ export function PackageList({ initialData, locale }: PackageListProps) {
                     onCheckedChange={(v) => handleToggle(pkg.id, v)}
                   />
                   <Button asChild size="icon" variant="ghost" aria-label={t("edit")}>
-                    <Link href={`/${locale}/admin/paquetes/${pkg.id}`}>
+                    <Link href={`/${locale}/admin/packages/${pkg.id}`}>
                       <Pencil className="h-4 w-4" />
                     </Link>
                   </Button>

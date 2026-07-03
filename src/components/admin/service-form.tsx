@@ -94,7 +94,7 @@ export function ServiceForm({ locale, initialData }: ServiceFormProps) {
 
       if (result.success) {
         toast.success(isEditing ? t("updated") : t("created"));
-        router.push(`/${locale}/admin/servicios`);
+        router.push(`/${locale}/admin/services`);
         router.refresh();
       } else {
         toast.error(result.error);
@@ -230,7 +230,7 @@ export function ServiceForm({ locale, initialData }: ServiceFormProps) {
         <Button
           type="button"
           variant="ghost"
-          onClick={() => router.push(`/${locale}/admin/servicios`)}
+          onClick={() => router.push(`/${locale}/admin/services`)}
         >
           {tCommon("cancel")}
         </Button>

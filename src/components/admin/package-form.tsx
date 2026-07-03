@@ -92,7 +92,7 @@ export function PackageForm({ locale, availableServices, initialData }: PackageF
 
       if (result.success) {
         toast.success(isEditing ? t("updated") : t("created"));
-        router.push(`/${locale}/admin/paquetes`);
+        router.push(`/${locale}/admin/packages`);
         router.refresh();
       } else {
         toast.error(result.error);
@@ -209,7 +209,7 @@ export function PackageForm({ locale, availableServices, initialData }: PackageF
         <Button
           type="button"
           variant="ghost"
-          onClick={() => router.push(`/${locale}/admin/paquetes`)}
+          onClick={() => router.push(`/${locale}/admin/packages`)}
         >
           {tCommon("cancel")}
         </Button>

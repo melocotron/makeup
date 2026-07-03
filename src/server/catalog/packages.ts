@@ -48,7 +48,7 @@ export async function createPackageAction(formData: FormData) {
       },
     });
 
-    revalidatePath("/[locale]/admin/paquetes", "page");
+    revalidatePath("/[locale]/admin/packages", "page");
     return { success: true as const, id: pkg.id };
   } catch (err) {
     return {
@@ -104,8 +104,8 @@ export async function updatePackageAction(id: string, formData: FormData) {
       }),
     ]);
 
-    revalidatePath("/[locale]/admin/paquetes", "page");
-    revalidatePath(`/[locale]/admin/paquetes/${id}`, "page");
+    revalidatePath("/[locale]/admin/packages", "page");
+    revalidatePath(`/[locale]/admin/packages/${id}`, "page");
     return { success: true as const };
   } catch (err) {
     return {
@@ -121,7 +121,7 @@ export async function deletePackageAction(id: string) {
 
   try {
     await prisma.package.delete({ where: { id } });
-    revalidatePath("/[locale]/admin/paquetes", "page");
+    revalidatePath("/[locale]/admin/packages", "page");
     return { success: true as const };
   } catch (err) {
     return {
@@ -137,7 +137,7 @@ export async function togglePackageActiveAction(id: string, isActive: boolean) {
 
   try {
     await prisma.package.update({ where: { id }, data: { isActive } });
-    revalidatePath("/[locale]/admin/paquetes", "page");
+    revalidatePath("/[locale]/admin/packages", "page");
     return { success: true as const };
   } catch (err) {
     return {

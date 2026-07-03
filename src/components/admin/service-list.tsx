@@ -71,7 +71,7 @@ export function ServiceList({ initialData, locale }: ServiceListProps) {
           {t("services.emptyDesc")}
         </p>
         <Button asChild className="mt-4">
-          <Link href={`/${locale}/admin/servicios/nuevo`}>
+          <Link href={`/${locale}/admin/services/nuevo`}>
             <Plus className="h-4 w-4" />
             {t("services.newService")}
           </Link>
@@ -84,7 +84,7 @@ export function ServiceList({ initialData, locale }: ServiceListProps) {
     <div className="space-y-4">
       <div className="flex justify-end">
         <Button asChild>
-          <Link href={`/${locale}/admin/servicios/nuevo`}>
+          <Link href={`/${locale}/admin/services/nuevo`}>
             <Plus className="h-4 w-4" />
             {t("services.newService")}
           </Link>
@@ -156,7 +156,7 @@ export function ServiceList({ initialData, locale }: ServiceListProps) {
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-1">
                     <Button asChild size="icon" variant="ghost" aria-label={t("services.edit")}>
-                      <Link href={`/${locale}/admin/servicios/${svc.id}`}>
+                      <Link href={`/${locale}/admin/services/${svc.id}`}>
                         <Pencil className="h-4 w-4" />
                       </Link>
                     </Button>

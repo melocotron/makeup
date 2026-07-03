@@ -55,7 +55,7 @@ export async function createServiceAction(formData: FormData) {
       },
     });
 
-    revalidatePath("/[locale]/admin/servicios", "page");
+    revalidatePath("/[locale]/admin/services", "page");
     return { success: true as const, id: service.id };
   } catch (err) {
     return {
@@ -118,8 +118,8 @@ export async function updateServiceAction(id: string, formData: FormData) {
         : []),
     ]);
 
-    revalidatePath("/[locale]/admin/servicios", "page");
-    revalidatePath(`/[locale]/admin/servicios/${id}`, "page");
+    revalidatePath("/[locale]/admin/services", "page");
+    revalidatePath(`/[locale]/admin/services/${id}`, "page");
     return { success: true as const };
   } catch (err) {
     return {
@@ -135,7 +135,7 @@ export async function deleteServiceAction(id: string) {
 
   try {
     await prisma.service.delete({ where: { id } });
-    revalidatePath("/[locale]/admin/servicios", "page");
+    revalidatePath("/[locale]/admin/services", "page");
     return { success: true as const };
   } catch (err) {
     return {
@@ -151,7 +151,7 @@ export async function toggleServiceActiveAction(id: string, isActive: boolean) {
 
   try {
     await prisma.service.update({ where: { id }, data: { isActive } });
-    revalidatePath("/[locale]/admin/servicios", "page");
+    revalidatePath("/[locale]/admin/services", "page");
     return { success: true as const };
   } catch (err) {
     return {
