@@ -1,5 +1,12 @@
+import { Suspense } from "react";
 import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
+import { redirect } from "next/navigation";
+
+import { Toaster } from "@/components/ui/sonner";
+import { auth } from "@/server/auth";
+
+import { LoginForm } from "./login-form";
 
 export default async function AdminLoginPage({
   params,
@@ -9,54 +16,41 @@ export default async function AdminLoginPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return <LoginForm />;
+  // Si ya hay sesión, redirigir al dashboard
+  const session = await auth();
+  if (session) {
+    redirect(`/${locale}/admin`);
+  }
+
+  return <LoginScreen />;
 }
 
-function LoginForm() {
-  const t = useTranslations("common");
+function LoginScreen() {
   const tAdmin = useTranslations("admin");
+  const tAuth = useTranslations("auth");
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-surface-container-low px-4">
-      <div className="w-full max-w-md rounded-xl border border-outline-variant bg-surface-container-lowest p-8 shadow-[var(--shadow-level-2)]">
-        <div className="mb-8 text-center">
-          <h1 className="font-display text-display text-on-surface">{tAdmin("title")}</h1>
-          <p className="mt-2 text-sm text-on-surface-variant">{tAdmin("subtitle")}</p>
+    <>
+      <Toaster />
+      <div className="flex min-h-screen items-center justify-center bg-surface-container-low px-4 py-12">
+        <div className="w-full max-w-md rounded-xl border border-outline-variant bg-surface-container-lowest p-8 shadow-[var(--shadow-level-2)]">
+          <div className="mb-8 text-center">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-on-primary">
+              <span className="font-display text-xl">R</span>
+            </div>
+            <h1 className="font-display text-headline-lg text-on-surface">{tAdmin("title")}</h1>
+            <p className="mt-2 text-sm text-on-surface-variant">{tAuth("login.signInPrompt")}</p>
+          </div>
+
+          <Suspense fallback={null}>
+            <LoginForm />
+          </Suspense>
+
+          <p className="mt-6 text-center text-xs text-on-surface-variant">
+            🔒 {tAuth("login.securityNote")}
+          </p>
         </div>
-
-        <form className="space-y-4">
-          <div>
-            <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-on-surface-variant">
-              Email
-            </label>
-            <input
-              type="email"
-              placeholder="admin@example.com"
-              className="w-full rounded-lg border border-outline bg-surface-container-lowest px-3 py-2 text-sm focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-on-surface-variant">
-              Password
-            </label>
-            <input
-              type="password"
-              placeholder="••••••••"
-              className="w-full rounded-lg border border-outline bg-surface-container-lowest px-3 py-2 text-sm focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none"
-            />
-          </div>
-          <button
-            type="button"
-            className="w-full rounded-lg bg-primary px-4 py-2 text-sm font-semibold uppercase tracking-wider text-on-primary transition-opacity hover:opacity-90"
-          >
-            {t("submit")}
-          </button>
-        </form>
-
-        <p className="mt-6 text-center text-xs text-on-surface-variant">
-          🔒 Login funcional se implementa en la Fase 1 (changes/002-auth-admin)
-        </p>
       </div>
-    </div>
+    </>
   );
 }

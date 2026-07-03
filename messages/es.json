@@ -62,16 +62,75 @@
   },
   "admin": {
     "title": "Panel de Administración",
-    "subtitle": "Gestión de Servicios",
-    "newService": "Nuevo servicio",
+    "subtitle": "Gestión del negocio",
+    "newAppointment": "Nueva cita",
     "dashboard": "Panel",
-    "uiLibrary": "Librería UI",
     "appointments": "Citas",
-    "serviceFleet": "Servicios",
-    "analytics": "Analíticas",
+    "services": "Servicios",
+    "packages": "Paquetes",
+    "clients": "Clientes",
+    "promotions": "Promociones",
+    "loyalty": "Fidelidad",
+    "home": "Inicio",
+    "media": "Medios",
+    "blog": "Blog",
+    "reports": "Reportes",
     "settings": "Ajustes",
     "help": "Ayuda",
-    "signOut": "Cerrar sesión"
+    "signOut": "Cerrar sesión",
+    "loggedInAs": "Sesión iniciada",
+    "dashboardTitle": "Bienvenida de vuelta",
+    "dashboardSubtitle": "Aquí tienes un resumen rápido de tu negocio. Los datos reales se mostrarán cuando lleguen las primeras citas.",
+    "upcomingAppointments": "Próximas citas",
+    "quickSummary": "Resumen",
+    "quickAccess": {
+      "title": "Accesos rápidos",
+      "newAppointment": "Agendar cita",
+      "newService": "Nuevo servicio",
+      "newPackage": "Nuevo paquete",
+      "newClient": "Nuevo cliente",
+      "newPromotion": "Nueva promo",
+      "newPost": "Nuevo artículo",
+      "viewAll": "Ver todas"
+    },
+    "projectProgress": "Progreso del proyecto",
+    "emptyStates": {
+      "noUpcoming": "Sin citas próximas",
+      "noUpcomingDesc": "Cuando agendes la primera cita aparecerá aquí."
+    },
+    "kpi": {
+      "appointmentsToday": "Citas hoy",
+      "revenueMonth": "Ingresos del mes",
+      "newClientsMonth": "Clientes nuevos (mes)",
+      "topService": "Servicio top",
+      "pendingInvoices": "Facturas pendientes",
+      "loyaltyMembers": "Miembros fidelidad",
+      "activeCoupons": "Cupones activos",
+      "postsPublished": "Artículos publicados"
+    },
+    "userMenu": {
+      "openMenu": "Abrir menú de usuario",
+      "account": "Cuenta",
+      "myAccount": "Mi cuenta"
+    },
+    "navGroup": {
+      "main": "Operaciones",
+      "marketing": "Marketing",
+      "content": "Contenido",
+      "system": "Sistema"
+    }
+  },
+  "auth": {
+    "login": {
+      "signInPrompt": "Ingresa tus credenciales para continuar",
+      "password": "Contraseña",
+      "invalidEmail": "Email inválido",
+      "passwordRequired": "La contraseña es requerida",
+      "invalidCredentials": "Credenciales inválidas",
+      "welcomeBack": "Bienvenida de vuelta",
+      "genericError": "Ocurrió un error, intenta de nuevo",
+      "securityNote": "Tu sesión se almacena de forma segura con encriptación."
+    }
   },
   "booking": {
     "title": "Reservar cita",

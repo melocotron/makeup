@@ -62,16 +62,75 @@
   },
   "admin": {
     "title": "Admin Panel",
-    "subtitle": "Service Management",
-    "newService": "New service",
+    "subtitle": "Business management",
+    "newAppointment": "New appointment",
     "dashboard": "Dashboard",
-    "uiLibrary": "UI Library",
     "appointments": "Appointments",
-    "serviceFleet": "Service Fleet",
-    "analytics": "Analytics",
+    "services": "Services",
+    "packages": "Packages",
+    "clients": "Clients",
+    "promotions": "Promotions",
+    "loyalty": "Loyalty",
+    "home": "Home",
+    "media": "Media",
+    "blog": "Blog",
+    "reports": "Reports",
     "settings": "Settings",
     "help": "Help",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "loggedInAs": "Logged in as",
+    "dashboardTitle": "Welcome back",
+    "dashboardSubtitle": "Here's a quick summary of your business. Real data will appear once you start receiving appointments.",
+    "upcomingAppointments": "Upcoming appointments",
+    "quickSummary": "Quick summary",
+    "quickAccess": {
+      "title": "Quick access",
+      "newAppointment": "Schedule",
+      "newService": "New service",
+      "newPackage": "New package",
+      "newClient": "New client",
+      "newPromotion": "New promo",
+      "newPost": "New post",
+      "viewAll": "View all"
+    },
+    "projectProgress": "Project progress",
+    "emptyStates": {
+      "noUpcoming": "No upcoming appointments",
+      "noUpcomingDesc": "When you book the first appointment it will appear here."
+    },
+    "kpi": {
+      "appointmentsToday": "Appointments today",
+      "revenueMonth": "Revenue (month)",
+      "newClientsMonth": "New clients (month)",
+      "topService": "Top service",
+      "pendingInvoices": "Pending invoices",
+      "loyaltyMembers": "Loyalty members",
+      "activeCoupons": "Active coupons",
+      "postsPublished": "Published posts"
+    },
+    "userMenu": {
+      "openMenu": "Open user menu",
+      "account": "Account",
+      "myAccount": "My account"
+    },
+    "navGroup": {
+      "main": "Operations",
+      "marketing": "Marketing",
+      "content": "Content",
+      "system": "System"
+    }
+  },
+  "auth": {
+    "login": {
+      "signInPrompt": "Sign in to your account to continue",
+      "password": "Password",
+      "invalidEmail": "Invalid email",
+      "passwordRequired": "Password is required",
+      "invalidCredentials": "Invalid credentials",
+      "welcomeBack": "Welcome back",
+      "genericError": "Something went wrong, please try again",
+      "securityNote": "Your session is stored securely with encryption."
+    }
   },
   "booking": {
     "title": "Book appointment",
