@@ -1,0 +1,555 @@
+// Prisma schema para makeup-site
+// Documentación: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// AUTH
+// ============================================================================
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  avatar       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("admins")
+}
+
+// ============================================================================
+// CATALOG (servicios, extras, paquetes)
+// ============================================================================
+
+model Service {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  // name: { es: "...", en: "..." }
+  name        Json
+  // description: { es: "...", en: "..." }
+  description Json
+  durationMin Int      // duración en minutos
+  basePrice   Decimal  @db.Decimal(10, 2)
+  image       String?
+  isActive    Boolean  @default(true)
+  category    String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  extras         ServiceExtra[]
+  packageItems   PackageItem[]
+  appointments   Appointment[]
+  invoiceItems   InvoiceItem[]
+
+  @@index([isActive, order])
+  @@map("services")
+}
+
+model ServiceExtra {
+  id          String  @id @default(cuid())
+  serviceId   String
+  // name: { es, en }
+  name        Json
+  price       Decimal @db.Decimal(10, 2)
+  isActive    Boolean @default(true)
+
+  service       Service        @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  invoiceItems  InvoiceItemExtra[]
+
+  @@index([serviceId])
+  @@map("service_extras")
+}
+
+model Package {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        Json
+  description Json
+  totalPrice  Decimal  @db.Decimal(10, 2)
+  // savings vs servicios individuales
+  image       String?
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items PackageItem[]
+
+  @@index([isActive, order])
+  @@map("packages")
+}
+
+model PackageItem {
+  id        String @id @default(cuid())
+  packageId String
+  serviceId String
+  quantity  Int    @default(1)
+
+  package Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  service Service @relation(fields: [serviceId], references: [id])
+
+  @@unique([packageId, serviceId])
+  @@map("package_items")
+}
+
+// ============================================================================
+// SCHEDULE & BOOKING
+// ============================================================================
+
+model Schedule {
+  id        String   @id @default(cuid())
+  dayOfWeek Int      // 0 = Sunday, 6 = Saturday
+  startTime String   // "HH:mm"
+  endTime   String   // "HH:mm"
+  isActive  Boolean  @default(true)
+
+  @@unique([dayOfWeek])
+  @@map("schedules")
+}
+
+model ScheduleException {
+  id        String   @id @default(cuid())
+  date      DateTime @db.Date
+  reason    String?
+  isBlocked Boolean  @default(true) // true = no se pueden agendar citas
+
+  @@unique([date])
+  @@map("schedule_exceptions")
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+model Appointment {
+  id              String            @id @default(cuid())
+  clientId        String
+  serviceId       String
+  scheduledAt     DateTime
+  durationMin     Int
+  status          AppointmentStatus @default(PENDING)
+  notes           String?           @db.Text
+  internalNotes   String?           @db.Text // solo visibles para el admin
+  cancelReason    String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  client   Client        @relation(fields: [clientId], references: [id])
+  service  Service       @relation(fields: [serviceId], references: [id])
+  invoice  Invoice?
+
+  @@index([scheduledAt])
+  @@index([clientId])
+  @@index([status])
+  @@map("appointments")
+}
+
+// ============================================================================
+// CLIENTS
+// ============================================================================
+
+model Client {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String
+  phone         String?
+  notes         String?  @db.Text
+  registeredAt  DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  appointments   Appointment[]
+  loyaltyPoints  Int      @default(0)
+  loyaltyHistory LoyaltyTransaction[]
+  magicLinks     MagicLink[]
+
+  @@map("clients")
+}
+
+model MagicLink {
+  id        String   @id @default(cuid())
+  clientId  String
+  token     String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([expiresAt])
+  @@map("magic_links")
+}
+
+// ============================================================================
+// BILLING
+// ============================================================================
+
+enum InvoiceStatus {
+  PENDING
+  PAID
+  CANCELLED
+}
+
+model Invoice {
+  id              String        @id @default(cuid())
+  number          String        @unique // ej: "INV-2026-0001"
+  appointmentId   String        @unique
+  status          InvoiceStatus @default(PENDING)
+  subtotal        Decimal       @db.Decimal(10, 2)
+  discountAmount  Decimal       @default(0) @db.Decimal(10, 2)
+  loyaltyDiscount Decimal       @default(0) @db.Decimal(10, 2)
+  total           Decimal       @db.Decimal(10, 2)
+  paymentMethod   String?       // efectivo, transferencia, etc.
+  paidAt          DateTime?
+  notes           String?       @db.Text
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  appointment   Appointment    @relation(fields: [appointmentId], references: [id])
+  items         InvoiceItem[]
+  couponUsages  CouponUsage[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id          String  @id @default(cuid())
+  invoiceId   String
+  serviceId   String?
+  description String  // nombre al momento de facturar (snapshot)
+  quantity    Int     @default(1)
+  unitPrice   Decimal @db.Decimal(10, 2)
+  total       Decimal @db.Decimal(10, 2)
+
+  invoice Invoice           @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  service Service?          @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  extras  InvoiceItemExtra[]
+
+  @@map("invoice_items")
+}
+
+model InvoiceItemExtra {
+  id            String @id @default(cuid())
+  invoiceItemId String
+  extraId       String?
+  description   String
+  price         Decimal @db.Decimal(10, 2)
+
+  invoiceItem InvoiceItem  @relation(fields: [invoiceItemId], references: [id], onDelete: Cascade)
+  extra       ServiceExtra? @relation(fields: [extraId], references: [id], onDelete: SetNull)
+
+  @@map("invoice_item_extras")
+}
+
+// ============================================================================
+// PROMOTIONS (cupones)
+// ============================================================================
+
+enum DiscountType {
+  PERCENTAGE // 0-100
+  FIXED      // monto
+}
+
+model Coupon {
+  id            String       @id @default(cuid())
+  code          String       @unique
+  description   Json         // { es, en }
+  type          DiscountType
+  value         Decimal      @db.Decimal(10, 2)
+  minPurchase   Decimal?     @db.Decimal(10, 2)
+  maxUses       Int?
+  usedCount     Int          @default(0)
+  validFrom     DateTime
+  validUntil    DateTime
+  isActive      Boolean      @default(true)
+  // aplicable solo a estos serviceIds (null = todos)
+  serviceIds    String?      @db.Text
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  usages CouponUsage[]
+
+  @@index([code])
+  @@index([validUntil])
+  @@map("coupons")
+}
+
+model CouponUsage {
+  id        String   @id @default(cuid())
+  couponId  String
+  invoiceId String
+  amount    Decimal  @db.Decimal(10, 2)
+  usedAt    DateTime @default(now())
+
+  coupon  Coupon  @relation(fields: [couponId], references: [id])
+  invoice Invoice @relation(fields: [invoiceId], references: [id])
+
+  @@map("coupon_usages")
+}
+
+// ============================================================================
+// LOYALTY
+// ============================================================================
+
+model LoyaltyRule {
+  id              String   @id @default(cuid())
+  name            String
+  // 1 punto por cada X gastado
+  pointsPerAmount Decimal  @db.Decimal(10, 2) // ej: 1.00 = 1 punto por cada $1
+  // X puntos equivalen a $Y de descuento
+  pointsToRedeem  Int
+  redeemValue     Decimal  @db.Decimal(10, 2)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("loyalty_rules")
+}
+
+model LoyaltyTransaction {
+  id        String   @id @default(cuid())
+  clientId  String
+  type      String   // EARNED | REDEEMED | EXPIRED | ADJUSTED
+  points    Int      // positivo o negativo
+  reason    String?
+  invoiceId String?
+  createdAt DateTime @default(now())
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([clientId, createdAt])
+  @@map("loyalty_transactions")
+}
+
+// ============================================================================
+// CONTENT (carrusel, sobre mi, FAQ, testimonios, galeria)
+// ============================================================================
+
+model HomeCarousel {
+  id          String   @id @default(cuid())
+  image       String
+  title       Json
+  subtitle    Json?
+  ctaLabel    Json?
+  ctaUrl      String?
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isActive, order])
+  @@map("home_carousels")
+}
+
+model AboutContent {
+  id            String   @id @default(cuid())
+  bio           Json     // { es, en }
+  signatureText String?
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("about_content")
+}
+
+model Credential {
+  id          String   @id @default(cuid())
+  title       Json     // { es, en }
+  institution String
+  year        Int?
+  image       String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([order])
+  @@map("credentials")
+}
+
+model Testimonial {
+  id         String   @id @default(cuid())
+  clientName String
+  content    Json     // { es, en }
+  rating     Int      @default(5) // 1-5
+  avatar     String?
+  isApproved Boolean  @default(false)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([isApproved, isActive])
+  @@map("testimonials")
+}
+
+model FaqItem {
+  id        String   @id @default(cuid())
+  question  Json     // { es, en }
+  answer    Json     // { es, en }
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, order])
+  @@map("faq_items")
+}
+
+model GalleryItem {
+  id        String   @id @default(cuid())
+  image     String
+  // title: { es, en }
+  title     Json
+  // description: { es, en }
+  description Json?
+  category  String?  // "antes-despues" | "portafolio"
+  beforeImage String?
+  afterImage  String?
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, order])
+  @@map("gallery_items")
+}
+
+// ============================================================================
+// BLOG
+// ============================================================================
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Post {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  title       Json
+  excerpt     Json
+  // contenido Tiptap JSON
+  content     Json
+  image       String?
+  status      PostStatus @default(DRAFT)
+  publishedAt DateTime?
+  categoryId  String?
+  // tags como string separado por comas
+  tags        String?    @db.Text
+  metaTitle   Json?
+  metaDesc    Json?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  category PostCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  @@index([status, publishedAt])
+  @@map("posts")
+}
+
+model PostCategory {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      Json     // { es, en }
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  posts Post[]
+
+  @@map("post_categories")
+}
+
+// ============================================================================
+// MEDIA (biblioteca centralizada)
+// ============================================================================
+
+model Media {
+  id            String   @id @default(cuid())
+  filename      String
+  url           String
+  mimeType      String
+  size          Int      // bytes
+  width         Int?
+  height        Int?
+  // alt text para accesibilidad
+  alt           Json?    // { es, en }
+  folder        String?  // "servicios" | "blog" | "galeria" | null
+  uploadedById  String?
+  createdAt     DateTime @default(now())
+
+  @@index([folder])
+  @@index([createdAt])
+  @@map("media")
+}
+
+// ============================================================================
+// SETTINGS
+// ============================================================================
+
+model Settings {
+  id        String   @id @default("singleton")
+  // contact
+  siteName       String?
+  email          String?
+  phone          String?
+  whatsapp       String?
+  address        String?
+  // social
+  instagram      String?
+  facebook       String?
+  tiktok         String?
+  youtube        String?
+  // seo
+  metaTitle      Json?
+  metaDesc       Json?
+  ogImage        String?
+  // features toggles
+  blogEnabled    Boolean  @default(true)
+  offersEnabled  Boolean  @default(true)
+  loyaltyEnabled Boolean  @default(true)
+  // theme
+  accentColor    String?  @default("#4648d4")
+  // policies
+  minAdvanceHours Int     @default(24)
+  cancelHours     Int     @default(24)
+  // maintenance
+  maintenanceMode Boolean @default(false)
+  updatedAt       DateTime @updatedAt
+
+  @@map("settings")
+}
+
+// ============================================================================
+// NOTIFICATIONS LOG
+// ============================================================================
+
+model NotificationLog {
+  id         String   @id @default(cuid())
+  type       String   // APPOINTMENT_CONFIRMATION | APPOINTMENT_REMINDER | MAGIC_LINK | etc
+  recipient  String   // email destino
+  subject    String?
+  status     String   // SENT | FAILED | PENDING
+  errorMsg   String?  @db.Text
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([type, createdAt])
+  @@map("notification_logs")
+}

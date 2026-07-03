@@ -1,0 +1,87 @@
+{
+  "common": {
+    "appName": "Radiant Beauty",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "required": "Required",
+    "optional": "Optional"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About me",
+    "services": "Services",
+    "packages": "Packages",
+    "offers": "Offers",
+    "booking": "Book appointment",
+    "blog": "Blog",
+    "contact": "Contact",
+    "login": "Login",
+    "bookNow": "Book now",
+    "language": "Language",
+    "theme": "Theme"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "toggleTheme": "Toggle theme"
+  },
+  "footer": {
+    "rights": "All rights reserved",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "cookies": "Cookie Policy",
+    "support": "Support"
+  },
+  "home": {
+    "heroTitle": "Radiant Beauty &",
+    "heroTitleLine2": "Professional Skin Care.",
+    "heroSubtitle": "Elevate your natural glow with expert dermacosmetics, artistic makeup, and personalized skincare treatments.",
+    "heroCta": "Book a treatment",
+    "servicesTitle": "Our Services",
+    "servicesSubtitle": "Tailored beauty and skincare solutions for your specific needs, crafted with artistic precision.",
+    "packagesTitle": "Exclusive Packages",
+    "packagesSubtitle": "Curated bundles for optimal beauty results.",
+    "aboutTitle": "The Artist Behind the Glow",
+    "from": "From",
+    "mins": "mins"
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "subtitle": "Service Management",
+    "newService": "New service",
+    "dashboard": "Dashboard",
+    "uiLibrary": "UI Library",
+    "appointments": "Appointments",
+    "serviceFleet": "Service Fleet",
+    "analytics": "Analytics",
+    "settings": "Settings",
+    "help": "Help",
+    "signOut": "Sign Out"
+  },
+  "booking": {
+    "title": "Book appointment",
+    "step": "Step",
+    "of": "of",
+    "selectService": "Select a service",
+    "selectDate": "Select date and time",
+    "yourData": "Your details",
+    "confirm": "Confirm booking",
+    "success": "Booking confirmed!",
+    "successMessage": "We sent you an email with the appointment details."
+  }
+}

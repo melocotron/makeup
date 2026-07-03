@@ -1,0 +1,217 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   DESIGN TOKENS — Kinetic Enterprise / Radiant Beauty Pro
+   Extraídos de los system designs de Stitch
+   ============================================================================ */
+
+@theme {
+  /* ===== COLORS (paleta completa Material 3 inspired) ===== */
+  --color-primary: #4648d4;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #6063ee;
+  --color-on-primary-container: #fffbff;
+  --color-inverse-primary: #c0c1ff;
+  --color-primary-fixed: #e1e0ff;
+  --color-primary-fixed-dim: #c0c1ff;
+  --color-on-primary-fixed: #07006c;
+  --color-on-primary-fixed-variant: #2f2ebe;
+
+  --color-secondary: #515f74;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #d5e3fc;
+  --color-on-secondary-container: #57657a;
+  --color-secondary-fixed: #d5e3fc;
+  --color-secondary-fixed-dim: #b9c7df;
+  --color-on-secondary-fixed: #0d1c2e;
+  --color-on-secondary-fixed-variant: #3a485b;
+
+  --color-tertiary: #006c49;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #00885d;
+  --color-on-tertiary-container: #000703;
+  --color-tertiary-fixed: #6ffbbe;
+  --color-tertiary-fixed-dim: #4edea3;
+  --color-on-tertiary-fixed: #002113;
+  --color-on-tertiary-fixed-variant: #005236;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --color-surface: #f7f9fb;
+  --color-surface-dim: #d8dadc;
+  --color-surface-bright: #f7f9fb;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f2f4f6;
+  --color-surface-container: #eceef0;
+  --color-surface-container-high: #e6e8ea;
+  --color-surface-container-highest: #e0e3e5;
+  --color-surface-variant: #e0e3e5;
+  --color-surface-tint: #494bd6;
+
+  --color-on-surface: #191c1e;
+  --color-on-surface-variant: #464554;
+  --color-background: #f7f9fb;
+  --color-on-background: #191c1e;
+
+  --color-outline: #767586;
+  --color-outline-variant: #c7c4d7;
+  --color-inverse-surface: #2d3133;
+  --color-inverse-on-surface: #eff1f3;
+
+  /* ===== SPACING (grilla 8px + extras para landing) ===== */
+  --spacing-base: 4px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 64px;
+  --spacing-3xl: 96px;
+  --spacing-gutter: 20px;
+
+  /* ===== BORDER RADIUS ===== */
+  --radius-sm: 0.125rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+
+  /* ===== FONTS (tipografía dual por contexto) ===== */
+  --font-sans: "Inter", "system-ui", "sans-serif";
+  --font-serif: "Playfair Display", "Georgia", "serif";
+  --font-mono: "JetBrains Mono", "monospace";
+
+  /* ===== TYPOGRAPHY SCALES ===== */
+  --text-display: 36px;
+  --text-display--line-height: 44px;
+  --text-display--letter-spacing: -0.02em;
+  --text-display--font-weight: 700;
+
+  --text-headline-lg: 28px;
+  --text-headline-lg--line-height: 36px;
+  --text-headline-lg--letter-spacing: -0.01em;
+  --text-headline-lg--font-weight: 600;
+
+  --text-headline-md: 20px;
+  --text-headline-md--line-height: 28px;
+  --text-headline-md--font-weight: 600;
+
+  --text-body-lg: 16px;
+  --text-body-lg--line-height: 24px;
+  --text-body-lg--font-weight: 400;
+
+  --text-body-md: 14px;
+  --text-body-md--line-height: 20px;
+  --text-body-md--font-weight: 400;
+
+  --text-label-md: 12px;
+  --text-label-md--line-height: 16px;
+  --text-label-md--letter-spacing: 0.05em;
+  --text-label-md--font-weight: 600;
+
+  --text-code: 13px;
+  --text-code--line-height: 18px;
+  --text-code--font-weight: 400;
+
+  /* ===== SHADOWS (tonal layers, no sombras pesadas) ===== */
+  --shadow-level-1: 0 0 0 1px rgb(0 0 0 / 0.04);
+  --shadow-level-2: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* ===== CONTAINER ===== */
+  --container-max: 1440px;
+}
+
+/* ===== DARK MODE (slate tiered surfaces) ===== */
+.dark {
+  --color-surface: #0f172a;
+  --color-surface-dim: #0a1019;
+  --color-surface-bright: #1e293b;
+  --color-surface-container-lowest: #0a1019;
+  --color-surface-container-low: #131c2e;
+  --color-surface-container: #1a2335;
+  --color-surface-container-high: #1e293b;
+  --color-surface-container-highest: #293548;
+  --color-surface-variant: #293548;
+  --color-surface-tint: #a5a8ff;
+
+  --color-background: #0f172a;
+  --color-on-background: #e2e8f0;
+
+  --color-on-surface: #e2e8f0;
+  --color-on-surface-variant: #94a3b8;
+
+  --color-outline: #475569;
+  --color-outline-variant: #334155;
+
+  --color-inverse-surface: #e2e8f0;
+  --color-inverse-on-surface: #0f172a;
+
+  --color-primary-container: #2f2ebe;
+  --color-on-primary-container: #c0c1ff;
+
+  --color-secondary-container: #3a485b;
+  --color-on-secondary-container: #d5e3fc;
+
+  --color-tertiary-container: #005236;
+  --color-on-tertiary-container: #6ffbbe;
+
+  --color-error-container: #93000a;
+  --color-on-error-container: #ffdad6;
+}
+
+/* ===== BASE STYLES ===== */
+* {
+  border-color: var(--color-outline-variant);
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  font-family: var(--font-sans);
+  font-size: var(--text-body-md);
+  line-height: var(--text-body-md--line-height);
+  font-weight: var(--text-body-md--font-weight);
+}
+
+/* Utility para headings serif (landing) */
+.font-serif-display {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.font-serif-headline {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Scrollbar custom */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-outline-variant);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-outline);
+}
+
+/* Focus ring consistente */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}

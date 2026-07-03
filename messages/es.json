@@ -1,0 +1,87 @@
+{
+  "common": {
+    "appName": "Radiant Beauty",
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "submit": "Enviar",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "yes": "Sí",
+    "no": "No",
+    "required": "Requerido",
+    "optional": "Opcional"
+  },
+  "nav": {
+    "home": "Inicio",
+    "about": "Sobre mí",
+    "services": "Servicios",
+    "packages": "Paquetes",
+    "offers": "Ofertas",
+    "booking": "Agendar cita",
+    "blog": "Blog",
+    "contact": "Contacto",
+    "login": "Acceder",
+    "bookNow": "Reservar",
+    "language": "Idioma",
+    "theme": "Tema"
+  },
+  "theme": {
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema",
+    "toggleTheme": "Cambiar tema"
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados",
+    "privacy": "Política de privacidad",
+    "terms": "Términos de servicio",
+    "cookies": "Política de cookies",
+    "support": "Soporte"
+  },
+  "home": {
+    "heroTitle": "Belleza Radiante &",
+    "heroTitleLine2": "Cuidado Profesional de la Piel.",
+    "heroSubtitle": "Resalta tu brillo natural con dermocosmética experta, maquillaje artístico y tratamientos personalizados de cuidado de la piel.",
+    "heroCta": "Reservar un tratamiento",
+    "servicesTitle": "Nuestros Servicios",
+    "servicesSubtitle": "Soluciones de belleza y cuidado de la piel adaptadas a tus necesidades específicas, elaboradas con precisión artística.",
+    "packagesTitle": "Paquetes Exclusivos",
+    "packagesSubtitle": "Combos curados para resultados óptimos de belleza.",
+    "aboutTitle": "La Artista Detrás del Brillo",
+    "from": "Desde",
+    "mins": "min"
+  },
+  "admin": {
+    "title": "Panel de Administración",
+    "subtitle": "Gestión de Servicios",
+    "newService": "Nuevo servicio",
+    "dashboard": "Panel",
+    "uiLibrary": "Librería UI",
+    "appointments": "Citas",
+    "serviceFleet": "Servicios",
+    "analytics": "Analíticas",
+    "settings": "Ajustes",
+    "help": "Ayuda",
+    "signOut": "Cerrar sesión"
+  },
+  "booking": {
+    "title": "Reservar cita",
+    "step": "Paso",
+    "of": "de",
+    "selectService": "Selecciona un servicio",
+    "selectDate": "Selecciona fecha y hora",
+    "yourData": "Tus datos",
+    "confirm": "Confirmar reserva",
+    "success": "¡Reserva confirmada!",
+    "successMessage": "Te enviamos un correo con los detalles de tu cita."
+  }
+}

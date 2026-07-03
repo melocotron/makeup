@@ -1,0 +1,33 @@
+{
+  "$schema": "https://openspec.dev/schema.json",
+  "name": "makeup-site",
+  "version": "1.0.0",
+  "description": "Sitio web con landing pública y panel administrativo para profesional de maquillaje/belleza. Incluye reservas, blog, fidelización, descuentos y cobros manuales.",
+  "owners": {
+    "admin": "Propietaria del negocio (1 admin)"
+  },
+  "languages": ["es", "en"],
+  "areas": [
+    "design-system",
+    "auth",
+    "admin",
+    "public",
+    "booking",
+    "billing",
+    "loyalty",
+    "blog",
+    "content",
+    "catalog",
+    "media",
+    "notifications",
+    "system"
+  ],
+  "rules": {
+    "conventions": {
+      "spec_format": "Capability → Requirements → Scenarios (Given/When/Then)",
+      "proposal_required_fields": ["why", "whatChanges", "impact"],
+      "tasks_format": "Checklist con checkboxes `- [ ]`",
+      "naming": "kebab-case para archivos y folders"
+    }
+  }
+}
