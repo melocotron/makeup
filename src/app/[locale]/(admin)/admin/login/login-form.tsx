@@ -53,6 +53,7 @@ export function LoginForm() {
       formData.append("email", data.email);
       formData.append("password", data.password);
       formData.append("locale", locale);
+      formData.append("callbackUrl", callbackUrl);
 
       const result = await loginAction(formData);
 
