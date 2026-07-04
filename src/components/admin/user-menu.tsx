@@ -2,6 +2,7 @@
 
 import { LogOut, User as UserIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback, getInitials } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,11 @@ interface UserMenuProps {
 export function UserMenu({ user }: UserMenuProps) {
   const t = useTranslations("admin");
   const locale = useLocale() as Locale;
+  const router = useRouter();
+
+  function handleMyAccount() {
+    router.push(`/${locale}/admin/profile`);
+  }
 
   async function handleLogout() {
     try {
@@ -55,7 +61,7 @@ export function UserMenu({ user }: UserMenuProps) {
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuLabel>{t("userMenu.account")}</DropdownMenuLabel>
-        <DropdownMenuItem disabled>
+        <DropdownMenuItem onSelect={handleMyAccount}>
           <UserIcon className="h-4 w-4" />
           {t("userMenu.myAccount")}
         </DropdownMenuItem>
