@@ -1,7 +1,7 @@
 "use client";
 
 import { LogOut, User as UserIcon } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { Avatar, AvatarFallback, getInitials } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { logout } from "@/server/auth/actions";
+import type { Locale } from "@/i18n/routing";
 
 interface UserMenuProps {
   user: { name: string; email: string };
@@ -21,6 +22,17 @@ interface UserMenuProps {
 
 export function UserMenu({ user }: UserMenuProps) {
   const t = useTranslations("admin");
+  const locale = useLocale() as Locale;
+
+  async function handleLogout() {
+    try {
+      // Server Action signOut -> throws NEXT_REDIRECT, Next.js lo maneja
+      await logout(locale);
+    } catch {
+      // NEXT_REDIRECT es capturado por Next.js, no por nosotros
+      // Si llega aquí es otro error, no pasa nada
+    }
+  }
 
   return (
     <DropdownMenu>
@@ -48,14 +60,16 @@ export function UserMenu({ user }: UserMenuProps) {
           {t("userMenu.myAccount")}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <form action={logout}>
-          <DropdownMenuItem asChild variant="destructive">
-            <button type="submit" className="w-full">
-              <LogOut className="h-4 w-4" />
-              {t("signOut")}
-            </button>
-          </DropdownMenuItem>
-        </form>
+        <DropdownMenuItem
+          variant="destructive"
+          onSelect={(e) => {
+            e.preventDefault();
+            void handleLogout();
+          }}
+        >
+          <LogOut className="h-4 w-4" />
+          {t("signOut")}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
