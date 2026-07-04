@@ -42,7 +42,7 @@ export async function createCredentialAction(formData: FormData) {
         order: data.order,
       },
     });
-    revalidatePath("/[locale]/admin/perfil/preparacion", "page");
+    revalidatePath("/[locale]/admin/profile/credentials", "page");
     return { success: true as const, id: cred.id };
   } catch (err) {
     return {
@@ -79,7 +79,7 @@ export async function updateCredentialAction(id: string, formData: FormData) {
         order: data.order,
       },
     });
-    revalidatePath("/[locale]/admin/perfil/preparacion", "page");
+    revalidatePath("/[locale]/admin/profile/credentials", "page");
     return { success: true as const };
   } catch (err) {
     return {
@@ -97,7 +97,7 @@ export async function deleteCredentialAction(id: string) {
 
   try {
     await prisma.credential.delete({ where: { id } });
-    revalidatePath("/[locale]/admin/perfil/preparacion", "page");
+    revalidatePath("/[locale]/admin/profile/credentials", "page");
     return { success: true as const };
   } catch (err) {
     return {
