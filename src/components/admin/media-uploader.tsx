@@ -7,13 +7,19 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { uploadMediaAction } from "@/server/media/actions";
 
 interface MediaUploaderProps {
   folder?: string;
   onUploadComplete?: (media: { id: string; url: string; filename: string }) => void;
   accept?: string;
   className?: string;
+}
+
+interface UploadResponse {
+  id?: string;
+  url?: string;
+  filename?: string;
+  error?: string;
 }
 
 export function MediaUploader({
@@ -31,7 +37,6 @@ export function MediaUploader({
     if (uploading) return;
     setUploading(true);
 
-    // Preview local
     const objectUrl = URL.createObjectURL(file);
     setPreview(objectUrl);
 
@@ -40,16 +45,31 @@ export function MediaUploader({
       formData.append("file", file);
       formData.append("folder", folder);
 
-      const result = await uploadMediaAction(formData);
+      // Usar API route directamente para obtener HTTP status codes correctos (413, 415)
+      const response = await fetch("/api/media/upload", {
+        method: "POST",
+        body: formData,
+      });
 
-      if (!result.success) {
-        toast.error(result.error);
+      const data: UploadResponse = await response.json();
+
+      if (!response.ok) {
+        // 413 (muy grande), 415 (tipo no permitido), 401 (no auth), 500 (error)
+        toast.error(
+          response.status === 413
+            ? "El archivo excede 10MB"
+            : response.status === 415
+            ? data.error ?? "Tipo de archivo no permitido"
+            : data.error ?? "Error al subir",
+        );
         setPreview(null);
         return;
       }
 
       toast.success("Imagen subida correctamente");
-      onUploadComplete?.(result.media);
+      if (data.id && data.url && data.filename) {
+        onUploadComplete?.({ id: data.id, url: data.url, filename: data.filename });
+      }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Error al subir");
       setPreview(null);
