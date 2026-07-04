@@ -33,7 +33,7 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
       <button
         onClick={() => switchLocale("es")}
         className={cn(
-          "px-2 py-1 text-xs font-semibold uppercase tracking-wider rounded transition-colors",
+          "cursor-pointer px-2 py-1 text-xs font-semibold uppercase tracking-wider rounded transition-colors",
           locale === "es"
             ? "bg-primary text-on-primary"
             : "text-on-surface-variant hover:text-primary",
@@ -46,7 +46,7 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
       <button
         onClick={() => switchLocale("en")}
         className={cn(
-          "px-2 py-1 text-xs font-semibold uppercase tracking-wider rounded transition-colors",
+          "cursor-pointer px-2 py-1 text-xs font-semibold uppercase tracking-wider rounded transition-colors",
           locale === "en"
             ? "bg-primary text-on-primary"
             : "text-on-surface-variant hover:text-primary",

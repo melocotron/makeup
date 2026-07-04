@@ -24,7 +24,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
     return (
       <button
         className={cn(
-          "inline-flex h-9 w-9 items-center justify-center rounded-full",
+          "inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full",
           "bg-surface-container-lowest text-outline",
           className,
         )}
@@ -41,7 +41,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
     <button
       onClick={() => setTheme(isDark ? "light" : "dark")}
       className={cn(
-        "inline-flex h-9 w-9 items-center justify-center rounded-full transition-colors",
+        "inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full transition-colors",
         "bg-surface-container-lowest hover:bg-surface-container text-outline hover:text-on-surface",
         className,
       )}
