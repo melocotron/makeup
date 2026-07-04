@@ -52,7 +52,7 @@ export async function createSlideAction(formData: FormData) {
         isActive: data.isActive,
       },
     });
-    revalidatePath("/[locale]/admin/contenido/inicio", "page");
+    revalidatePath("/[locale]/admin/content/home", "page");
     revalidatePath("/[locale]", "page"); // también el home público
     return { success: true as const, id: slide.id };
   } catch (err) {
@@ -100,7 +100,7 @@ export async function updateSlideAction(id: string, formData: FormData) {
         isActive: data.isActive,
       },
     });
-    revalidatePath("/[locale]/admin/contenido/inicio", "page");
+    revalidatePath("/[locale]/admin/content/home", "page");
     revalidatePath("/[locale]", "page");
     return { success: true as const };
   } catch (err) {
@@ -119,7 +119,7 @@ export async function deleteSlideAction(id: string) {
 
   try {
     await prisma.homeCarousel.delete({ where: { id } });
-    revalidatePath("/[locale]/admin/contenido/inicio", "page");
+    revalidatePath("/[locale]/admin/content/home", "page");
     revalidatePath("/[locale]", "page");
     return { success: true as const };
   } catch (err) {
@@ -141,7 +141,7 @@ export async function toggleSlideActiveAction(id: string, isActive: boolean) {
       where: { id },
       data: { isActive },
     });
-    revalidatePath("/[locale]/admin/contenido/inicio", "page");
+    revalidatePath("/[locale]/admin/content/home", "page");
     revalidatePath("/[locale]", "page");
     return { success: true as const };
   } catch (err) {
