@@ -67,6 +67,8 @@ export function MediaUploader({
       }
 
       toast.success("Imagen subida correctamente");
+      setPreview(null);
+      if (inputRef.current) inputRef.current.value = "";
       if (data.id && data.url && data.filename) {
         onUploadComplete?.({ id: data.id, url: data.url, filename: data.filename });
       }
