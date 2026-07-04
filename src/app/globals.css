@@ -120,20 +120,6 @@
   /* Shadows */
   --shadow-level-1: 0 0 0 1px rgb(0 0 0 / 0.04);
   --shadow-level-2: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-
-  /* ===== SIDEBAR (always dark, like Gmail/Notion) =====
-     These tokens do NOT flip between themes — the sidebar stays dark
-     regardless of light/dark mode for visual consistency. */
-  --color-sidebar-bg: #1e293b;            /* slate-800 */
-  --color-sidebar-header: #f1f5f9;        /* slate-100 */
-  --color-sidebar-header-sub: #94a3b8;    /* slate-400 */
-  --color-sidebar-text: #cbd5e1;          /* slate-300 */
-  --color-sidebar-text-hover: #f1f5f9;    /* slate-100 */
-  --color-sidebar-hover-bg: rgba(70, 72, 212, 0.12);
-  --color-sidebar-active-bg: #0f172a;     /* slate-900 */
-  --color-sidebar-active-border: #4648d4; /* primary */
-  --color-sidebar-active-text: #ffffff;    /* white */
-  --color-sidebar-divider: #334155;       /* slate-700 */
 }
 
 /* ===== DARK MODE (slate tiered surfaces) ===== */
