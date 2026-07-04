@@ -13,19 +13,16 @@ const loginSchema = z.object({
 });
 
 function sanitizeCallbackUrl(raw: string | undefined, locale: string): string {
-  // Default destino seguro
   const fallback = `/${locale}/admin`;
 
   if (!raw) return fallback;
 
-  // Solo permitir paths internos que empiecen con /[locale]/admin
-  // Esto previene open redirect attacks (ej: ?callbackUrl=https://evil.com)
-  const allowedPrefix = `/${locale}/admin`;
-  if (raw.startsWith(allowedPrefix)) {
+  // Solo permitir paths internos admin (previene open redirect)
+  if (raw.startsWith(`/${locale}/admin`)) {
     return raw;
   }
 
-  // Si el callbackUrl viene sin locale prefix, agregarlo
+  // Si viene sin locale prefix, agregarlo
   if (raw.startsWith("/admin/")) {
     return `/${locale}${raw}`;
   }
@@ -56,20 +53,17 @@ export async function loginAction(formData: FormData) {
   );
 
   try {
+    // redirect: false → signIn NO lanza NEXT_REDIRECT, devuelve resultado
+    // y setea la cookie de sesión via Set-Cookie en la response
     await signIn("credentials", {
       email: parsed.data.email,
       password: parsed.data.password,
-      redirect: true,
-      redirectTo: callbackUrl,
+      redirect: false,
     });
 
-    return { success: true as const };
+    // Si llegamos aquí, login fue exitoso
+    return { success: true as const, callbackUrl };
   } catch (error) {
-    // Re-throw de NEXT_REDIRECT para que Next.js haga el redirect
-    if (error instanceof Error && error.message === "NEXT_REDIRECT") {
-      throw error;
-    }
-
     if (error instanceof AuthError) {
       if (error.type === "CredentialsSignin") {
         return { success: false as const, error: "Credenciales inválidas" };

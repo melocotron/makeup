@@ -64,14 +64,12 @@ export function LoginForm() {
       }
 
       toast.success(t("login.welcomeBack"));
-      router.push(callbackUrl);
+      // Usamos callbackUrl que viene del action (sanitizado server-side)
+      const target = "callbackUrl" in result && result.callbackUrl ? result.callbackUrl : callbackUrl;
+      router.push(target);
       router.refresh();
     } catch {
-      // NEXT_REDIRECT se lanza cuando el login es exitoso y el redirect
-      // empieza a procesarse. Next.js lo maneja automáticamente.
-      toast.success(t("login.welcomeBack"));
-      router.push(callbackUrl);
-      router.refresh();
+      toast.error(t("login.genericError"));
     }
   }
 
