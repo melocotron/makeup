@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   experimental: {
+    serverActions: {
+      // Allow up to 12MB body (10MB max file + multipart overhead)
+      bodySizeLimit: "12mb",
+    },
     optimizePackageImports: ["lucide-react"],
   },
   images: {
