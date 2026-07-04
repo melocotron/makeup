@@ -120,6 +120,19 @@
   /* Shadows */
   --shadow-level-1: 0 0 0 1px rgb(0 0 0 / 0.04);
   --shadow-level-2: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* ===== SIDEBAR (flips between themes: dark sidebar in light mode,
+     light sidebar in dark mode — like a true inverse) ===== */
+  --color-sidebar-bg: #1e293b;                /* slate-800 (dark) */
+  --color-sidebar-header: #f1f5f9;            /* slate-100 */
+  --color-sidebar-header-sub: #94a3b8;        /* slate-400 */
+  --color-sidebar-text: #cbd5e1;              /* slate-300 */
+  --color-sidebar-text-hover: #c0c1ff;        /* light purple, contrasts well on dark */
+  --color-sidebar-hover-bg: rgba(70, 72, 212, 0.16);
+  --color-sidebar-active-bg: rgba(70, 72, 212, 0.22);
+  --color-sidebar-active-text: #ffffff;
+  --color-sidebar-active-border: #4648d4;      /* primary */
+  --color-sidebar-divider: #334155;           /* slate-700 */
 }
 
 /* ===== DARK MODE (slate tiered surfaces) ===== */
@@ -158,6 +171,19 @@
 
   --color-error-container: #93000a;
   --color-on-error-container: #ffdad6;
+
+  /* ===== SIDEBAR DARK MODE OVERRIDES =====
+     Sidebar inverts to LIGHT in dark mode. Text becomes dark to maintain contrast. */
+  --color-sidebar-bg: #e2e8f0;                /* slate-200 (light) */
+  --color-sidebar-header: #0f172a;            /* slate-900 (dark text on light bg) */
+  --color-sidebar-header-sub: #64748b;        /* slate-500 (muted) */
+  --color-sidebar-text: #475569;              /* slate-600 (readable on light bg) */
+  --color-sidebar-text-hover: #4648d4;        /* primary indigo (dark, contrasts on light) */
+  --color-sidebar-hover-bg: rgba(70, 72, 212, 0.12);
+  --color-sidebar-active-bg: rgba(70, 72, 212, 0.15);
+  --color-sidebar-active-text: #4648d4;        /* primary (no blanco, sidebar es claro) */
+  --color-sidebar-active-border: #4648d4;
+  --color-sidebar-divider: #cbd5e1;           /* slate-300 */
 }
 
 /* ===== BASE STYLES ===== */
