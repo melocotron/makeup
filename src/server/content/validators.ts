@@ -19,7 +19,7 @@ export const credentialSchema = z.object({
     .number()
     .int()
     .min(1900, "Año inválido")
-    .max(2100, "Año inválido")
+    .max(new Date().getFullYear(), "El año no puede ser futuro")
     .optional()
     .or(z.literal("")),
   image: z.string().optional().or(z.literal("")),
