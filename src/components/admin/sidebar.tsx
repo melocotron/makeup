@@ -68,12 +68,23 @@ export function SidebarContent({ locale, onNavigate }: SidebarContentProps) {
   ];
 
   return (
-    <div className="flex h-full flex-col bg-inverse-surface text-surface-container-lowest">
+    <div
+      className="flex h-full flex-col"
+      style={{ backgroundColor: "var(--color-sidebar-bg)" }}
+    >
       {/* Header */}
       <div className="p-6">
         <Link href={`/${locale}`} className="block">
-          <h1 className="text-xl font-bold">{t("title")}</h1>
-          <p className="mt-1 text-xs uppercase tracking-wider text-surface-variant">
+          <h1
+            className="text-xl font-bold"
+            style={{ color: "var(--color-sidebar-header)" }}
+          >
+            {t("title")}
+          </h1>
+          <p
+            className="mt-1 text-xs uppercase tracking-wider"
+            style={{ color: "var(--color-sidebar-header-sub)" }}
+          >
             {t("subtitle")}
           </p>
         </Link>
@@ -97,7 +108,10 @@ export function SidebarContent({ locale, onNavigate }: SidebarContentProps) {
           if (items.length === 0) return null;
           return (
             <div key={group.key} className="mb-4">
-              <p className="mb-2 px-4 text-[10px] font-semibold uppercase tracking-widest text-surface-variant/70">
+              <p
+                className="mb-2 px-4 text-[10px] font-semibold uppercase tracking-widest"
+                style={{ color: "var(--color-sidebar-header-sub)" }}
+              >
                 {group.title}
               </p>
               <ul className="flex flex-col gap-0.5">
@@ -111,10 +125,33 @@ export function SidebarContent({ locale, onNavigate }: SidebarContentProps) {
                         onClick={onNavigate}
                         className={cn(
                           "flex items-center rounded-r-lg px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-all",
-                          active
-                            ? "border-l-4 border-primary bg-on-secondary-fixed-variant/20 text-primary-fixed"
-                            : "border-l-4 border-transparent text-surface-variant hover:bg-primary/10 hover:text-primary-fixed",
+                          active ? "border-l-4" : "border-l-4 border-transparent",
                         )}
+                        style={{
+                          backgroundColor: active
+                            ? "var(--color-sidebar-active-bg)"
+                            : "transparent",
+                          borderColor: active
+                            ? "var(--color-sidebar-active-border)"
+                            : "transparent",
+                          color: active
+                            ? "var(--color-sidebar-active-text)"
+                            : "var(--color-sidebar-text)",
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!active) {
+                            e.currentTarget.style.backgroundColor =
+                              "var(--color-sidebar-hover-bg)";
+                            e.currentTarget.style.color =
+                              "var(--color-sidebar-text-hover)";
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!active) {
+                            e.currentTarget.style.backgroundColor = "transparent";
+                            e.currentTarget.style.color = "var(--color-sidebar-text)";
+                          }
+                        }}
                       >
                         <Icon className="mr-3 h-4 w-4" />
                         {t(`nav.${item.labelKey}`)}
@@ -129,10 +166,22 @@ export function SidebarContent({ locale, onNavigate }: SidebarContentProps) {
       </nav>
 
       {/* Footer */}
-      <div className="border-t border-surface-variant/20 p-3">
+      <div
+        className="border-t p-3"
+        style={{ borderColor: "var(--color-sidebar-divider)" }}
+      >
         <Link
           href={`/${locale}`}
-          className="flex items-center rounded-lg px-4 py-2 text-xs font-semibold uppercase tracking-wider text-surface-variant hover:bg-primary/10 hover:text-primary-fixed"
+          className="flex items-center rounded-lg px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors"
+          style={{ color: "var(--color-sidebar-text)" }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "var(--color-sidebar-hover-bg)";
+            e.currentTarget.style.color = "var(--color-sidebar-text-hover)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.color = "var(--color-sidebar-text)";
+          }}
         >
           <LifeBuoy className="mr-3 h-4 w-4" />
           {t("help")}
