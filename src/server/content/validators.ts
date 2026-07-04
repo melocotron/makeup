@@ -41,8 +41,11 @@ export const carouselSlideSchema = z.object({
     .string()
     .trim()
     .refine(
-      (v) => v === "" || /^https?:\/\/.+/.test(v),
-      { message: "Debe ser una URL válida o estar vacío" },
+      (v) =>
+        v === "" ||
+        /^https?:\/\/.+/.test(v) ||
+        /^\/(es|en)\//.test(v),
+      { message: "Debe ser URL absoluta (http/https) o path interno (/es/...)" },
     )
     .optional()
     .or(z.literal("")),
