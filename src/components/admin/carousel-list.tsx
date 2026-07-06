@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { useTranslations } from "next-intl";
 
 import { SlideFormDialog } from "./carousel-form-dialog";
-import { deleteSlideAction, toggleSlideActiveAction } from "@/server/content/carousel";
+import { deleteSlideAction, toggleSlideActiveAction } from "@/server/content/carousel.actions";
 
 export interface CarouselSlide {
   id: string;

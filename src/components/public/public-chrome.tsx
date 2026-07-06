@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/theme/language-switcher";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { type Locale } from "@/i18n/routing";
+import { PublicNav } from "./public-nav";
 
 export function PublicHeader({ locale }: { locale: Locale }) {
   const t = useTranslations("nav");
@@ -46,8 +47,12 @@ export function PublicHeader({ locale }: { locale: Locale }) {
         </div>
 
         <div className="flex items-center gap-3 md:gap-4">
-          <LanguageSwitcher />
-          <ThemeToggle />
+          <div className="hidden md:block">
+            <LanguageSwitcher />
+          </div>
+          <div className="hidden md:block">
+            <ThemeToggle />
+          </div>
           <a
             href={`/${locale}/admin/login`}
             className="hidden text-xs font-semibold uppercase tracking-widest text-on-surface-variant transition-colors hover:text-primary md:inline"
@@ -56,10 +61,11 @@ export function PublicHeader({ locale }: { locale: Locale }) {
           </a>
           <a
             href={`/${locale}#booking`}
-            className="bg-primary px-4 py-2 text-xs font-semibold uppercase tracking-widest text-on-primary transition-opacity hover:opacity-90 md:px-6"
+            className="hidden bg-primary px-4 py-2 text-xs font-semibold uppercase tracking-widest text-on-primary transition-opacity hover:opacity-90 md:inline-block md:px-6"
           >
             {t("bookNow")}
           </a>
+          <PublicNav locale={locale} />
         </div>
       </nav>
     </header>

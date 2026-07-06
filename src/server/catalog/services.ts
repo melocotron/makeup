@@ -134,6 +134,36 @@ export async function deleteServiceAction(id: string) {
   if (!session?.user) return { success: false as const, error: "No autenticado" };
 
   try {
+    const [packageUsages, appointmentCount] = await Promise.all([
+      prisma.packageItem.findMany({
+        where: { serviceId: id },
+        select: { package: { select: { name: true } } },
+      }),
+      prisma.appointment.count({ where: { serviceId: id } }),
+    ]);
+
+    if (packageUsages.length > 0 || appointmentCount > 0) {
+      const parts: string[] = [];
+      if (packageUsages.length > 0) {
+        const names = packageUsages
+          .map((p) => {
+            const n = p.package.name as Record<string, string> | null;
+            return n?.es ?? n?.en ?? "(sin nombre)";
+          })
+          .slice(0, 3);
+        const more =
+          packageUsages.length > 3 ? ` y ${packageUsages.length - 3} más` : "";
+        parts.push(`paquete(s): ${names.join(", ")}${more}`);
+      }
+      if (appointmentCount > 0) {
+        parts.push(`${appointmentCount} cita(s)`);
+      }
+      return {
+        success: false as const,
+        error: `En uso por ${parts.join(" y ")}. Quítalo primero.`,
+      };
+    }
+
     await prisma.service.delete({ where: { id } });
     revalidatePath("/[locale]/admin/services", "page");
     return { success: true as const };

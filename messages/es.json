@@ -343,5 +343,34 @@
     "confirm": "Confirmar reserva",
     "success": "¡Reserva confirmada!",
     "successMessage": "Te enviamos un correo con los detalles de tu cita."
+  },
+  "public": {
+    "services": {
+      "from": "Desde",
+      "duration": "{min} min",
+      "includes": "Incluye",
+      "viewDetails": "Ver detalles",
+      "extrasCount": "+ {count} extras",
+      "emptyTitle": "Pronto publicaremos nuestros servicios."
+    },
+    "packages": {
+      "includes": "Incluye",
+      "totalPrice": "Precio total",
+      "itemsCount": "{count} servicios",
+      "viewDetails": "Ver detalles",
+      "emptyTitle": "Pronto publicaremos paquetes especiales."
+    },
+    "about": {
+      "title": "La Artista Detrás del Brillo",
+      "emptyBio": "Pronto compartiremos más sobre mí."
+    },
+    "maintenance": {
+      "title": "Sitio en mantenimiento",
+      "subtitle": "Estamos trabajando para ti"
+    },
+    "common": {
+      "menu": "Menú",
+      "close": "Cerrar"
+    }
   }
 }

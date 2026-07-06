@@ -1,6 +1,20 @@
+import { Package as PackageIcon, Scissors } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 
+import { AboutSection, type PublicAboutData } from "@/components/public/about-section";
+import { EmptyState } from "@/components/public/empty-state";
+import {
+  PackageCard,
+  type PublicPackageCardData,
+} from "@/components/public/package-card";
+import {
+  ServiceCard,
+  type PublicServiceCardData,
+} from "@/components/public/service-card";
+import { listPackages } from "@/server/catalog/queries";
+import { listServices } from "@/server/catalog/queries";
+import { getAboutContent } from "@/server/content/profile.queries";
 import { routing, type Locale } from "@/i18n/routing";
 
 export default async function HomePage({
@@ -14,10 +28,33 @@ export default async function HomePage({
   }
   setRequestLocale(locale as Locale);
 
-  return <HomeContent />;
+  const [services, packages, about] = await Promise.all([
+    listServices(),
+    listPackages(),
+    getAboutContent(),
+  ]);
+
+  return (
+    <HomeContent
+      locale={locale}
+      services={services as unknown as PublicServiceCardData[]}
+      packages={packages as unknown as PublicPackageCardData[]}
+      about={about as unknown as PublicAboutData}
+    />
+  );
 }
 
-function HomeContent() {
+function HomeContent({
+  locale,
+  services,
+  packages,
+  about,
+}: {
+  locale: string;
+  services: PublicServiceCardData[];
+  packages: PublicPackageCardData[];
+  about: PublicAboutData;
+}) {
   const t = useTranslations("home");
 
   return (
@@ -45,41 +82,77 @@ function HomeContent() {
         </div>
       </section>
 
-      {/* Services placeholder */}
-      <section id="services" className="mx-auto max-w-[1440px] px-4 py-20 md:px-16 md:py-24">
-        <h2 className="font-serif-display mb-4 text-4xl text-on-surface md:text-5xl">
-          {t("servicesTitle")}
-        </h2>
-        <p className="max-w-xl text-base text-on-surface-variant md:text-lg">
-          {t("servicesSubtitle")}
-        </p>
-        <div className="mt-12 rounded-xl border border-outline-variant bg-surface-container-lowest p-8 text-on-surface-variant">
-          <p className="text-sm">
-            ✨ Servicios reales se renderizarán aquí en la Fase 4 (catálogo desde el admin).
+      {/* Servicios */}
+      <section
+        id="services"
+        className="mx-auto max-w-[1440px] px-4 py-20 md:px-16 md:py-24"
+      >
+        <div className="mb-12">
+          <h2 className="font-serif-display mb-4 text-4xl text-on-surface md:text-5xl">
+            {t("servicesTitle")}
+          </h2>
+          <p className="max-w-xl text-base text-on-surface-variant md:text-lg">
+            {t("servicesSubtitle")}
           </p>
         </div>
+        {services.length === 0 ? (
+          <EmptyState
+            namespace="services"
+            messageKey="emptyTitle"
+            icon={<Scissors className="h-12 w-12" />}
+          />
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {services.map((service) => (
+              <ServiceCard
+                key={service.id}
+                service={service}
+                locale={locale}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
-      {/* Packages placeholder */}
-      <section id="packages" className="bg-surface-container-lowest px-4 py-20 md:px-16 md:py-24">
+      {/* Paquetes */}
+      <section
+        id="packages"
+        className="bg-surface-container-lowest px-4 py-20 md:px-16 md:py-24"
+      >
         <div className="mx-auto max-w-[1440px]">
-          <h2 className="font-serif-display mb-4 text-center text-4xl text-on-surface md:text-5xl">
-            {t("packagesTitle")}
-          </h2>
-          <p className="text-center text-on-surface-variant">{t("packagesSubtitle")}</p>
+          <div className="mb-12 text-center">
+            <h2 className="font-serif-display mb-4 text-4xl text-on-surface md:text-5xl">
+              {t("packagesTitle")}
+            </h2>
+            <p className="text-on-surface-variant">{t("packagesSubtitle")}</p>
+          </div>
+          {packages.length === 0 ? (
+            <EmptyState
+              namespace="packages"
+              messageKey="emptyTitle"
+              icon={<PackageIcon className="h-12 w-12" />}
+            />
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {packages.map((pkg) => (
+                <PackageCard key={pkg.id} pkg={pkg} locale={locale} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* About placeholder */}
-      <section id="about" className="px-4 py-20 md:px-16 md:py-24">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="font-serif-display mb-8 text-4xl text-on-surface md:text-5xl">
-            {t("aboutTitle")}
-          </h2>
-          <p className="leading-relaxed text-on-surface-variant">
-            Con más de una década de experiencia en dermocosmética y maquillaje artístico, me dedico a realzar tu belleza natural.
-          </p>
-        </div>
+      {/* Sobre mí */}
+      <AboutSection about={about} locale={locale} />
+
+      {/* Booking anchor target (placeholder) */}
+      <section
+        id="booking"
+        className="bg-surface-container-low py-20 text-center md:py-24"
+      >
+        <p className="text-sm text-on-surface-variant">
+          ✨ El sistema de reservas llega en la siguiente fase.
+        </p>
       </section>
     </>
   );

@@ -1,7 +1,8 @@
-import { setRequestLocale } from "next-intl/server";
+import { redirect } from "next/navigation";
 
 import { PublicFooter, PublicHeader } from "@/components/public/public-chrome";
-import { routing, type Locale } from "@/i18n/routing";
+import { getSettings } from "@/server/system/queries";
+import { type Locale, routing } from "@/i18n/routing";
 
 export default async function PublicLayout({
   children,
@@ -16,10 +17,14 @@ export default async function PublicLayout({
     return null;
   }
 
-  setRequestLocale(locale as Locale);
+  const settings = await getSettings();
+
+  if (settings.maintenanceMode) {
+    redirect(`/${locale}/maintenance`);
+  }
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background text-on-background">
       <PublicHeader locale={locale as Locale} />
       <main className="flex-1 pt-20">{children}</main>
       <PublicFooter />

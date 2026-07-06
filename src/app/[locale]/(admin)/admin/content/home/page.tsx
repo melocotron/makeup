@@ -3,7 +3,7 @@ import { setRequestLocale } from "next-intl/server";
 
 import { CarouselList, type CarouselSlide } from "@/components/admin/carousel-list";
 import { PageHeader } from "@/components/admin/page-header";
-import { listCarouselSlides } from "@/server/content/carousel";
+import { listCarouselSlides } from "@/server/content/carousel.queries";
 
 export default async function HomeCarouselPage({
   params,

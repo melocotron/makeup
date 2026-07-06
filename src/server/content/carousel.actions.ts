@@ -6,16 +6,6 @@ import { auth } from "@/server/auth";
 import { prisma } from "@/lib/prisma";
 import { carouselSlideSchema, type CarouselSlideFormData } from "./validators";
 
-export async function listCarouselSlides() {
-  return prisma.homeCarousel.findMany({
-    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
-  });
-}
-
-export async function getCarouselSlideById(id: string) {
-  return prisma.homeCarousel.findUnique({ where: { id } });
-}
-
 export async function createSlideAction(formData: FormData) {
   const session = await auth();
   if (!session?.user) {
@@ -53,7 +43,7 @@ export async function createSlideAction(formData: FormData) {
       },
     });
     revalidatePath("/[locale]/admin/content/home", "page");
-    revalidatePath("/[locale]", "page"); // también el home público
+    revalidatePath("/[locale]", "page");
     return { success: true as const, id: slide.id };
   } catch (err) {
     return {

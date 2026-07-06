@@ -342,6 +342,35 @@
     "yourData": "Your details",
     "confirm": "Confirm booking",
     "success": "Booking confirmed!",
-    "successMessage": "We sent you an email with the appointment details."
+    "successMessage": "We've sent you an email with the appointment details."
+  },
+  "public": {
+    "services": {
+      "from": "From",
+      "duration": "{min} min",
+      "includes": "Includes",
+      "viewDetails": "View details",
+      "extrasCount": "+ {count} extras",
+      "emptyTitle": "We'll publish our services soon."
+    },
+    "packages": {
+      "includes": "Includes",
+      "totalPrice": "Total price",
+      "itemsCount": "{count} services",
+      "viewDetails": "View details",
+      "emptyTitle": "Special packages coming soon."
+    },
+    "about": {
+      "title": "The Artist Behind the Glow",
+      "emptyBio": "We'll share more about me soon."
+    },
+    "maintenance": {
+      "title": "Site under maintenance",
+      "subtitle": "We're working for you"
+    },
+    "common": {
+      "menu": "Menu",
+      "close": "Close"
+    }
   }
 }

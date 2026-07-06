@@ -23,7 +23,7 @@ import { Switch } from "@/components/ui/switch";
 import {
   createSlideAction,
   updateSlideAction,
-} from "@/server/content/carousel";
+} from "@/server/content/carousel.actions";
 import { carouselSlideSchema, type CarouselSlideFormData } from "@/server/content/validators";
 
 interface SlideFormDialogProps {
