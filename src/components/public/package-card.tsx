@@ -34,6 +34,12 @@ export function PackageCard({
   const t = useTranslations("public.packages");
   const name = pickLocalized(pkg.name, locale);
   const description = pickLocalized(pkg.description, locale);
+  const MAX_VISIBLE_ITEMS = 5;
+  const visibleItems = pkg.items.slice(0, MAX_VISIBLE_ITEMS);
+  const hiddenCount = Math.max(0, pkg.items.length - MAX_VISIBLE_ITEMS);
+  // TODO(Fase 7): when package detail page ships, convert "+N más" <li> below
+  // into a <Link> pointing to `/${locale}/paquetes/${pkg.slug or id}` so users
+  // can see the full items list. Spec change 006 keeps detail pages out of scope.
 
   return (
     <article className="group flex flex-col overflow-hidden rounded-xl border border-outline-variant bg-surface-container-lowest transition-shadow hover:shadow-[var(--shadow-level-2)]">
@@ -68,7 +74,7 @@ export function PackageCard({
             {t("includes")}
           </p>
           <ul className="space-y-1 text-sm text-on-surface-variant">
-            {pkg.items.map((item) => {
+            {visibleItems.map((item) => {
               const itemName = pickLocalized(item.service.name, locale);
               return (
                 <li key={item.id} className="flex items-baseline gap-2">
@@ -79,6 +85,14 @@ export function PackageCard({
                 </li>
               );
             })}
+            {hiddenCount > 0 && (
+              <li
+                className="text-xs italic text-on-surface-variant"
+                title={t("moreItemsHint")}
+              >
+                {t("moreItems", { count: hiddenCount })}
+              </li>
+            )}
           </ul>
         </div>
 

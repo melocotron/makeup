@@ -357,6 +357,8 @@
       "includes": "Includes",
       "totalPrice": "Total price",
       "itemsCount": "{count} services",
+      "moreItems": "+ {count} more",
+      "moreItemsHint": "Package detail view coming soon",
       "viewDetails": "View details",
       "emptyTitle": "Special packages coming soon."
     },
