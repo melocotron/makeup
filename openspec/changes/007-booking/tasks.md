@@ -7,35 +7,42 @@
 
 ## Backend — Lógica pura
 
-- [ ] `src/server/booking/scheduling.ts`:
-  - [ ] `getAvailableSlots(targetDate, serviceId): Slot[]`
-  - [ ] `isSlotAvailable(scheduledAt, durationMin, excludeId?): boolean`
-  - [ ] `doIntervalsOverlap(aStart, aEnd, bStart, bEnd): boolean`
-  - [ ] `generateSlotsForDay(schedule, exceptions, existingAppts, durationMin, fromTime): Slot[]`
+- [x] `src/server/booking/scheduling.ts`:
+  - [x] `doIntervalsOverlap(aStart, aEnd, bStart, bEnd): boolean`
+  - [x] `timeStringToDate(date, time): Date`
+  - [x] `formatTime(date): string`
+  - [x] `getLocalDayOfWeek(date): number`
+  - [x] `isSameLocalDay(target, reference): boolean`
+  - [x] `generateSlotsForDay(args): Slot[]`
+  - [x] `isSlotAvailable(args): boolean`
+- [x] `getAvailableSlots(targetDate, serviceId): Slot[]` (en `queries.ts`)
 
 ## Backend — Prisma layer
 
-- [ ] `src/server/booking/queries.ts`:
-  - [ ] `listSchedules()`
-  - [ ] `getScheduleByDay(dayOfWeek)`
-  - [ ] `listScheduleExceptions(from?, to?)`
-  - [ ] `listAppointments({ status?, from?, to? })`
-  - [ ] `getAppointmentById(id)`
-  - [ ] `getAppointmentsForDate(date)`
+- [x] `src/server/booking/queries.ts`:
+  - [x] `listSchedules()`
+  - [x] `getScheduleByDay(dayOfWeek)`
+  - [x] `listScheduleExceptions(from?, to?)`
+  - [x] `getScheduleExceptionByDate(date)`
+  - [x] `listAppointments({ status?, from?, to? })`
+  - [x] `getAppointmentById(id)`
+  - [x] `getAppointmentsForDate(date)`
+  - [x] `getAvailableSlots(targetDate, serviceId)` (orchestrator)
 
-- [ ] `src/server/booking/validators.ts`:
-  - [ ] `createAppointmentSchema` (Zod)
-  - [ ] `scheduleSchema`
-  - [ ] `scheduleExceptionSchema`
-  - [ ] `updateStatusSchema`
+- [x] `src/server/booking/validators.ts`:
+  - [x] `createAppointmentSchema` (Zod)
+  - [x] `updateAppointmentStatusSchema`
+  - [x] `updateAppointmentSchema`
+  - [x] `scheduleSchema`
+  - [x] `scheduleExceptionSchema`
 
-- [ ] `src/server/booking/services.ts`:
-  - [ ] `createAppointment(input)` — con validación de slot en transacción
-  - [ ] `updateAppointmentStatus(id, status, cancelReason?)`
-  - [ ] `upsertSchedule(input)`
-  - [ ] `deleteSchedule(id)`
-  - [ ] `createScheduleException(input)`
-  - [ ] `deleteScheduleException(id)`
+- [x] `src/server/booking/services.ts`:
+  - [x] `createAppointment(input)` — con validación de slot en transacción
+  - [x] `updateAppointmentStatus(input)`
+  - [x] `upsertSchedule(input)`
+  - [x] `deleteSchedule(dayOfWeek)`
+  - [x] `upsertScheduleException(input)`
+  - [x] `deleteScheduleException(dateStr)`
 
 - [ ] `src/server/booking/actions.ts` — Server Actions re-exportando services con `revalidatePath`
 
