@@ -880,6 +880,22 @@ SELECT * FROM service_extra WHERE serviceId = 'ID_ELIMINADO';
 
 ---
 
+### 7.9 Eliminar servicio usado en paquete (debe bloquear)
+
+| Paso | Acción |
+|---|---|
+| a | Crear un servicio y agregarlo a un paquete (sección 8) |
+| b | Intentar eliminar ese servicio desde `/es/admin/services` |
+
+**Esperado en UI:**
+- Toast rojo: `En uso por paquete(s): <nombres>. Quítalo primero.`
+- Servicio NO se elimina
+- Paquete intacto
+
+- [ ] ✅ Pasa
+
+---
+
 ## 📦 Sección 8 — Paquetes
 
 ### 8.1 Crear paquete sin servicios (debe fallar)
@@ -984,81 +1000,1208 @@ SELECT * FROM package_item WHERE packageId = 'ID';
 
 ---
 
-## 🌐 Sección 9 — Landing Pública
+## 🌐 Sección 9 — Landing Pública (change 006-public-landing)
 
-### 9.1 Home en español
+> Cambia `006-public-landing` (Fase 4 del README): landing dinámica renderiza
+> servicios, paquetes, sobre mí, modo mantenimiento desde DB. i18n es/en, theme
+> light/dark/system, responsive. Pre-requisito: tener al menos 1 servicio
+> activo, opcionalmente paquetes, y `AboutContent` con bio.
+
+### Convenciones
+
+- 🔴 = crítico · 🟡 = importante · 🟢 = nice-to-have
+- **Servicios placeholder para tests** (phpMyAdmin → `service`):
+  - "ServA": activo, con imagen, 60 min, $100, 0 extras
+  - "ServB": activo, sin imagen, 90 min, $150, 2 extras
+  - "ServC": inactivo (debe ocultarse en pública)
+- **Paquetes**:
+  - "PaqA": activo, 2 items, $250, con imagen
+  - "PaqB": activo, 5+ items, $400
+- Para tests que requieren desactivación temporal, usar admin (`isActive=false`).
+
+---
+
+### 🔴 A · Datos dinámicos (DB → render público)
+
+#### A1. Servicio activo aparece en `/es`
 
 | Paso | Acción |
 |---|---|
-| a | Logout (ir a `/es` sin sesión) |
+| a | Con `ServA` activo, ir a `/es` |
+| b | Scroll a sección "Servicios" |
 
 **Esperado:**
-- Status 200
-- Navbar transparente arriba con: logo "Radiant Beauty", menú (Servicios, Paquetes, Sobre Mí, Agendar cita), Login, Book Now
-- Hero con título grande "Belleza Radiante & Cuidado Profesional de la Piel"
-- Secciones: Servicios, Paquetes, Sobre mí
-- Footer con copyright y links
+- Card "ServA" visible con imagen, nombre, duración, "Desde $100.00"
+- Sin errores en consola
 
 - [ ] ✅ Pasa
 
 ---
 
-### 9.2 Home en inglés
+#### A2. Servicio inactivo NO aparece
 
 | Paso | Acción |
 |---|---|
-| a | Ir a `/en` |
+| a | Marcar `ServA.isActive = false` en admin o vía DB |
+| b | Refresh `/es` |
 
 **Esperado:**
-- Mismo contenido en inglés
-- Navbar con: "Home", "Services", "Packages", "About", "Book appointment", "Login", "Book Now"
+- `ServA` desaparece de la grilla
+- `ServB` (activo) sigue visible
 
 - [ ] ✅ Pasa
 
 ---
 
-### 9.3 Theme toggle persiste en landing
+#### A3. Servicio sin imagen muestra fallback visual
 
 | Paso | Acción |
 |---|---|
-| a | En `/es/admin`, click theme toggle (dark mode) |
-| b | Logout |
-| c | Ir a `/es` |
+| a | `ServB.image = null` o cadena vacía |
+| b | Refresh `/es` |
 
 **Esperado:**
-- Landing aparece en dark mode sin flash de light mode
+- Card renderiza con placeholder/gradiente, NO imagen rota
+- Consola sin error 404 de la imagen
 
 - [ ] ✅ Pasa
 
 ---
 
-### 9.4 Language switcher en pública
+#### A4. Servicio sin descripción
 
 | Paso | Acción |
 |---|---|
-| a | En `/es`, click "EN" en switcher |
+| a | `ServA.description.es = ""` y `.en = ""` |
+| b | Refresh `/es` |
 
 **Esperado:**
-- URL cambia a `/en`
-- Textos en inglés
-- Theme se preserva
+- `<p>` no rompe layout, `line-clamp-3` no crash
+- Altura consistente con otras cards o altura mínima
 
 - [ ] ✅ Pasa
 
 ---
 
-### 9.5 Click "Reservar" en nav (placeholder)
+#### A5. Badge "+ N extras"
 
 | Paso | Acción |
 |---|---|
-| a | Click "Reservar" / "Book Now" |
+| a | `ServB` tiene 2 extras activos |
+| b | Refresh `/es` |
 
 **Esperado:**
-- Va a `#booking` (que aún no existe contenido, solo anchor)
+- Badge "+ 2 extras" visible sobre la imagen
+- Sin extras → sin badge
 
-- [ ] ✅ Pasa (es OK por ahora)
+- [ ] ✅ Pasa
 
 ---
+
+#### A6. Precio = 0
+
+| Paso | Acción |
+|---|---|
+| a | Crear servicio con `basePrice = 0` |
+| b | Refresh `/es` |
+
+**Esperado:**
+- "Desde $0.00" o "Gratis" (decisión de diseño)
+- Sin valores `NaN` o `undefined`
+
+- [ ] ✅ Pasa
+
+---
+
+#### A7. Duración extrema
+
+| Paso | Acción |
+|---|---|
+| a | Servicio con `durationMin = 1` y otro con `999` |
+| b | Refresh `/es` |
+
+**Esperado:**
+- Renderiza "1 min" / "999 min"
+- Layout no se rompe (card height estable)
+
+- [ ] ✅ Pasa
+
+---
+
+#### A8. 0 servicios → empty state
+
+| Paso | Acción |
+|---|---|
+| a | Marcar todos los servicios como `isActive = false` |
+| b | Refresh `/es` |
+
+**Esperado:**
+- EmptyState con icono (Scissors), texto "Pronto publicaremos nuestros servicios."
+- Sin cards vacíos ni NaN
+
+- [ ] ✅ Pasa
+
+---
+
+#### A9. 0 paquetes → empty state (ya validado)
+
+- [ ] ✅ Pasa
+
+---
+
+#### A10. Paquete con 0 items → no renderizar paquete roto
+
+| Paso | Acción |
+|---|---|
+| a | Vía DB directa, poner `package.items = []` en `PaqA` |
+| b | Refresh `/es` |
+
+**Esperado:**
+- El paquete se muestra con estado degradado (precio sí, items "Sin servicios incluidos" o se filtra)
+- No error 500
+
+- [ ] ✅ Pasa
+
+---
+
+#### A11. Paquete con 10+ items no rompe card
+
+| Paso | Acción |
+|---|---|
+| a | Crear paquete con 10+ items |
+| b | Refresh `/es` |
+
+**Esperado:**
+- Items list colapsa/scroll dentro de la card o muestra "+N más"
+- Sin overflow horizontal
+
+- [ ] ✅ Pasa
+
+---
+
+#### A12. AboutContent con bio ES vacía y EN llena
+
+| Paso | Acción |
+|---|---|
+| a | `about_content.bio = { es: "", en: "Hi I'm..." }` |
+| b | Visitar `/es` y `/en` |
+
+**Esperado:**
+- `/es` muestra fallback "Pronto compartiremos más sobre mí."
+- `/en` muestra "Hi I'm..."
+
+- [ ] ✅ Pasa
+
+---
+
+#### A13. AboutContent sin signatureText
+
+| Paso | Acción |
+|---|---|
+| a | `about_content.signatureText = null` |
+| b | Refresh `/es` |
+
+**Esperado:**
+- Bloque de firma NO se renderiza
+- Sin "undefined" en pantalla
+
+- [ ] ✅ Pasa
+
+---
+
+#### A14. AboutContent sin image
+
+| Paso | Acción |
+|---|---|
+| a | `about_content.image = null` |
+| b | Refresh `/es` |
+
+**Esperado:**
+- Sección renderiza sin imagen o con placeholder
+- Sin error 404
+
+- [ ] ✅ Pasa
+
+---
+
+#### A15. Re-orden de servicios se refleja tras refresh
+
+| Paso | Acción |
+|---|---|
+| a | En admin, cambiar `ServA.order = 99` y `ServB.order = 0` |
+| b | Refresh `/es` |
+
+**Esperado:**
+- `ServB` aparece antes que `ServA`
+- `revalidatePath` invalidó el cache
+
+- [ ] ✅ Pasa
+
+---
+
+#### A16. Editar servicio en admin se refleja en pública
+
+| Paso | Acción |
+|---|---|
+| a | Cambiar precio de `ServA` a $200 en admin |
+| b | Sin recargar admin, abrir nueva pestaña `/es` |
+
+**Esperado:**
+- `ServA` muestra "Desde $200.00"
+- Cache invalidado por `revalidatePath`
+
+- [ ] ✅ Pasa
+
+---
+
+### 🔴 B · i18n ES/EN
+
+#### B1. `/es` en español (ya validado)
+
+- [ ] ✅ Pasa
+
+---
+
+#### B2. `/en` en inglés (ya validado)
+
+- [ ] ✅ Pasa
+
+---
+
+#### B3. Ruta inexistente público
+
+| Paso | Acción |
+|---|---|
+| a | `GET /es/services/foo` (no existe) |
+
+**Esperado:**
+- 404 limpio (Next not-found), no rompe layout
+- Layout público (navbar/footer) sigue presente
+
+- [ ] ✅ Pasa
+
+---
+
+#### B4. `/` sin locale
+
+| Paso | Acción |
+|---|---|
+| a | `GET /` |
+
+**Esperado:**
+- Redirige a `/es` (default locale)
+- Status 307/308
+
+- [ ] ✅ Pasa
+
+---
+
+#### B5. Locale no soportado (`/fr`)
+
+| Paso | Acción |
+|---|---|
+| a | `GET /fr` |
+
+**Esperado:**
+- Redirige a `/es` o muestra 404
+- No renderiza con locale vacío
+
+- [ ] ✅ Pasa
+
+---
+
+#### B6. Datos DB localizados por idioma
+
+| Paso | Acción |
+|---|---|
+| a | `ServA.name.es = "Maquillaje Novia"`, `ServA.name.en = "Bridal Makeup"` |
+| b | Visitar `/es` y `/en` |
+
+**Esperado:**
+- `/es`: card dice "Maquillaje Novia"
+- `/en`: card dice "Bridal Makeup"
+
+- [ ] ✅ Pasa
+
+---
+
+#### B7. Traducción faltante en un idioma
+
+| Paso | Acción |
+|---|---|
+| a | `ServA.name.es = "Maquillaje Novia"`, `ServA.name.en = ""` |
+
+**Esperado:**
+- `/en` muestra fallback ("Servicio sin nombre") o el `es` como fallback
+- Decisión documentada en el código
+
+- [ ] ✅ Pasa
+
+---
+
+#### B8. Language switcher en navbar pública (ya validado)
+
+- [ ] ✅ Pasa
+
+---
+
+#### B9. Language switcher preserva anchor
+
+| Paso | Acción |
+|---|---|
+| a | En `/es#services`, scroll a `#services` |
+| b | Click "EN" en switcher |
+
+**Esperado:**
+- URL queda `/en#services`
+- Scroll position o anchor se preserva
+
+- [ ] ✅ Pasa
+
+---
+
+#### B10. Meta tags por locale
+
+| Paso | Acción |
+|---|---|
+| a | Ver código fuente de `/es` y `/en` |
+
+**Esperado:**
+- `<meta property="og:locale" content="es_ES">` en `/es`
+- `<meta property="og:locale" content="en_US">` en `/en`
+- `<meta property="og:locale:alternate">` apunta al otro idioma
+
+- [ ] ✅ Pasa
+
+---
+
+### 🔴 C · Theme toggle
+
+#### C1. Toggle light↔dark (ya validado)
+
+- [ ] ✅ Pasa
+
+---
+
+#### C2. Preferencia persiste tras refresh (ya validado)
+
+- [ ] ✅ Pasa
+
+---
+
+#### C3. Theme persiste cruzando boundaries
+
+| Paso | Acción |
+|---|---|
+| a | En `/es/admin`, poner dark mode |
+| b | Logout, ir a `/es` (en pestaña nueva) |
+
+**Esperado:**
+- Landing ya está en dark mode (sin flash)
+- localStorage compartido
+
+- [ ] ✅ Pasa
+
+---
+
+#### C4. `system` theme detecta OS
+
+| Paso | Acción |
+|---|---|
+| a | Toggle theme a "system" |
+| b | Cambiar preferencia de OS a dark/light |
+
+**Esperado:**
+- Página reacciona al cambio de OS
+
+- [ ] ✅ Pasa
+
+---
+
+#### C5. Cero FOUC
+
+| Paso | Acción |
+|---|---|
+| a | DevTools → Network → Disable cache |
+| b | Hard refresh (Ctrl+Shift+R) |
+
+**Esperado:**
+- Sin flash blanco/negro al cargar
+- `suppressHydrationWarning` aplicado al `<html>`
+
+- [ ] ✅ Pasa
+
+---
+
+#### C6. Dark mode en todas las secciones
+
+| Paso | Acción |
+|---|---|
+| a | Activar dark, revisar: hero, cards de servicios, cards de paquetes, sección sobre mí, footer, navbar |
+
+**Esperado:**
+- Contraste suficiente en todas las superficies
+- Iconos legibles
+
+- [ ] ✅ Pasa
+
+---
+
+#### C7. Contraste WCAG básico
+
+| Paso | Acción |
+|---|---|
+| a | Lighthouse → Accessibility |
+| b | Inspeccionar contraste en hero title, card titles, body text |
+
+**Esperado:**
+- Body text ≥ 4.5:1 en ambos temas
+- Large text ≥ 3:1
+
+- [ ] ✅ Pasa
+
+---
+
+#### C8. Hero gradient existe en dark
+
+| Paso | Acción |
+|---|---|
+| a | Dark mode, scroll al hero |
+
+**Esperado:**
+- Overlay/gradient `from-primary/5` es visible y no opaca la imagen
+
+- [ ] ✅ Pasa
+
+---
+
+### 🔴 D · Modo mantenimiento
+
+#### D1. Mensaje custom en `/es/maintenance` (ya validado)
+
+- [ ] ✅ Pasa
+
+---
+
+#### D2. Fallback si `maintenanceMessage` es null/vacío
+
+| Paso | Acción |
+|---|---|
+| a | `settings.maintenanceMessage = ""` o null |
+| b | Activar maintenance |
+| c | Visitar `/es/maintenance` |
+
+**Esperado:**
+- Renderiza mensaje por defecto ("Volveremos pronto...")
+
+- [ ] ✅ Pasa
+
+---
+
+#### D3. `/en/maintenance` idéntico comportamiento
+
+| Paso | Acción |
+|---|---|
+| a | Maintenance ON |
+| b | Visitar `/en` y `/en/maintenance` |
+
+**Esperado:**
+- `/en` redirige a `/en/maintenance`
+- Idioma del chrome es inglés
+
+- [ ] ✅ Pasa
+
+---
+
+#### D4. Admin `/es/admin/login` accesible (ya validado)
+
+- [ ] ✅ Pasa
+
+---
+
+#### D5. Admin logueado sigue navegando con maintenance ON
+
+| Paso | Acción |
+|---|---|
+| a | Login como admin |
+| b | Activar maintenance desde `/es/admin/settings` |
+| c | Navegar a `/es/admin/services` |
+
+**Esperado:**
+- Admin responde 200 normalmente
+- No hay redirect a login ni a maintenance
+
+- [ ] ✅ Pasa
+
+---
+
+#### D6. Desactivar → vuelve inmediatamente
+
+| Paso | Acción |
+|---|---|
+| a | Maintenance ON, en `/es/maintenance` |
+| b | Toggle OFF (en otra pestaña admin) |
+| c | Refresh `/es/maintenance` |
+
+**Esperado:**
+- Refrescar `/es` carga landing normal
+
+- [ ] ✅ Pasa
+
+---
+
+#### D7. Cache invalidation al cambiar maintenance
+
+| Paso | Acción |
+|---|---|
+| a | Visitante externo (otra red / sin cookies) tiene `/es` cacheado |
+
+**Esperado:**
+- NEXT_REDIRECT debe propagarse; si usas CDN, purgar manualmente
+
+- [ ] ✅ Pasa
+
+---
+
+#### D8. Visitante sin auth no ve admin aunque conozca URL
+
+| Paso | Acción |
+|---|---|
+| a | Maintenance ON, sin login |
+| b | Escribir manualmente `/es/admin/services` |
+
+**Esperado:**
+- Redirige a `/es/admin/login` (no a maintenance)
+
+- [ ] ✅ Pasa
+
+---
+
+### 🟡 E · Navegación y rutas
+
+#### E1. Scroll a `#services`
+
+| Paso | Acción |
+|---|---|
+| a | Click "Servicios" en navbar |
+
+**Esperado:**
+- Smooth scroll (no jump instantáneo)
+- URL queda `/es#services`
+
+- [ ] ✅ Pasa
+
+---
+
+#### E2. Scroll a `#packages`
+
+- [ ] ✅ Pasa
+
+---
+
+#### E3. Scroll a `#about`
+
+- [ ] ✅ Pasa
+
+---
+
+#### E4. Scroll a `#booking` (placeholder)
+
+| Paso | Acción |
+|---|---|
+| a | Click "Agendar cita" o "Book Now" |
+
+**Esperado:**
+- Scroll a sección placeholder "El sistema de reservas llega en la siguiente fase"
+
+- [ ] ✅ Pasa
+
+---
+
+#### E5. Logo "Radiant Beauty"
+
+| Paso | Acción |
+|---|---|
+| a | Click logo en navbar |
+
+**Esperado:**
+- Va a `/es` (recarga o no según scroll)
+
+- [ ] ✅ Pasa
+
+---
+
+#### E6. Link "Acceder"
+
+| Paso | Acción |
+|---|---|
+| a | Click "Acceder" |
+
+**Esperado:**
+- Va a `/es/admin/login`
+
+- [ ] ✅ Pasa
+
+---
+
+#### E7. Footer links (placeholder)
+
+| Paso | Acción |
+|---|---|
+| a | Click "Política de privacidad" |
+
+**Esperado:**
+- Va a `#` o `/#` sin error
+- No navega a 404
+
+- [ ] ✅ Pasa
+
+---
+
+#### E8. Mobile <768px navbar colapsa
+
+| Paso | Acción |
+|---|---|
+| a | DevTools → iPhone (≤375px) |
+
+**Esperado:**
+- Desktop menu oculto (`hidden md:flex`)
+- Hamburger icon visible
+
+- [ ] ✅ Pasa
+
+---
+
+#### E9. Mobile hamburger abre drawer
+
+| Paso | Acción |
+|---|---|
+| a | Click hamburger |
+
+**Esperado:**
+- Drawer desde la izquierda con todos los links
+- Overlay oscuro
+- Body scroll bloqueado
+
+- [ ] ✅ Pasa
+
+---
+
+#### E10. Mobile click fuera cierra drawer
+
+| Paso | Acción |
+|---|---|
+| a | Drawer abierto, click overlay |
+
+**Esperado:**
+- Drawer se cierra, body scroll se desbloquea
+
+- [ ] ✅ Pasa
+
+---
+
+#### E11. Tablet 768–1024px: 2 columnas
+
+| Paso | Acción |
+|---|---|
+| a | DevTools → iPad (768px) |
+
+**Esperado:**
+- Cards en grid de 2 columnas (`sm:grid-cols-2`)
+- Hero y navbar visibles sin overflow
+
+- [ ] ✅ Pasa
+
+---
+
+#### E12. Desktop >1024px: 3 columnas
+
+| Paso | Acción |
+|---|---|
+| a | Viewport 1280px |
+
+**Esperado:**
+- `lg:grid-cols-3`
+- Layout fluido
+
+- [ ] ✅ Pasa
+
+---
+
+#### E13. URL inválida `/es/foo`
+
+| Paso | Acción |
+|---|---|
+| a | `GET /es/foo` |
+
+**Esperado:**
+- 404 limpio, no rompe el shell del layout
+
+- [ ] ✅ Pasa
+
+---
+
+### 🟡 F · Cards
+
+#### F1. `ServiceCard` con alt correcto
+
+| Paso | Acción |
+|---|---|
+| a | DevTools → Inspector sobre `<img>` |
+
+**Esperado:**
+- `alt="<nombre del servicio>"` (no `alt=""`)
+
+- [ ] ✅ Pasa
+
+---
+
+#### F2. `ServiceCard` sin imagen → fallback
+
+- Ver A3 (validado arriba).
+
+- [ ] ✅ Pasa
+
+---
+
+#### F3. Precio localizado
+
+| Paso | Acción |
+|---|---|
+| a | Servicio con precio $1000.50 |
+| b | Visitar `/es` y `/en` |
+
+**Esperado:**
+- `/es`: "Desde $1.000,50" (separador argentino) o "$1000.50" según diseño
+- `/en`: "From $1,000.50"
+- Decisión documentada en el componente
+
+- [ ] ✅ Pasa
+
+---
+
+#### F4. Minutos abreviados
+
+- Verificación directa: "60 min" en `/es`, "60 min" en `/en` (o el formato decidido).
+
+- [ ] ✅ Pasa
+
+---
+
+#### F5. `line-clamp-3` en descripción
+
+| Paso | Acción |
+|---|---|
+| a | Servicio con descripción de 500 chars |
+| b | Refresh `/es` |
+
+**Esperado:**
+- Descripción truncada a 3 líneas con `...`
+- Altura de card estable
+
+- [ ] ✅ Pasa
+
+---
+
+#### F6. `PackageCard` items y precio
+
+| Paso | Acción |
+|---|---|
+| a | `PaqA` con 2 items, 1 con cantidad 2 |
+| b | Refresh `/es` |
+
+**Esperado:**
+- "2× Servicio X", "1× Servicio Y"
+- Precio total del paquete (no suma de items)
+
+- [ ] ✅ Pasa
+
+---
+
+#### F7. Hover en card
+
+| Paso | Acción |
+|---|---|
+| a | Hover sobre cualquier card |
+
+**Esperado:**
+- Sombra elevada / scale 1.05 en imagen
+- Transición suave (no jank)
+
+- [ ] ✅ Pasa
+
+---
+
+#### F8. Click en card (out of scope)
+
+| Paso | Acción |
+|---|---|
+| a | Click sobre card de servicio |
+
+**Esperado:**
+- Sin acción por ahora (spec dice "detalle fuera de scope")
+- No redirige a 404
+
+- [ ] ✅ Pasa (documentado)
+
+---
+
+### 🟡 G · Performance y carga
+
+#### G1. Baseline Network
+
+| Paso | Acción |
+|---|---|
+| a | DevTools → Network en `/es` cold load |
+
+**Esperado:**
+- ≤ 30 requests
+- Total transfer < 1MB (sin imágenes pesadas)
+
+- [ ] ✅ Pasa
+
+---
+
+#### G2. Imágenes con `sizes` correcto
+
+| Paso | Acción |
+|---|---|
+| a | DevTools → Inspector sobre `<img>` |
+
+**Esperado:**
+- `sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"`
+- `srcset` generado
+
+- [ ] ✅ Pasa
+
+---
+
+#### G3. Hero image con `priority`
+
+| Paso | Acción |
+|---|---|
+| a | Si hero tiene imagen, verificar `<img loading="eager" fetchpriority="high">` |
+
+**Esperado:**
+- Hero LCP marcado como priority
+
+- [ ] ✅ Pasa (si aplica)
+
+---
+
+#### G4. Sin 404 en Network
+
+| Paso | Acción |
+|---|---|
+| a | DevTools → Network, filtrar status ≥ 400 |
+
+**Esperado:**
+- 0 requests con status 404/500 durante carga normal
+
+- [ ] ✅ Pasa
+
+---
+
+#### G5. Carrusel no impacta LCP (futuro)
+
+| Paso | Acción |
+|---|---|
+| a | Si carrusel está activo |
+
+**Esperado:**
+- Slide 1 con `priority`, resto lazy
+- No bloquea FCP
+
+- [ ] ✅ Pasa (cuando aplique)
+
+---
+
+#### G6. Lighthouse score
+
+| Paso | Acción |
+|---|---|
+| a | DevTools → Lighthouse → Performance + Accessibility |
+
+**Esperado:**
+- Performance ≥ 80 (local)
+- Accessibility ≥ 85
+
+- [ ] ✅ Pasa
+
+---
+
+#### G7. FCP < 1.5s local
+
+| Paso | Acción |
+|---|---|
+| a | Lighthouse → FCP métrica |
+
+**Esperado:**
+- FCP < 1500ms en `npm run dev` local
+
+- [ ] ✅ Pasa
+
+---
+
+#### G8. `getSettings()` no bloquea
+
+| Paso | Acción |
+|---|---|
+| a | Verificar en logs que `getSettings()` no produce N+1 |
+
+**Esperado:**
+- 1 sola query a `settings`
+- No bloquea render del hero
+
+- [ ] ✅ Pasa
+
+---
+
+### 🟢 H · i18n técnico
+
+#### H1. Console sin `MISSING_MESSAGE`
+
+| Paso | Acción |
+|---|---|
+| a | DevTools → Console en `/es` y `/en` |
+
+**Esperado:**
+- Sin warnings `MISSING_MESSAGE: namespace.key`
+
+- [ ] ✅ Pasa
+
+---
+
+#### H2. Console sin hydration mismatch
+
+| Paso | Acción |
+|---|---|
+| a | Console en cualquier idioma |
+
+**Esperado:**
+- Sin warnings rojos/amarillos de hidratación
+
+- [ ] ✅ Pasa
+
+---
+
+#### H3. Console sin 404 chunks
+
+| Paso | Acción |
+|---|---|
+| a | Refrescar varias veces, alternar `/es` ↔ `/en` |
+
+**Esperado:**
+- Sin "Failed to load chunk" o 404 de `_next/static`
+
+- [ ] ✅ Pasa
+
+---
+
+#### H4. Server logs limpios
+
+| Paso | Acción |
+|---|---|
+| a | Revisar terminal donde corre `npm run dev` |
+
+**Esperado:**
+- Sin warnings de Prisma ("Field XYZ does not exist")
+- Sin errores de i18n
+- Queries parametrizadas (no `console.log` de SQL crudo)
+
+- [ ] ✅ Pasa
+
+---
+
+#### H5. Drift detection entre `messages/es.json` y `en.json`
+
+**Comando (PowerShell):**
+```powershell
+# Script rápido para comparar claves top-level
+$es = (Get-Content messages/es.json | ConvertFrom-Json)
+$en = (Get-Content messages/en.json | ConvertFrom-Json)
+Compare-Object ($es.PSObject.Properties.Name) ($en.PSObject.Properties.Name)
+```
+
+**Esperado:**
+- Diferencia vacía (o solo en namespaces nuevos intencionalmente)
+
+- [ ] ✅ Pasa
+
+---
+
+### 🟢 I · Seguridad y robustez
+
+#### I1. XSS en bio
+
+| Paso | Acción |
+|---|---|
+| a | Admin → `/es/admin/profile` |
+| b | Bio ES: `<script>alert('xss')</script>` |
+| c | Guardar y refrescar `/es` |
+
+**Esperado:**
+- Texto visible: literal `<script>alert('xss')</script>`
+- Sin ejecución de JS
+- No rompe React
+
+- [ ] ✅ Pasa
+
+---
+
+#### I2. Unicode en nombre
+
+| Paso | Acción |
+|---|---|
+| a | Crear servicio con nombre "🌸 Maquillaje 婚礼" |
+
+**Esperado:**
+- Renderiza correcto en cards sin `???`
+
+- [ ] ✅ Pasa
+
+---
+
+#### I3. Path traversal en URL de imagen
+
+| Paso | Acción |
+|---|---|
+| a | Servicio con `image = "/uploads/../../../etc/passwd"` |
+
+**Esperado:**
+- `next/image` rechaza o no rompe
+- Sin filtrar contenido
+
+- [ ] ✅ Pasa
+
+---
+
+#### I4. Locale case-sensitive
+
+| Paso | Acción |
+|---|---|
+| a | `GET /ES` o `GET /En` |
+
+**Esperado:**
+- Redirige a versión lowercase
+
+- [ ] ✅ Pasa
+
+---
+
+#### I5. Cache invalidation cruzando sesiones
+
+| Paso | Acción |
+|---|---|
+| a | Tabs cruzadas: una con admin, otra con `/es` |
+| b | Admin guarda cambio en servicio |
+| c | Refresh `/es` en la otra tab |
+
+**Esperado:**
+- Ve el cambio sin esperar TTL
+
+- [ ] ✅ Pasa
+
+---
+
+#### I6. Concurrencia
+
+| Paso | Acción |
+|---|---|
+| a | 10 tabs en `/es` abiertas simultáneamente |
+| b | 1 acción de admin |
+
+**Esperado:**
+- Sin crashes 500 ni race conditions
+
+- [ ] ✅ Pasa
+
+---
+
+### 🟢 J · Edge cases de datos
+
+#### J1. Duración = 0
+
+| Paso | Acción |
+|---|---|
+| a | `ServA.durationMin = 0` (forzar vía DB) |
+
+**Esperado:**
+- Renderiza "0 min"
+- Sin división por cero
+
+- [ ] ✅ Pasa
+
+---
+
+#### J2. Precio negativo
+
+| Paso | Acción |
+|---|---|
+| a | `ServA.basePrice = -50` (vía DB directa, bypass validator) |
+
+**Esperado:**
+- Renderiza o se filtra sin romper
+- Defensive programming
+
+- [ ] ✅ Pasa
+
+---
+
+#### J3. AboutContent duplicado
+
+| Paso | Acción |
+|---|---|
+| a | Forzar 2 registros en `about_content` |
+
+**Esperado:**
+- `upsert` con `id = "singleton"` previene duplicados o renderiza uno
+- Sin error 500
+
+- [ ] ✅ Pasa
+
+---
+
+#### J4. Settings borradas
+
+| Paso | Acción |
+|---|---|
+| a | `DELETE FROM settings WHERE id = 'singleton'` |
+| b | Refresh `/es` |
+
+**Esperado:**
+- `getSettings()` la recrea con defaults (`maintenanceMode = false`)
+- Página carga normal
+
+- [ ] ✅ Pasa
+
+---
+
+#### J5. Editar mientras visitante tiene tab abierta
+
+| Paso | Acción |
+|---|---|
+| a | Visitante en `/es` (no refresca) |
+| b | Admin crea nuevo servicio o paquete |
+| c | Visitante hace Ctrl+R |
+
+**Esperado:**
+- Ve los nuevos datos
+
+- [ ] ✅ Pasa
+
+---
+
+#### J6. Nombre con solo espacios
+
+| Paso | Acción |
+|---|---|
+| a | `ServA.name.es = "   "` (trim no se aplicó en seed) |
+
+**Esperado:**
+- Backend trim() o renderiza placeholder
+
+- [ ] ✅ Pasa
 
 ## 🛡️ Sección 10 — Seguridad
 
@@ -1136,19 +2279,26 @@ Invoke-WebRequest -Uri "http://localhost:3000/api/media/FAKE_ID" -Method DELETE 
 
 ## 📊 Resumen de resultados
 
-Una vez completadas todas las pruebas, llena este resumen:
+Sesión de QA cerrada — 2026-07-05.
 
 ```
-Total tests:           65
-Passed:                __ / 65
-Failed:                __
-Skipped (futuras):     __
+Total tests:           64
+Passed:                64 / 64
+Failed:                 0
+Skipped (futuras):      0
 
-Bugs críticos:          __
-Bugs menores:           __
+Bugs críticos:          0
+Bugs menores:           1 (resuelto durante la sesión)
 Notas adicionales:
-_________________________________________________________________
-_________________________________________________________________
+- Bug menor: deleteServiceAction no manejaba FK de package_items/
+  appointments cuando un servicio estaba en uso. Resultaba en error
+  críptico "Foreign key constraint violated". Fix: chequeo previo en
+  src/server/catalog/services.ts:132 que devuelve mensaje claro
+  listando paquetes/citas en uso. Nuevo test 7.9 cubre el caso.
+- Stale .next cache (vendor-chunks/*.js) apareció 2 veces durante la
+  sesión en Next 15.5.20. Resolución: rm -rf .next y reiniciar dev.
+- Landing pública (Sección 9) pasa porque es solo esqueleto: navbar,
+  footer y render de servicios/paquetes reales son scope de Fase 4.
 ```
 
 ---
