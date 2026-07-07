@@ -335,14 +335,63 @@
   },
   "booking": {
     "title": "Reservar cita",
-    "step": "Paso",
-    "of": "de",
-    "selectService": "Selecciona un servicio",
-    "selectDate": "Selecciona fecha y hora",
-    "yourData": "Tus datos",
+    "subtitle": "Elige el servicio, la fecha y tus datos para confirmar tu cita.",
+    "back": "Atrás",
+    "duration": "{min} min",
+    "noServices": "Por el momento no hay servicios disponibles para reservar.",
+    "step1Title": "¿Qué servicio te gustaría?",
+    "step1Subtitle": "Selecciona el servicio para el que quieres reservar.",
+    "step2Service": "Servicio",
+    "availableSlots": "Horarios disponibles",
+    "loading": "Cargando horarios…",
+    "noSlotsForDay": "No hay horarios disponibles ese día.",
+    "prevMonth": "Mes anterior",
+    "nextMonth": "Mes siguiente",
+    "step3Title": "Tus datos",
+    "step4Title": "Confirma tu reserva",
+    "step4Hint": "Revisa los detalles. Al confirmar, tu cita quedará en estado pendiente hasta que la administración la confirme.",
+    "continue": "Continuar",
     "confirm": "Confirmar reserva",
-    "success": "¡Reserva confirmada!",
-    "successMessage": "Te enviamos un correo con los detalles de tu cita."
+    "confirming": "Confirmando…",
+    "submitting": "Enviando…",
+    "fields": {
+      "name": "Nombre completo",
+      "email": "Correo electrónico",
+      "phone": "Teléfono",
+      "notes": "Notas (opcional)",
+      "notesHint": "Cuéntanos si tienes alguna preferencia o alergia. Máximo 500 caracteres."
+    },
+    "errors": {
+      "generic": "Algo salió mal. Por favor intenta de nuevo.",
+      "loadFailed": "No pudimos cargar los horarios. Intenta de nuevo.",
+      "nameTooShort": "El nombre debe tener al menos 2 caracteres",
+      "nameTooLong": "Máximo 100 caracteres",
+      "emailInvalid": "Email inválido",
+      "phoneInvalid": "Teléfono inválido (mínimo 8 dígitos)",
+      "notesTooLong": "Máximo 500 caracteres"
+    },
+    "summary": {
+      "service": "Servicio",
+      "date": "Fecha",
+      "time": "Hora",
+      "duration": "Duración",
+      "name": "Nombre",
+      "email": "Email",
+      "phone": "Teléfono",
+      "notes": "Notas"
+    },
+    "steps": {
+      "service": "Servicio",
+      "datetime": "Fecha y hora",
+      "customer": "Tus datos",
+      "confirm": "Confirmar"
+    },
+    "success": {
+      "title": "¡Reserva recibida!",
+      "message": "Tu cita está en estado pendiente. Te avisaremos por correo cuando sea confirmada.",
+      "reference": "Referencia: {id}",
+      "backHome": "Volver al inicio"
+    }
   },
   "public": {
     "services": {

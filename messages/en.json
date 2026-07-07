@@ -335,14 +335,63 @@
   },
   "booking": {
     "title": "Book appointment",
-    "step": "Step",
-    "of": "of",
-    "selectService": "Select a service",
-    "selectDate": "Select date and time",
-    "yourData": "Your details",
+    "subtitle": "Pick your service, date and details to confirm your appointment.",
+    "back": "Back",
+    "duration": "{min} min",
+    "noServices": "There are no services available for booking right now.",
+    "step1Title": "Which service would you like?",
+    "step1Subtitle": "Choose the service you want to book.",
+    "step2Service": "Service",
+    "availableSlots": "Available time slots",
+    "loading": "Loading slots…",
+    "noSlotsForDay": "No slots available on that day.",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "step3Title": "Your details",
+    "step4Title": "Confirm your booking",
+    "step4Hint": "Review the details. Once confirmed, your appointment will be pending until admin approval.",
+    "continue": "Continue",
     "confirm": "Confirm booking",
-    "success": "Booking confirmed!",
-    "successMessage": "We've sent you an email with the appointment details."
+    "confirming": "Confirming…",
+    "submitting": "Submitting…",
+    "fields": {
+      "name": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "notes": "Notes (optional)",
+      "notesHint": "Tell us about any preferences or allergies. Up to 500 characters."
+    },
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "loadFailed": "Could not load slots. Try again.",
+      "nameTooShort": "Name must be at least 2 characters",
+      "nameTooLong": "Maximum 100 characters",
+      "emailInvalid": "Invalid email",
+      "phoneInvalid": "Invalid phone (minimum 8 digits)",
+      "notesTooLong": "Maximum 500 characters"
+    },
+    "summary": {
+      "service": "Service",
+      "date": "Date",
+      "time": "Time",
+      "duration": "Duration",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "notes": "Notes"
+    },
+    "steps": {
+      "service": "Service",
+      "datetime": "Date & time",
+      "customer": "Your details",
+      "confirm": "Confirm"
+    },
+    "success": {
+      "title": "Booking received!",
+      "message": "Your appointment is pending. We will email you when it's confirmed.",
+      "reference": "Reference: {id}",
+      "backHome": "Back to home"
+    }
   },
   "public": {
     "services": {

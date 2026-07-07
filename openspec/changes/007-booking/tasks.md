@@ -48,13 +48,16 @@
 
 ## Frontend público — Wizard
 
-- [ ] `src/app/[locale]/(public)/reservar/page.tsx` — Server Component wrapper
-- [ ] `src/components/booking/wizard.tsx` — Client Component que lee query params
-- [ ] `src/components/booking/step-service.tsx` — Grid de servicios con selección
-- [ ] `src/components/booking/step-datetime.tsx` — Calendario + slots
-- [ ] `src/components/booking/step-customer.tsx` — Formulario de datos
-- [ ] `src/components/booking/step-confirm.tsx` — Resumen + confirmar
-- [ ] `src/components/booking/booking-success.tsx` — Pantalla post-creación
+- [x] `src/app/[locale]/(public)/reservar/page.tsx` — Server Component wrapper
+- [x] `src/components/booking/wizard.tsx` — Client Component que lee query params
+- [x] `src/components/booking/wizard-stepper.tsx` — stepper visual + URL helpers
+- [x] `src/components/booking/step-service.tsx` — Grid de servicios con selección
+- [x] `src/components/booking/step-datetime.tsx` — Calendario + slots (fetch via /api/booking/slots)
+- [x] `src/components/booking/step-customer.tsx` — Formulario de datos
+- [x] `src/components/booking/step-confirm.tsx` — Resumen + confirmar
+- [x] `src/components/booking/booking-success.tsx` — Pantalla post-creación
+- [x] `src/app/api/booking/slots/route.ts` — API route para slots
+- [x] i18n `booking.*` namespace (es.json + en.json)
 
 ## Frontend admin
 
