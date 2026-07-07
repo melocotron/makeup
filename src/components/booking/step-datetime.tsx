@@ -44,6 +44,7 @@ export function StepDatetime({
   const days = useMemo(() => buildMonthGrid(monthStart), [monthStart]);
 
   // Load slots when date selected
+  const errorLoadFailed = t("errors.loadFailed");
   useEffect(() => {
     if (!selectedDate) {
       setSlots(null);
@@ -63,7 +64,7 @@ export function StepDatetime({
         if (!cancelled) setSlots(data.slots);
       } catch (err) {
         if (!cancelled) {
-          setError(t("errors.loadFailed"));
+          setError(errorLoadFailed);
           setSlots([]);
         }
       } finally {
@@ -73,7 +74,7 @@ export function StepDatetime({
     return () => {
       cancelled = true;
     };
-  }, [selectedDate, serviceId, t]);
+  }, [selectedDate, serviceId, errorLoadFailed]);
 
   const monthLabel = useMemo(
     () =>
