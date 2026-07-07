@@ -61,37 +61,32 @@
 
 ## Frontend admin
 
-- [ ] `src/app/[locale]/(admin)/admin/citas/page.tsx` — Lista de citas
-- [ ] `src/components/admin/appointments-list.tsx` — Tabla con filtros
-- [ ] `src/app/[locale]/(admin)/admin/citas/[id]/page.tsx` — Detalle
-- [ ] `src/components/admin/appointment-detail.tsx` — Vista detalle + acciones
-- [ ] `src/app/[locale]/(admin)/admin/horarios/page.tsx` — CRUD horarios
-- [ ] `src/components/admin/schedule-manager.tsx` — Form semanal
-- [ ] `src/app/[locale]/(admin)/admin/horarios/bloqueos/page.tsx` — Bloqueos
-- [ ] `src/components/admin/schedule-exceptions-manager.tsx` — CRUD fechas bloqueadas
+- [x] `src/app/[locale]/(admin)/admin/appointments/page.tsx` — Lista de citas
+- [x] `src/components/admin/appointments-list.tsx` — Tabla con filtros
+- [x] `src/app/[locale]/(admin)/admin/appointments/[id]/page.tsx` — Detalle
+- [x] `src/components/admin/appointment-detail.tsx` — Vista detalle + acciones
+- [x] `src/app/[locale]/(admin)/admin/horarios/page.tsx` — CRUD horarios
+- [x] `src/components/admin/schedule-manager.tsx` — Form semanal
+- [x] `src/app/[locale]/(admin)/admin/horarios/bloqueos/page.tsx` — Bloqueos
+- [x] `src/components/admin/schedule-exceptions-manager.tsx` — CRUD fechas bloqueadas
 
 ## i18n
 
-- [ ] Agregar namespace `booking.*` a `messages/es.json`:
-  - [ ] `booking.title`, `booking.subtitle`
-  - [ ] `booking.steps.service/datetime/customer/confirm`
-  - [ ] `booking.errors.slotUnavailable`, `booking.errors.minAdvanceHours`, etc.
-  - [ ] `booking.success.title`, `booking.success.message`
-  - [ ] `admin.appointments.*`
-  - [ ] `admin.schedule.*`
-- [ ] Mismas keys en `messages/en.json`
+- [x] Namespace `booking.*` (es.json + en.json) — public wizard completo
+- [x] Namespace `admin.appointments.*` (es.json + en.json)
+- [x] Namespace `admin.schedule.*` (es.json + en.json)
 
 ## Sidebar admin
 
-- [ ] Agregar link "Citas" en sidebar con icono (Calendar)
-- [ ] Agregar link "Horarios" en sidebar o submenú de Citas
+- [x] Link "Citas" en sidebar (ya existía con icono CalendarDays)
+- [x] Link "Horarios" en sidebar (Calendar icon, agregago en este change)
 
 ## Verificación
 
-- [ ] `npm run typecheck` pasa
-- [ ] `npm run lint` sin warnings nuevos
-- [ ] `npm run build` compila
-- [ ] Manual wizard end-to-end:
+- [x] `npm run typecheck` pasa
+- [ ] `npm run lint` sin warnings nuevos (revisar)
+- [ ] `npm run build` compila (revisar)
+- [ ] Manual wizard end-to-end (realizar antes de archivar):
   - [ ] Crear slot disponible → reservar → ver cita en admin
   - [ ] Día bloqueado → wizard no muestra slots
   - [ ] Slot ocupado → otro cliente no puede
@@ -103,7 +98,7 @@
 
 ## Commit final
 
-- [ ] `feat(booking): scheduling logic + queries + validators`
-- [ ] `feat(booking): admin schedule + appointments CRUD`
-- [ ] `feat(booking): public wizard + create appointment flow`
+- [x] `feat(booking): scheduling logic + queries + validators`
+- [x] `feat(booking): public wizard + create appointment flow`
+- [x] `feat(booking): admin schedule + appointments CRUD`
 - [ ] `chore(openspec): archive change 007-booking`
