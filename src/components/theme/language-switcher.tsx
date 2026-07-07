@@ -25,7 +25,8 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
       segments.splice(1, 0, newLocale);
     }
     const newPath = segments.join("/") || "/";
-    router.push(newPath);
+    const hash = typeof window !== "undefined" ? window.location.hash : "";
+    router.push(`${newPath}${hash}`);
   };
 
   return (

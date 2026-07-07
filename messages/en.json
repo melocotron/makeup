@@ -368,7 +368,8 @@
     },
     "maintenance": {
       "title": "Site under maintenance",
-      "subtitle": "We're working for you"
+      "subtitle": "We're working for you",
+      "fallbackMessage": "We'll be back soon. Thanks for your patience."
     },
     "common": {
       "menu": "Menu",

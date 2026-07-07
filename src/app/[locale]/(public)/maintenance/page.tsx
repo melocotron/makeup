@@ -1,4 +1,5 @@
 import { Construction } from "lucide-react";
+import { redirect } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 
@@ -17,15 +18,16 @@ export default async function MaintenancePage({
   setRequestLocale(locale as Locale);
 
   const settings = await getSettings();
-  const message =
-    settings.maintenanceMessage ||
-    "Volveremos pronto. Gracias por tu paciencia.";
+  if (!settings.maintenanceMode) {
+    redirect(`/${locale}`);
+  }
 
-  return <MaintenanceContent message={message} />;
+  return <MaintenanceContent customMessage={settings.maintenanceMessage} />;
 }
 
-function MaintenanceContent({ message }: { message: string }) {
+function MaintenanceContent({ customMessage }: { customMessage: string | null }) {
   const t = useTranslations("public.maintenance");
+  const message = customMessage?.trim() || t("fallbackMessage");
 
   return (
     <div className="flex min-h-[calc(100vh-5rem)] items-center justify-center px-4 py-16">

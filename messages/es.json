@@ -368,7 +368,8 @@
     },
     "maintenance": {
       "title": "Sitio en mantenimiento",
-      "subtitle": "Estamos trabajando para ti"
+      "subtitle": "Estamos trabajando para ti",
+      "fallbackMessage": "Volveremos pronto. Gracias por tu paciencia."
     },
     "common": {
       "menu": "Menú",
