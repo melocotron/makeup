@@ -1,4 +1,5 @@
 import { Package as PackageIcon, Scissors } from "lucide-react";
+import { redirect } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 
@@ -15,6 +16,7 @@ import {
 import { listPackages } from "@/server/catalog/queries";
 import { listServices } from "@/server/catalog/queries";
 import { getAboutContent } from "@/server/content/profile.queries";
+import { getSettings } from "@/server/system/queries";
 import { routing, type Locale } from "@/i18n/routing";
 
 export default async function HomePage({
@@ -27,6 +29,11 @@ export default async function HomePage({
     return null;
   }
   setRequestLocale(locale as Locale);
+
+  const settings = await getSettings();
+  if (settings.maintenanceMode) {
+    redirect(`/${locale}/maintenance`);
+  }
 
   const [services, packages, about] = await Promise.all([
     listServices(),

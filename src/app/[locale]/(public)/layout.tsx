@@ -1,7 +1,4 @@
-import { redirect } from "next/navigation";
-
 import { PublicFooter, PublicHeader } from "@/components/public/public-chrome";
-import { getSettings } from "@/server/system/queries";
 import { type Locale, routing } from "@/i18n/routing";
 
 export default async function PublicLayout({
@@ -15,12 +12,6 @@ export default async function PublicLayout({
 
   if (!(routing.locales as readonly string[]).includes(locale)) {
     return null;
-  }
-
-  const settings = await getSettings();
-
-  if (settings.maintenanceMode) {
-    redirect(`/${locale}/maintenance`);
   }
 
   return (
