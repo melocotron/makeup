@@ -34,6 +34,7 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { href: "/admin", labelKey: "dashboard", icon: LayoutDashboard, group: "main" },
   { href: "/admin/appointments", labelKey: "appointments", icon: CalendarDays, group: "main" },
+  { href: "/admin/horarios", labelKey: "horarios", icon: Calendar, group: "main" },
   { href: "/admin/services", labelKey: "services", icon: Scissors, group: "main" },
   { href: "/admin/packages", labelKey: "packages", icon: Package, group: "main" },
   { href: "/admin/clients", labelKey: "clients", icon: Users, group: "main" },

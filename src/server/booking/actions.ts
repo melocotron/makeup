@@ -55,7 +55,7 @@ export async function updateAppointmentStatusAction(
   }
   const result = await updateAppointmentStatus(parsed.data);
   if (result.ok) {
-    revalidatePath("/[locale]/admin/citas", "page");
+    revalidatePath("/[locale]/admin/appointments", "page");
     revalidatePath("/[locale]/admin", "page");
   }
   return result;
