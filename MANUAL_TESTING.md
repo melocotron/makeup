@@ -1458,7 +1458,7 @@ SELECT * FROM package_item WHERE packageId = 'ID';
 - Body text ≥ 4.5:1 en ambos temas
 - Large text ≥ 3:1
 
-- [x] ✅ Pasa (Lighthouse Accessibility 96)
+- [x] ✅ Pasa (Lighthouse Accessibility 95 en producción, 96 en dev)
 
 ---
 
@@ -1926,7 +1926,7 @@ SELECT * FROM package_item WHERE packageId = 'ID';
 - Performance ≥ 80 (local)
 - Accessibility ≥ 85
 
-- [x] ✅ Pasa (proxy: response time ~500ms; Accessibility 96 verificado en C7)
+- [x] ✅ Pasa — Producción: Performance 100, Accessibility 95, Best Practices 100, SEO 100. Dev: Performance 75, Accessibility 96
 
 ---
 
@@ -2288,24 +2288,24 @@ Failed (bloqueantes):      0
 N/A diferidos:             4 (C8 carrusel, D7 CDN, G3 hero sin img, G5 carrusel)
 
 Bugs corregidos durante la sesión:
-  - Ninguno bloqueante. Las secciones A-J pasaron al primer intento
-    tras correcciones de metodología de testing.
+  - language-switcher.tsx preserva window.location.hash al cambiar
+    locale (router.push con ${newPath}${hash}). Cubre test B9.
+
+Lighthouse (verificado manualmente contra producción):
+  Performance:    100
+  Accessibility:   95
+  Best Practices: 100
+  SEO:            100
 
 Notas adicionales:
-- Fix menor (commit): language-switcher.tsx ahora preserva window.location.hash
-  al cambiar locale (`router.push(${newPath}${hash})`). Cubre test B9.
-- Sección 9 — Landing pública (change 006): 88/88 verde.
-- Stale .next cache apareció 1 vez en A11 (paquete con 10+ items).
-  Resolución: `rm -rf .next && npm run dev`.
-- Datos de prueba dejados en DB: ServA, ServB, ServC, PaqA, PaqB
-  con extras y package_items. Limpieza recomendada al cerrar change:
-  `DELETE FROM services WHERE id LIKE 'test_%'`
-  `DELETE FROM packages WHERE id LIKE 'test_%'`
+- Sección 9 — Landing pública (change 006): 88/88 verde + Lighthouse 100/95/100/100.
+- Stale .next cache apareció 1 vez en A11. Resolución: rm -rf .next y reiniciar dev.
+- Datos de prueba limpiados de DB al cerrar (ServA/B/C, PaqA/B + extras + items).
 - Tests A11 (10+ items), A12 (bio EN-only), A14 (about sin image),
   A16 (cache invalidation), J5 (cache invalidation cruzando sesiones)
-  validaron que Prisma + `revalidatePath` invalidan cache sin esperar TTL.
-- Performance local: HTML 110KB, avg response ~425ms (objetivo <1500ms).
-- Accesibilidad: Lighthouse Accessibility 96 (validado previamente en C7).
+  validaron que Prisma + revalidatePath invalidan cache sin esperar TTL.
+- Performance dev: HTML 110KB, avg ~425ms. Producción: HTML 41.8KB.
+- Tamaño First Load JS landing: 109 kB.
 ```
 
 ---
