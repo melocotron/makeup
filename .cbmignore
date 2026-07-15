@@ -1,0 +1,40 @@
+# codebase-memory-mcp ignore file (.cbmignore)
+# gitignore syntax — negation with ! supported.
+# Layered on top of .gitignore hierarchy.
+
+# Next.js build artifacts
+.next/
+out/
+.turbo/
+
+# Generated Prisma client (re-generated on `prisma generate`)
+src/generated/prisma/
+
+# Local env / secrets
+.env
+.env*.local
+
+# Uploaded user content (media library)
+public/uploads/
+
+# Local databases / backups
+prisma/dev.db
+prisma/dev.db-journal
+backups/
+*.sql
+!prisma/migrations/**/*.sql
+
+# OpenSpec / cache
+openspec/.cache/
+
+# Docker volumes mounted locally
+.docker-data/
+
+# Coverage / test artifacts
+coverage/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

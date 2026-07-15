@@ -63,3 +63,8 @@ openspec/.cache/
 
 # Docker volumes (if mounted locally)
 .docker-data/
+
+# codebase-memory-mcp local cache + shared graph artifact
+.codebase-memory/
+*.codebase-memory.db
+.graph-cache/
