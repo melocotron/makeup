@@ -5,6 +5,7 @@
     "save": "Guardar",
     "cancel": "Cancelar",
     "delete": "Eliminar",
+    "total": "Total",
     "edit": "Editar",
     "create": "Crear",
     "search": "Buscar",
@@ -206,6 +207,56 @@
         "blog": "9",
         "reports": "10"
       }
+    },
+    "clients": {
+      "description": "{count, plural, =0 {No hay clientes todavía} one {# cliente registrado} other {# clientes registrados}}",
+      "newClient": "Nuevo cliente",
+      "newClientDesc": "Crea un cliente manualmente (walk-in, teléfono, o para corregir datos).",
+      "created": "Cliente creado",
+      "updated": "Cliente actualizado",
+      "deleted": "Cliente eliminado",
+      "create": "Crear cliente",
+      "search": "Buscar por nombre o email…",
+      "columns": {
+        "name": "Nombre",
+        "email": "Email",
+        "phone": "Teléfono",
+        "appointments": "Citas",
+        "lastVisit": "Última visita",
+        "loyalty": "Puntos"
+      },
+      "empty": {
+        "noClients": "No hay clientes todavía",
+        "noClientsDesc": "Los clientes se crean automáticamente cuando alguien reserva una cita. También puedes crearlos manualmente."
+      },
+      "form": {
+        "basicInfo": "Datos del cliente",
+        "basicInfoDesc": "Información de contacto. El email es único e identifica al cliente.",
+        "name": "Nombre completo",
+        "email": "Correo electrónico",
+        "phone": "Teléfono",
+        "notes": "Notas internas (opcional)"
+      },
+      "stats": {
+        "appointments": "Citas totales",
+        "completed": "{count} completadas",
+        "cancelled": "{count} canceladas",
+        "spent": "Total gastado",
+        "loyalty": "Puntos de fidelidad",
+        "memberSince": "Cliente desde {date}"
+      },
+      "history": {
+        "title": "Historial de citas",
+        "empty": "Este cliente aún no tiene citas.",
+        "date": "Fecha y hora",
+        "service": "Servicio",
+        "duration": "Duración",
+        "price": "Precio",
+        "status": "Estado"
+      },
+      "deleteConfirmTitle": "¿Eliminar este cliente?",
+      "deleteConfirmDesc": "Esta acción no se puede deshacer. El cliente será eliminado permanentemente.",
+      "deleteConfirmDescHasAppts": "Este cliente tiene citas asociadas y no puede ser eliminado. Cancela las citas primero."
     },
     "media": {
       "title": "Biblioteca de medios",

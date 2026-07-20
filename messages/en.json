@@ -5,6 +5,7 @@
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
+    "total": "Total",
     "edit": "Edit",
     "create": "Create",
     "search": "Search",
@@ -206,6 +207,56 @@
         "blog": "9",
         "reports": "10"
       }
+    },
+    "clients": {
+      "description": "{count, plural, =0 {No clients yet} one {# registered client} other {# registered clients}}",
+      "newClient": "New client",
+      "newClientDesc": "Create a client manually (walk-in, phone, or to correct data).",
+      "created": "Client created",
+      "updated": "Client updated",
+      "deleted": "Client deleted",
+      "create": "Create client",
+      "search": "Search by name or email…",
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "appointments": "Appointments",
+        "lastVisit": "Last visit",
+        "loyalty": "Points"
+      },
+      "empty": {
+        "noClients": "No clients yet",
+        "noClientsDesc": "Clients are created automatically when someone books. You can also create them manually."
+      },
+      "form": {
+        "basicInfo": "Client data",
+        "basicInfoDesc": "Contact information. The email is unique and identifies the client.",
+        "name": "Full name",
+        "email": "Email",
+        "phone": "Phone",
+        "notes": "Internal notes (optional)"
+      },
+      "stats": {
+        "appointments": "Total appointments",
+        "completed": "{count} completed",
+        "cancelled": "{count} cancelled",
+        "spent": "Total spent",
+        "loyalty": "Loyalty points",
+        "memberSince": "Member since {date}"
+      },
+      "history": {
+        "title": "Appointment history",
+        "empty": "This client has no appointments yet.",
+        "date": "Date and time",
+        "service": "Service",
+        "duration": "Duration",
+        "price": "Price",
+        "status": "Status"
+      },
+      "deleteConfirmTitle": "Delete this client?",
+      "deleteConfirmDesc": "This action cannot be undone. The client will be permanently deleted.",
+      "deleteConfirmDescHasAppts": "This client has appointments and cannot be deleted. Cancel the appointments first."
     },
     "media": {
       "title": "Media library",
