@@ -1,5 +1,4 @@
-import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 
 import { MediaBrowser } from "@/components/admin/media-browser";
 import { PageHeader } from "@/components/admin/page-header";
@@ -12,11 +11,8 @@ export default async function MediaPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return <MediaContent />;
-}
+  const t = await getTranslations({ locale, namespace: "admin.media" });
 
-function MediaContent() {
-  const t = useTranslations("admin.media");
   return (
     <div className="space-y-6">
       <PageHeader title={t("title")} description={t("description")} />

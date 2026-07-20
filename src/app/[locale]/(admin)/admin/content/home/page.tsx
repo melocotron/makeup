@@ -1,5 +1,4 @@
-import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 
 import { CarouselList, type CarouselSlide } from "@/components/admin/carousel-list";
 import { PageHeader } from "@/components/admin/page-header";
@@ -14,6 +13,8 @@ export default async function HomeCarouselPage({
   setRequestLocale(locale);
 
   const items = await listCarouselSlides();
+  const t = await getTranslations({ locale, namespace: "admin.carousel" });
+
   const serialized: CarouselSlide[] = items.map((s) => ({
     id: s.id,
     image: s.image,
@@ -25,15 +26,10 @@ export default async function HomeCarouselPage({
     isActive: s.isActive,
   }));
 
-  return <CarouselContent items={serialized} />;
-}
-
-function CarouselContent({ items }: { items: CarouselSlide[] }) {
-  const t = useTranslations("admin.carousel");
   return (
     <div className="space-y-6">
       <PageHeader title={t("title")} description={t("description")} />
-      <CarouselList initialData={items} />
+      <CarouselList initialData={serialized} />
     </div>
   );
 }

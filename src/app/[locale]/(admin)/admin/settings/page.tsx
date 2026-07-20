@@ -1,5 +1,4 @@
-import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 
 import { PageHeader } from "@/components/admin/page-header";
 import { SettingsForm } from "@/components/admin/settings-form";
@@ -14,16 +13,7 @@ export default async function SettingsPage({
   setRequestLocale(locale);
 
   const settings = await getSettings();
-
-  return <SettingsContent settings={settings} />;
-}
-
-function SettingsContent({
-  settings,
-}: {
-  settings: Awaited<ReturnType<typeof getSettings>>;
-}) {
-  const t = useTranslations("admin.settings");
+  const t = await getTranslations({ locale, namespace: "admin.settings" });
 
   const extractString = (v: unknown): string => {
     if (typeof v === "string") return v;

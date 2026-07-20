@@ -1,5 +1,4 @@
-import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 
 import { CredentialsList } from "@/components/admin/credentials-list";
 import { PageHeader } from "@/components/admin/page-header";
@@ -14,18 +13,17 @@ export default async function CredentialsPage({
   setRequestLocale(locale);
 
   const items = await listCredentials();
-  // Serialize dates for client component
-  const serialized = items.map((c) => ({ ...c, createdAt: c.createdAt.toISOString() })) as never;
+  const t = await getTranslations({ locale, namespace: "admin.credentials" });
 
-  return <CredentialsContent items={serialized} />;
-}
+  const serialized = items.map((c) => ({
+    ...c,
+    createdAt: c.createdAt.toISOString(),
+  })) as unknown as Parameters<typeof CredentialsList>[0]["initialData"];
 
-function CredentialsContent({ items }: { items: never }) {
-  const t = useTranslations("admin.credentials");
   return (
     <div className="space-y-6">
       <PageHeader title={t("title")} description={t("description")} />
-      <CredentialsList initialData={items as never} />
+      <CredentialsList initialData={serialized} />
     </div>
   );
 }

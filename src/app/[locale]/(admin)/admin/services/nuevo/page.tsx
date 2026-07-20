@@ -1,5 +1,4 @@
-import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 
 import { PageHeader } from "@/components/admin/page-header";
 import { ServiceForm } from "@/components/admin/service-form";
@@ -11,11 +10,8 @@ export default async function NewServicePage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  return <NewServiceContent locale={locale} />;
-}
+  const t = await getTranslations({ locale, namespace: "admin.catalog" });
 
-function NewServiceContent({ locale }: { locale: string }) {
-  const t = useTranslations("admin.catalog");
   return (
     <div className="space-y-6">
       <PageHeader

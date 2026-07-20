@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
-import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 
 import { PageHeader } from "@/components/admin/page-header";
 import { ServiceForm } from "@/components/admin/service-form";
@@ -17,17 +16,7 @@ export default async function EditServicePage({
   const service = await getServiceById(id);
   if (!service) notFound();
 
-  return <EditServiceContent locale={locale} service={service!} />;
-}
-
-function EditServiceContent({
-  locale,
-  service,
-}: {
-  locale: string;
-  service: NonNullable<Awaited<ReturnType<typeof getServiceById>>>;
-}) {
-  const t = useTranslations("admin.catalog");
+  const t = await getTranslations({ locale, namespace: "admin.catalog" });
 
   const name = (service.name as Record<string, string>) ?? {};
   const description = (service.description as Record<string, string>) ?? {};

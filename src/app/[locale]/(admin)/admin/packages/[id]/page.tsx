@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
-import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 
 import { PageHeader } from "@/components/admin/page-header";
 import { PackageForm } from "@/components/admin/package-form";
@@ -17,22 +16,10 @@ export default async function EditPackagePage({
   const [pkg, services] = await Promise.all([getPackageById(id), listAllServices()]);
   if (!pkg) notFound();
 
-  return <EditPackageContent locale={locale} pkg={pkg!} services={services} />;
-}
+  const t = await getTranslations({ locale, namespace: "admin.catalog" });
 
-function EditPackageContent({
-  locale,
-  pkg,
-  services,
-}: {
-  locale: string;
-  pkg: NonNullable<Awaited<ReturnType<typeof getPackageById>>>;
-  services: Awaited<ReturnType<typeof listAllServices>>;
-}) {
-  const t = useTranslations("admin.catalog");
   const name = (pkg.name as Record<string, string>) ?? {};
   const description = (pkg.description as Record<string, string>) ?? {};
-
   const availableServices = services.map((s) => ({
     id: s.id,
     name: (s.name as Record<string, string>) ?? {},

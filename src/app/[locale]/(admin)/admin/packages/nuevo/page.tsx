@@ -1,5 +1,4 @@
-import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 
 import { PageHeader } from "@/components/admin/page-header";
 import { PackageForm } from "@/components/admin/package-form";
@@ -13,17 +12,8 @@ export default async function NewPackagePage({
   const { locale } = await params;
   setRequestLocale(locale);
   const services = await listAllServices();
-  return <NewPackageContent locale={locale} services={services} />;
-}
+  const t = await getTranslations({ locale, namespace: "admin.catalog" });
 
-function NewPackageContent({
-  locale,
-  services,
-}: {
-  locale: string;
-  services: Awaited<ReturnType<typeof listAllServices>>;
-}) {
-  const t = useTranslations("admin.catalog");
   const availableServices = services.map((s) => ({
     id: s.id,
     name: (s.name as Record<string, string>) ?? {},

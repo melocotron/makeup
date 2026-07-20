@@ -68,3 +68,6 @@ openspec/.cache/
 .codebase-memory/
 *.codebase-memory.db
 .graph-cache/
+
+# Sibling project accidentally nested here in the past — never inside makeup/
+open-design/

@@ -1,7 +1,5 @@
-import { Construction } from "lucide-react";
 import { redirect } from "next/navigation";
-import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 
 import { getSettings } from "@/server/system/queries";
 import { routing, type Locale } from "@/i18n/routing";
@@ -22,18 +20,14 @@ export default async function MaintenancePage({
     redirect(`/${locale}`);
   }
 
-  return <MaintenanceContent customMessage={settings.maintenanceMessage} />;
-}
-
-function MaintenanceContent({ customMessage }: { customMessage: string | null }) {
-  const t = useTranslations("public.maintenance");
-  const message = customMessage?.trim() || t("fallbackMessage");
+  const t = await getTranslations({ locale, namespace: "public.maintenance" });
+  const message = settings.maintenanceMessage?.trim() || t("fallbackMessage");
 
   return (
     <div className="flex min-h-[calc(100vh-5rem)] items-center justify-center px-4 py-16">
       <div className="max-w-md text-center">
         <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary-container text-primary">
-          <Construction className="h-8 w-8" />
+          <span className="text-2xl">🚧</span>
         </div>
         <h1 className="font-serif-display mb-4 text-3xl text-on-surface md:text-4xl">
           {t("title")}

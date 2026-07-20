@@ -1,7 +1,5 @@
-import { Package as PackageIcon, Scissors } from "lucide-react";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
-import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
 
 import { AboutSection, type PublicAboutData } from "@/components/public/about-section";
 import { EmptyState } from "@/components/public/empty-state";
@@ -41,28 +39,11 @@ export default async function HomePage({
     getAboutContent(),
   ]);
 
-  return (
-    <HomeContent
-      locale={locale}
-      services={services as unknown as PublicServiceCardData[]}
-      packages={packages as unknown as PublicPackageCardData[]}
-      about={about as unknown as PublicAboutData}
-    />
-  );
-}
+  const t = await getTranslations({ locale, namespace: "home" });
 
-function HomeContent({
-  locale,
-  services,
-  packages,
-  about,
-}: {
-  locale: string;
-  services: PublicServiceCardData[];
-  packages: PublicPackageCardData[];
-  about: PublicAboutData;
-}) {
-  const t = useTranslations("home");
+  const servicesData = services as unknown as PublicServiceCardData[];
+  const packagesData = packages as unknown as PublicPackageCardData[];
+  const aboutData = about as unknown as PublicAboutData;
 
   return (
     <>
@@ -102,20 +83,12 @@ function HomeContent({
             {t("servicesSubtitle")}
           </p>
         </div>
-        {services.length === 0 ? (
-          <EmptyState
-            namespace="services"
-            messageKey="emptyTitle"
-            icon={<Scissors className="h-12 w-12" />}
-          />
+        {servicesData.length === 0 ? (
+          <EmptyState namespace="services" messageKey="emptyTitle" icon={null} />
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((service) => (
-              <ServiceCard
-                key={service.id}
-                service={service}
-                locale={locale}
-              />
+            {servicesData.map((service) => (
+              <ServiceCard key={service.id} service={service} locale={locale} />
             ))}
           </div>
         )}
@@ -133,15 +106,11 @@ function HomeContent({
             </h2>
             <p className="text-on-surface-variant">{t("packagesSubtitle")}</p>
           </div>
-          {packages.length === 0 ? (
-            <EmptyState
-              namespace="packages"
-              messageKey="emptyTitle"
-              icon={<PackageIcon className="h-12 w-12" />}
-            />
+          {packagesData.length === 0 ? (
+            <EmptyState namespace="packages" messageKey="emptyTitle" icon={null} />
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {packages.map((pkg) => (
+              {packagesData.map((pkg) => (
                 <PackageCard key={pkg.id} pkg={pkg} locale={locale} />
               ))}
             </div>
@@ -150,7 +119,7 @@ function HomeContent({
       </section>
 
       {/* Sobre mí */}
-      <AboutSection about={about} locale={locale} />
+      <AboutSection about={aboutData} locale={locale} />
 
       {/* Booking anchor target (placeholder) */}
       <section
