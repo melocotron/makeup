@@ -3,7 +3,7 @@
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import type { Locale } from "@/i18n/routing";
 
 export type ClientRow = {
   id: string;
@@ -32,6 +33,7 @@ export function ClientList({ clients }: { clients: ClientRow[] }) {
   const tCommon = useTranslations("common");
   const router = useRouter();
   const searchParams = useSearchParams();
+  const locale = useLocale() as Locale;
   const [search, setSearch] = useState(searchParams.get("q") ?? "");
 
   useEffect(() => {
@@ -39,7 +41,7 @@ export function ClientList({ clients }: { clients: ClientRow[] }) {
       const params = new URLSearchParams(searchParams.toString());
       if (search) params.set("q", search);
       else params.delete("q");
-      router.replace(`/admin/clients?${params.toString()}`);
+      router.replace(`/${locale}/admin/clients?${params.toString()}`);
     }, 300);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -58,7 +60,7 @@ export function ClientList({ clients }: { clients: ClientRow[] }) {
           />
         </div>
         <Button asChild>
-          <Link href="/admin/clients/nuevo">{t("newClient")}</Link>
+          <Link href={`/${locale}/admin/clients/nuevo`}>{t("newClient")}</Link>
         </Button>
       </div>
 
@@ -87,9 +89,12 @@ export function ClientList({ clients }: { clients: ClientRow[] }) {
                 <TableRow
                   key={c.id}
                   className="cursor-pointer"
-                  onClick={() => router.push(`/admin/clients/${c.id}`)}
                 >
-                  <TableCell className="font-medium">{c.name}</TableCell>
+                  <TableCell className="font-medium">
+                    <Link href={`/${locale}/admin/clients/${c.id}`} className="block">
+                      {c.name}
+                    </Link>
+                  </TableCell>
                   <TableCell className="text-on-surface-variant">{c.email}</TableCell>
                   <TableCell className="text-on-surface-variant">
                     {c.phone ?? "—"}
