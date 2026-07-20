@@ -195,6 +195,18 @@
       "reports": "Reports",
       "settings": "Settings"
     },
+    "comingSoon": {
+      "title": "Coming soon",
+      "description": "This section will be available in a later project phase.",
+      "phaseLabel": "Phase {phase} — {name}",
+      "phase": {
+        "clients": "6",
+        "promotions": "7",
+        "loyalty": "7",
+        "blog": "9",
+        "reports": "10"
+      }
+    },
     "media": {
       "title": "Media library",
       "description": "Upload and organize all the images used across your website."

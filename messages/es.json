@@ -195,6 +195,18 @@
       "reports": "Reportes",
       "settings": "Ajustes"
     },
+    "comingSoon": {
+      "title": "Próximamente",
+      "description": "Esta sección estará disponible en una fase posterior del proyecto.",
+      "phaseLabel": "Fase {phase} — {name}",
+      "phase": {
+        "clients": "6",
+        "promotions": "7",
+        "loyalty": "7",
+        "blog": "9",
+        "reports": "10"
+      }
+    },
     "media": {
       "title": "Biblioteca de medios",
       "description": "Sube y organiza todas las imágenes que usarás en tu sitio web."
