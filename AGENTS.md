@@ -258,3 +258,52 @@ git tag v0.2.0
 
 `admin` `public` `booking` `catalog` `auth` `i18n` `db` `schema` `ui` `docs`
 `tooling` `agents` `opendspec` `perf` `deps` `release` `hotfix`
+## Testing
+
+Este proyecto usa **Vitest** para tests unitarios y **Playwright** para tests E2E.
+
+### Convenciones de ubicación
+
+- **Unit tests**: archivo `*.test.ts` junto al código que prueba.
+  Ejemplo: `src/server/clients/validators.ts` → `src/server/clients/validators.test.ts`.
+- **E2E tests**: carpeta `e2e/` en la raíz. Un archivo por flujo principal (`clients-crud.spec.ts`, `booking-wizard.spec.ts`).
+
+### Comandos
+
+```bash
+npm test            # corre todos los unit tests una vez
+npm run test:watch  # modo watch para desarrollo
+npm run test:cov    # con reporte de coverage (html + texto)
+
+npm run test:e2e        # corre los E2E (requiere DB levantada + seeded)
+npm run test:e2e:ui     # corre los E2E con la UI de Playwright para debug
+```
+
+### Requisitos previos para E2E
+
+Antes de `npm run test:e2e` hay que tener la base de datos lista:
+
+```bash
+npm run db:up              # levanta MySQL en Docker
+npm run db:migrate:deploy  # aplica migraciones
+npm run db:seed            # crea admin, servicios y horarios
+```
+
+Los E2E usan emails únicos por run (`Date.now()`) para evitar colisiones con datos existentes.
+
+### Flujo antes de merge
+
+Antes de mergear cualquier feature a `develop`:
+
+```bash
+npm run typecheck
+npm run lint
+npm test
+```
+
+Los E2E (`npm run test:e2e`) son obligatorios antes de un release a `main`, no en cada feature.
+
+### Mocks y shims
+
+- El paquete `server-only` se reemplaza con un shim en `test/shims/server-only.ts` (configurado como alias en `vitest.config.ts`). El shim es un no-op; el paquete real solo se usa en runtime de Next.
+- En tests de server actions, mockear `@/server/auth` y `@/lib/prisma` con `vi.mock`. Si los mocks necesitan ser referenciados desde fuera del bloque `vi.mock`, usar `vi.hoisted` para evitar el problema de hoisting de Vitest.
