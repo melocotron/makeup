@@ -132,3 +132,27 @@ codebase-memory-mcp cli get_architecture --project C-00-Cursos-000-SDD-makeup --
 # UI 3D
 # http://localhost:9749 (si está corriendo)
 ```
+
+## Watcher vs re-index manual (importante)
+
+El `auto_watch` del binario detecta commits vía git y actualiza la metadata
+(`head_sha`) del proyecto, pero **es incremental**: solo procesa diffs. Si en
+un commit se agregan **archivos nuevos** (no solo se modifican existentes),
+el watcher no los indexa — el grafo queda con el `head_sha` actualizado pero
+sin los nodos de los archivos nuevos.
+
+Síntoma: `search_graph` por nombre de archivo nuevo devuelve `total: 0`
+aunque el archivo existe en disco y el `head_sha` del proyecto coincide con
+el commit.
+
+Solución:
+
+```bash
+codebase-memory-mcp cli index_repository \
+  --repo_path "C:/00-Cursos/000-SDD/makeup" \
+  --mode fast
+```
+
+`--mode fast` es suficiente cuando solo se quieren recoger archivos nuevos
+que el watcher se saltó. Usar `full` solo después de un refactor grande o
+rename de carpeta.
