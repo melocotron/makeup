@@ -60,11 +60,106 @@ async function main() {
     console.log("✓ Settings already exist\n");
   }
 
+  // -------------------------------------------------------------------------
+  // Services (idempotent: upsert by slug)
+  // -------------------------------------------------------------------------
+  const servicesData = [
+    {
+      slug: "maquillaje-social",
+      name: { es: "Maquillaje social", en: "Social makeup" },
+      description: {
+        es: "Look fresco y elegante para el día a día, eventos casuales o salidas nocturnas.",
+        en: "Fresh and elegant look for everyday, casual events or nights out.",
+      },
+      durationMin: 60,
+      basePrice: "80.00",
+      order: 1,
+    },
+    {
+      slug: "maquillaje-novia",
+      name: { es: "Maquillaje de novia", en: "Bridal makeup" },
+      description: {
+        es: "Prueba previa + maquillaje el día de la boda. Incluye kit de retoque.",
+        en: "Trial session + wedding day makeup. Touch-up kit included.",
+      },
+      durationMin: 120,
+      basePrice: "250.00",
+      order: 2,
+    },
+    {
+      slug: "peinado",
+      name: { es: "Peinado", en: "Hairstyling" },
+      description: {
+        es: "Peinado profesional para eventos, bodas o sesiones.",
+        en: "Professional hairstyling for events, weddings or photoshoots.",
+      },
+      durationMin: 45,
+      basePrice: "50.00",
+      order: 3,
+    },
+    {
+      slug: "asesoria-imagen",
+      name: { es: "Asesoría de imagen", en: "Image consulting" },
+      description: {
+        es: "Sesión 1:1 para definir paleta, estilo y rutina personalizada.",
+        en: "1:1 session to define your color palette, style and personalized routine.",
+      },
+      durationMin: 30,
+      basePrice: "40.00",
+      order: 4,
+    },
+  ];
+
+  console.log("🛎️  Seeding services…");
+  for (const svc of servicesData) {
+    const result = await prisma.service.upsert({
+      where: { slug: svc.slug },
+      update: {
+        name: svc.name,
+        description: svc.description,
+        durationMin: svc.durationMin,
+        basePrice: svc.basePrice,
+        order: svc.order,
+        isActive: true,
+      },
+      create: {
+        ...svc,
+        isActive: true,
+      },
+    });
+    console.log(`  ✓ ${result.slug} (${result.durationMin} min)`);
+  }
+  console.log();
+
+  // -------------------------------------------------------------------------
+  // Schedules (one per day of week; idempotent)
+  // -------------------------------------------------------------------------
+  // dayOfWeek: 0=Sun, 1=Mon, ..., 6=Sat
+  const scheduleData = [
+    { dayOfWeek: 1, startTime: "09:00", endTime: "18:00" }, // Mon
+    { dayOfWeek: 2, startTime: "09:00", endTime: "18:00" }, // Tue
+    { dayOfWeek: 3, startTime: "09:00", endTime: "18:00" }, // Wed
+    { dayOfWeek: 4, startTime: "09:00", endTime: "18:00" }, // Thu
+    { dayOfWeek: 5, startTime: "09:00", endTime: "18:00" }, // Fri
+    { dayOfWeek: 6, startTime: "10:00", endTime: "14:00" }, // Sat
+  ];
+
+  console.log("📅 Seeding weekly schedules…");
+  for (const sch of scheduleData) {
+    await prisma.schedule.upsert({
+      where: { dayOfWeek: sch.dayOfWeek },
+      update: { startTime: sch.startTime, endTime: sch.endTime, isActive: true },
+      create: { ...sch, isActive: true },
+    });
+  }
+  console.log(`  ✓ ${scheduleData.length} days configured\n`);
+
   console.log("✅ Seed complete!\n");
   console.log("Next steps:");
   console.log("  1. Run: npm run dev");
   console.log("  2. Open: http://localhost:3000/es/admin/login");
   console.log(`  3. Login with: ${adminEmail} / ${adminPassword}`);
+  console.log("  4. Test booking at: http://localhost:3000/es/reservar");
 }
 
 main()

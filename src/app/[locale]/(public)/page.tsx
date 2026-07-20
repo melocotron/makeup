@@ -120,13 +120,18 @@ export default async function HomePage({
       {/* Sobre mí */}
       <AboutSection about={aboutData} locale={locale} />
 
-      {/* Booking anchor target (placeholder) */}
+      {/* Booking anchor target — anchor for nav's "Agendar cita" link */}
       <section
         id="booking"
         className="bg-surface-container-low py-20 text-center md:py-24"
       >
         <p className="text-sm text-on-surface-variant">
-          ✨ El sistema de reservas llega en la siguiente fase.
+          <a
+            href="/es/reservar"
+            className="inline-flex items-center gap-2 border-2 border-primary px-8 py-4 font-semibold uppercase tracking-widest text-primary transition-colors hover:bg-primary hover:text-on-primary"
+          >
+            {t("heroCta")} →
+          </a>
         </p>
       </section>
     </>
