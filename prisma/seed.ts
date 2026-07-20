@@ -1,7 +1,20 @@
+import { randomBytes } from "node:crypto";
+
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
+
+function resolveSeedAdmin(): { email: string; password: string; name: string } {
+  const email = process.env.SEED_ADMIN_EMAIL ?? "admin@radiant-beauty.local";
+  const password =
+    process.env.SEED_ADMIN_PASSWORD ??
+    // Genera una password aleatoria fuerte si no se proporciona una por env.
+    // Se imprime por consola al final del seed (solo la primera vez).
+    `Admin-${randomBytes(9).toString("base64url")}`;
+  const name = process.env.SEED_ADMIN_NAME ?? "Administradora";
+  return { email, password, name };
+}
 
 async function main() {
   console.log("🌱 Seeding database...\n");
@@ -9,9 +22,12 @@ async function main() {
   // -------------------------------------------------------------------------
   // Admin user
   // -------------------------------------------------------------------------
-  const adminEmail = "admin@radiant-beauty.local";
-  const adminPassword = "admin123";
-  const adminName = "Administradora";
+  // Las credenciales vienen de variables de entorno (SEED_ADMIN_EMAIL,
+  // SEED_ADMIN_PASSWORD, SEED_ADMIN_NAME) para no tener secretos en el
+  // código. Si no se definen, se usan defaults seguros y la password se
+  // genera aleatoriamente y se imprime por consola.
+  const { email: adminEmail, password: adminPassword, name: adminName } =
+    resolveSeedAdmin();
 
   const passwordHash = await bcrypt.hash(adminPassword, 10);
 
@@ -29,9 +45,16 @@ async function main() {
         name: adminName,
       },
     });
+    const passwordFromEnv = Boolean(process.env.SEED_ADMIN_PASSWORD);
     console.log(`✓ Admin created: ${admin.email}`);
-    console.log(`  Password: ${adminPassword}`);
-    console.log(`  ⚠️  Change this password after first login!\n`);
+    if (!passwordFromEnv) {
+      // Solo imprimimos la password cuando fue generada aleatoriamente.
+      // Si vino por env, el operador ya la conoce.
+      console.log(`  Generated password: ${adminPassword}`);
+    }
+    console.log(
+      `  ⚠️  Change this password after first login (or set SEED_ADMIN_PASSWORD in .env)!\n`,
+    );
   }
 
   // -------------------------------------------------------------------------

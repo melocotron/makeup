@@ -1,18 +1,34 @@
-# makeup-site
+# radiant-beauty
 
-Sitio web con landing pública y panel administrativo para profesional de maquillaje/belleza.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
+
+Sitio web con landing pública y panel administrativo para profesional de
+maquillaje/belleza. Incluye reservas online, gestión de clientes, contenido
+editable, blog, sistema de fidelidad y cobros manuales.
+
+> Versión actual: **0.2.0** — landing + booking + admin (clientes, citas,
+> horarios, servicios, paquetes). En desarrollo: fidelización, promociones,
+> blog, cobros.
+
+---
 
 ## Stack
 
-- **Framework**: Next.js 15 (App Router) + TypeScript
+- **Framework**: Next.js 15 (App Router) + TypeScript estricto
 - **Estilos**: Tailwind CSS v4 + design tokens custom
 - **UI base**: shadcn/ui (Radix primitives + Tailwind)
-- **DB**: MySQL 8 (Prisma ORM)
-- **Auth**: Auth.js v5 (admin) + magic link (clientes)
-- **i18n**: next-intl (es/en)
-- **Tema**: next-themes (light/dark)
+- **DB**: MySQL 8 + Prisma ORM 6
+- **Auth**: NextAuth v5 (credenciales admin) + magic link (clientes)
+- **i18n**: next-intl (es / en)
+- **Tema**: next-themes (light / dark / system)
 - **Email**: Nodemailer + SMTP
-- **Deploy objetivo**: Hostinger Business+ (Node.js + MySQL nativos, PM2)
+- **Tests**: Vitest (unit) + Playwright (E2E)
+- **Deploy objetivo**: Node.js + MySQL (Hostinger Business+, PM2)
+
+---
 
 ## Requisitos
 
@@ -22,29 +38,47 @@ Sitio web con landing pública y panel administrativo para profesional de maquil
 
 ## Setup local (primera vez)
 
-```powershell
+```bash
 # 1. Clonar repo e instalar deps
+git clone https://github.com/melocotron/makeup.git
+cd makeup
 npm install
 
 # 2. Levantar MySQL en Docker
 npm run db:up
 
 # 3. Copiar variables de entorno
-Copy-Item .env.example .env
-# (editar .env si quieres; los defaults ya funcionan)
+cp .env.example .env
+# (editar .env; los defaults ya funcionan para dev)
 
-# 4. Generar cliente Prisma y correr migración inicial
-npx prisma migrate dev --name init
+# 4. Generar cliente Prisma y aplicar migración inicial
+npx prisma migrate deploy
 
 # 5. (Opcional) Cargar datos seed
 npm run db:seed
+# Si no defines SEED_ADMIN_PASSWORD en .env, se genera una aleatoria
+# y se imprime por consola la primera vez.
 
 # 6. Arrancar dev server
 npm run dev
 ```
 
-App disponible en `http://localhost:3000`
-phpMyAdmin en `http://localhost:8080`
+- App: <http://localhost:3000>
+- phpMyAdmin: <http://localhost:8080>
+- Admin login: `admin@radiant-beauty.local` / (ver consola tras `db:seed`)
+
+## Tests
+
+```bash
+npm test           # 56 unit tests (Vitest)
+npm run test:cov   # con reporte de coverage
+npm run test:e2e   # 3 E2E specs (Playwright, requiere DB levantada)
+```
+
+Los E2E corren serializados con `workers=1` y `timeout=60s`. Antes de
+correrlos, asegúrate de tener MySQL levantado y los datos seed cargados.
+
+---
 
 ## Estructura del proyecto
 
@@ -54,19 +88,21 @@ phpMyAdmin en `http://localhost:8080`
 ├── openspec/                    # SDD (Specification-Driven Development)
 │   ├── README.md
 │   ├── specs/                  # Specs VIVAS (estado actual)
-│   └── changes/                # Features en progreso
+│   └── changes/                # Features en progreso / archive
 ├── prisma/
 │   ├── schema.prisma           # Modelos de DB
 │   ├── migrations/             # SQL versionado
 │   └── seed.ts                 # Datos iniciales
 ├── messages/                    # i18n (es.json, en.json)
 ├── public/                      # Assets estáticos + uploads
+├── e2e/                         # Playwright specs
 └── src/
     ├── app/                     # Next.js App Router
     │   ├── [locale]/            # Routing por idioma
     │   │   ├── (admin)/admin/   # Panel admin
-    │   │   └── page.tsx         # Landing pública
-    │   └── globals.css          # Design tokens + Tailwind
+    │   │   ├── (public)/        # Landing pública
+    │   │   └── (auth)/          # Login, etc.
+    │   └── globals.css
     ├── components/
     │   ├── ui/                  # shadcn/ui copiados
     │   ├── admin/               # específicos admin
@@ -74,44 +110,50 @@ phpMyAdmin en `http://localhost:8080`
     │   └── theme/               # ThemeToggle, LanguageSwitcher
     ├── lib/                     # utils, prisma client
     ├── server/                  # Backend por bounded contexts
-    │   ├── auth/
-    │   ├── catalog/
-    │   ├── booking/
+    │   ├── auth/                # NextAuth, login, sessions
+    │   ├── catalog/             # servicios, paquetes
+    │   ├── booking/             # reservas, scheduling
     │   ├── clients/
-    │   ├── billing/
-    │   ├── promotions/
-    │   ├── loyalty/
-    │   ├── content/
-    │   ├── blog/
-    │   ├── media/
-    │   ├── notifications/
-    │   └── system/
+    │   ├── billing/             # facturas (en desarrollo)
+    │   ├── promotions/          # cupones (en desarrollo)
+    │   ├── loyalty/             # puntos (en desarrollo)
+    │   ├── content/             # perfil, media, carrusel
+    │   ├── blog/                # (en desarrollo)
+    │   ├── media/               # biblioteca de medios
+    │   ├── notifications/       # emails, magic links
+    │   └── system/              # settings, maintenance
     ├── i18n/                    # next-intl config
     └── types/                   # tipos compartidos
 ```
+
+---
 
 ## Scripts npm
 
 | Script | Descripción |
 |---|---|
 | `npm run dev` | Servidor de desarrollo con Turbopack |
-| `npm run build` | Build de producción |
+| `npm run build` | Build de producción (prisma generate + next build) |
 | `npm run start` | Servidor de producción |
 | `npm run lint` | ESLint |
 | `npm run typecheck` | TypeScript sin emitir |
 | `npm run format` | Prettier |
+| `npm run test` | Unit tests (Vitest) |
+| `npm run test:e2e` | E2E tests (Playwright) |
 | `npm run db:up` | Levanta MySQL + phpMyAdmin |
 | `npm run db:down` | Para los contenedores |
-| `npm run db:logs` | Ver logs de MySQL |
 | `npm run db:reset` | Borra volumen y reaplica migraciones |
 | `npm run db:migrate` | Crea/aplica migración en dev |
 | `npm run db:migrate:deploy` | Aplica migraciones en prod |
 | `npm run db:studio` | GUI de Prisma |
 | `npm run db:seed` | Carga datos seed |
 
+---
+
 ## OpenSpec (SDD)
 
-Este proyecto usa **OpenSpec** como metodología de specification-driven development. Cada feature pasa por:
+Este proyecto usa **OpenSpec** como metodología de specification-driven
+development. Cada feature pasa por:
 
 ```
 proposal → specs → tasks → archive
@@ -119,91 +161,17 @@ proposal → specs → tasks → archive
 
 - Documentación: [`openspec/README.md`](./openspec/README.md)
 - Specs vivas: [`openspec/specs/`](./openspec/specs/)
-- Cambios en progreso: [`openspec/changes/`](./openspec/changes/)
+- Cambios (en progreso / archive): [`openspec/changes/`](./openspec/changes/)
 
-## Fases del proyecto
+## Contribuir
 
-1. **Foundation** (esta fase) — Stack, tokens, i18n, tema, Docker, Prisma
-2. Auth admin + Dashboard base
-3. Contenido editable base (perfil, contacto, media, carrusel)
-4. Landing pública completa
-5. Servicios y paquetes
-6. Sistema de reservas
-7. Clientes
-8. Promociones, descuentos y fidelidad
-9. Cobros manuales
-10. Blog
-11. Pulido + deploy a Hostinger
+Las contribuciones son bienvenidas. Por favor:
 
-## Convenciones
+1. Lee [`CONTRIBUTING.md`](./CONTRIBUTING.md) para el flujo de Gitflow y
+   convenciones de commits (Conventional Commits).
+2. Lee [`AGENTS.md`](./AGENTS.md) si vas a usar un agente AI para contribuir.
+3. Para reportes de seguridad, ver [`SECURITY.md`](./SECURITY.md).
 
-- **Commits**: Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`)
-- **Branches**: `main` (protegida), `feature/<id>-<desc>`
-- **PRs**: uno por cambio OpenSpec
+## Licencia
 
-## codebase-memory-mcp (inteligencia de código)
-
-Este proyecto está indexado en [codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp),
-un servidor MCP que mantiene un grafo de conocimiento persistente del repo (funciones, clases, call
-chains, rutas HTTP). Permite responder preguntas estructurales con una sola llamada al MCP en vez de
-explorar archivos manualmente.
-
-### Instalación local
-
-El binario (`codebase-memory-mcp.exe`) ya está instalado en `%LOCALAPPDATA%\Programs\codebase-memory-mcp\`
-y disponible en `PATH` del usuario. Si se reinstala el sistema o se trabaja desde otra máquina:
-
-```powershell
-irm https://raw.githubusercontent.com/DeusData/codebase-memory-mcp/main/install.ps1 -OutFile install.ps1
-Unblock-File .\install.ps1
-.\install.ps1          # binario + auto-configura agentes detectados
-.\install.ps1 --ui     # variante con UI 3D (puerto 9749)
-```
-
-Después: reiniciar el agente (OpenCode, Claude Code, etc.).
-
-### Archivos de configuración (en este repo)
-
-| Archivo | Propósito |
-|---|---|
-| `opencode.json` | Registra el MCP server para OpenCode (`type: "local"`, `command: ["codebase-memory-mcp"]`). |
-| `AGENTS.md` | Reglas para agentes AI: cuándo usar el grafo antes que `Grep`/`Read`, tabla de decisión, flujo canónico de diagnóstico de bugs. |
-| `.cbmignore` | Exclusiones por capa (gitignore syntax) — `.next/`, `node_modules/`, `public/uploads/`, `prisma/dev.db`, etc. |
-| `.gitignore` (modificado) | Añade `.codebase-memory/` para no commitear el cache local del grafo. |
-
-### Uso básico
-
-```powershell
-# Verificar que el proyecto está indexado
-codebase-memory-mcp cli list_projects
-
-# Buscar funciones del módulo booking
-codebase-memory-mcp cli search_graph --project C-00-Cursos-000-SDD-makeup --file_pattern "*booking*" --label Function
-
-# Trazar quién llama a una función
-codebase-memory-mcp cli trace_path --project C-00-Cursos-000-SDD-makeup --function_name "cn" --direction inbound --depth 2
-
-# Ejecutar Cypher directamente
-codebase-memory-mcp cli query_graph --project C-00-Cursos-000-SDD-makeup --query "MATCH (f:Function) WHERE NOT EXISTS { (f)<-[:CALLS]-() } RETURN f.name LIMIT 20"
-```
-
-### UI 3D (opcional)
-
-Si se instaló la variante `--ui`, el grafo se puede explorar visualmente en `http://localhost:9749`
-(proceso detached, sobrevive entre sesiones).
-
-### Re-indexado
-
-- **Cambios chicos**: el watcher (`auto_watch=true`) detecta vía git y re-indexa incremental.
-- **Cambios grandes** (refactor, nuevo módulo): forzar con `index_repository(repo_path="C:/00-Cursos/000-SDD/makeup")` desde el chat, o por CLI:
-
-```powershell
-codebase-memory-mcp cli index_repository --repo_path "C:\00-Cursos\000-SDD\makeup"
-```
-
-Más detalles y la tabla de decisión completa: ver [`AGENTS.md`](./AGENTS.md).
-
-## Soporte
-
-- Issues: https://github.com/anomalyco/opencode/issues
-- Documentación OpenSpec: https://openspec.dev
+[MIT](./LICENSE) © 2026 Melocotron.
