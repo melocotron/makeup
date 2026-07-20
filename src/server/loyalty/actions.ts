@@ -119,12 +119,12 @@ export async function adjustPointsAction(
 
   // Si el type no es ADJUSTED, respetamos lo explícito. Si es ADJUSTED (default),
   // inferimos del signo de points.
-  const inferredType =
-    parsed.data.type === "ADJUSTED"
-      ? parsed.data.points > 0
+  const inferredType: "EARNED" | "REDEEMED" | "ADJUSTED" =
+    parsed.data.type && parsed.data.type !== "ADJUSTED"
+      ? parsed.data.type
+      : parsed.data.points > 0
         ? "EARNED"
-        : "REDEEMED"
-      : parsed.data.type;
+        : "REDEEMED";
 
   try {
     await prisma.$transaction(async (tx) => {

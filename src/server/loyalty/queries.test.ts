@@ -169,15 +169,15 @@ describe("getClientLoyalty", () => {
     const result = await getClientLoyalty("cli-1");
 
     expect(result.recent).toHaveLength(2);
-    expect(result.recent[0]).toMatchObject({
+    expect(result.recent[0]!).toMatchObject({
       id: "tx-1",
       type: "EARNED",
       points: 50,
       reason: "Cita completada",
       invoiceId: "inv-1",
     });
-    expect(typeof result.recent[0].createdAt).toBe("string");
-    expect(result.recent[1].points).toBe(-30);
+    expect(typeof result.recent[0]!.createdAt).toBe("string");
+    expect(result.recent[1]!.points).toBe(-30);
   });
 
   it("usa limit por default de 20", async () => {

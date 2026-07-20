@@ -114,7 +114,9 @@ describe("adjustPointsSchema", () => {
     const result = adjustPointsSchema.safeParse(baseValid);
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.data.type).toBe("ADJUSTED"); // default
+      // El campo type es opcional. Si no se envía, queda undefined y la
+      // action infiere EARNED/REDEEMED según el signo de points.
+      expect(result.data.type).toBeUndefined();
     }
   });
 

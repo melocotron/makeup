@@ -66,7 +66,7 @@ export const adjustPointsSchema = z
       .trim()
       .min(3, "La razón debe tener al menos 3 caracteres")
       .max(200, "Máximo 200 caracteres"),
-    type: z.enum(["EARNED", "REDEEMED", "ADJUSTED"]).default("ADJUSTED"),
+    type: z.enum(["EARNED", "REDEEMED", "ADJUSTED"]).optional(),
   })
   .refine((data) => data.points !== 0, {
     message: "Los puntos no pueden ser 0",
