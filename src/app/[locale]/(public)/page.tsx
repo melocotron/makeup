@@ -33,13 +33,12 @@ export default async function HomePage({
     redirect(`/${locale}/maintenance`);
   }
 
-  const [services, packages, about] = await Promise.all([
+  const [services, packages, about, t] = await Promise.all([
     listServices(),
     listPackages(),
     getAboutContent(),
+    getTranslations({ locale, namespace: "home" }),
   ]);
-
-  const t = await getTranslations({ locale, namespace: "home" });
 
   const servicesData = services as unknown as PublicServiceCardData[];
   const packagesData = packages as unknown as PublicPackageCardData[];

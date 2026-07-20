@@ -12,8 +12,10 @@ export default async function ProfilePage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const about = await getAboutContent();
-  const t = await getTranslations({ locale, namespace: "admin.profile" });
+  const [about, t] = await Promise.all([
+    getAboutContent(),
+    getTranslations({ locale, namespace: "admin.profile" }),
+  ]);
 
   const bioObj = (about.bio as Record<string, string> | null) ?? null;
 

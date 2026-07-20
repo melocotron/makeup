@@ -12,8 +12,10 @@ export default async function SettingsPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const settings = await getSettings();
-  const t = await getTranslations({ locale, namespace: "admin.settings" });
+  const [settings, t] = await Promise.all([
+    getSettings(),
+    getTranslations({ locale, namespace: "admin.settings" }),
+  ]);
 
   const extractString = (v: unknown): string => {
     if (typeof v === "string") return v;

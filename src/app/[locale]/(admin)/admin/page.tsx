@@ -11,8 +11,10 @@ export default async function AdminDashboardPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const t = await getTranslations({ locale, namespace: "admin" });
-  const tCommon = await getTranslations({ locale, namespace: "common" });
+  const [t, tCommon] = await Promise.all([
+    getTranslations({ locale, namespace: "admin" }),
+    getTranslations({ locale, namespace: "common" }),
+  ]);
 
   const quickAccess = [
     { href: "appointments", labelKey: "quickAccess.newAppointment" },

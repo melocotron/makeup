@@ -12,8 +12,10 @@ export default async function HomeCarouselPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const items = await listCarouselSlides();
-  const t = await getTranslations({ locale, namespace: "admin.carousel" });
+  const [items, t] = await Promise.all([
+    listCarouselSlides(),
+    getTranslations({ locale, namespace: "admin.carousel" }),
+  ]);
 
   const serialized: CarouselSlide[] = items.map((s) => ({
     id: s.id,

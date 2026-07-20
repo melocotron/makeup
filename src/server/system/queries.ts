@@ -1,8 +1,10 @@
 import "server-only";
 
+import { cache } from "react";
+
 import { prisma } from "@/lib/prisma";
 
-export async function getSettings() {
+export const getSettings = cache(async () => {
   const settings = await prisma.settings.findUnique({
     where: { id: "singleton" },
   });
@@ -13,4 +15,4 @@ export async function getSettings() {
     });
   }
   return settings;
-}
+});

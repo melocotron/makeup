@@ -15,12 +15,14 @@ export default async function MaintenancePage({
   }
   setRequestLocale(locale as Locale);
 
-  const settings = await getSettings();
+  const [settings, t] = await Promise.all([
+    getSettings(),
+    getTranslations({ locale, namespace: "public.maintenance" }),
+  ]);
   if (!settings.maintenanceMode) {
     redirect(`/${locale}`);
   }
 
-  const t = await getTranslations({ locale, namespace: "public.maintenance" });
   const message = settings.maintenanceMessage?.trim() || t("fallbackMessage");
 
   return (

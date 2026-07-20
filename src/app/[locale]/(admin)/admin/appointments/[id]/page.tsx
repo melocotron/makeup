@@ -15,10 +15,11 @@ export default async function CitaDetailPage({
   const { locale, id } = await params;
   setRequestLocale(locale);
 
-  const appointment = await getAppointmentById(id);
+  const [appointment, t] = await Promise.all([
+    getAppointmentById(id),
+    getTranslations({ locale, namespace: "admin.appointments" }),
+  ]);
   if (!appointment) notFound();
-
-  const t = await getTranslations({ locale, namespace: "admin.appointments" });
 
   const detail: AppointmentDetail = {
     id: appointment.id,

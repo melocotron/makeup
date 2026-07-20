@@ -11,8 +11,10 @@ export default async function PackagesPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const packages = await listAllPackages();
-  const t = await getTranslations({ locale, namespace: "admin.catalog" });
+  const [packages, t] = await Promise.all([
+    listAllPackages(),
+    getTranslations({ locale, namespace: "admin.catalog" }),
+  ]);
 
   return (
     <div className="space-y-6">

@@ -13,10 +13,11 @@ export default async function EditServicePage({
   const { locale, id } = await params;
   setRequestLocale(locale);
 
-  const service = await getServiceById(id);
+  const [service, t] = await Promise.all([
+    getServiceById(id),
+    getTranslations({ locale, namespace: "admin.catalog" }),
+  ]);
   if (!service) notFound();
-
-  const t = await getTranslations({ locale, namespace: "admin.catalog" });
 
   const name = (service.name as Record<string, string>) ?? {};
   const description = (service.description as Record<string, string>) ?? {};

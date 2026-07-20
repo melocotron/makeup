@@ -12,8 +12,10 @@ export default async function CredentialsPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const items = await listCredentials();
-  const t = await getTranslations({ locale, namespace: "admin.credentials" });
+  const [items, t] = await Promise.all([
+    listCredentials(),
+    getTranslations({ locale, namespace: "admin.credentials" }),
+  ]);
 
   const serialized = items.map((c) => ({
     ...c,

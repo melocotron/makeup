@@ -11,8 +11,10 @@ export default async function NewPackagePage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const services = await listAllServices();
-  const t = await getTranslations({ locale, namespace: "admin.catalog" });
+  const [services, t] = await Promise.all([
+    listAllServices(),
+    getTranslations({ locale, namespace: "admin.catalog" }),
+  ]);
 
   const availableServices = services.map((s) => ({
     id: s.id,
