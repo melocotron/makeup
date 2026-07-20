@@ -156,3 +156,105 @@ codebase-memory-mcp cli index_repository \
 `--mode fast` es suficiente cuando solo se quieren recoger archivos nuevos
 que el watcher se saltó. Usar `full` solo después de un refactor grande o
 rename de carpeta.
+
+## Git workflow (Gitflow)
+
+Este proyecto usa [Gitflow](https://nvie.com/posts/a-successful-git-branching-model/)
+adaptado a OpenSpec. **Nunca** se commitea directo a `main` ni a `develop`.
+
+### Estructura de ramas
+
+| Rama | Propósito | Base | Merge a | Quién mergea |
+|---|---|---|---|---|
+| `main` | Producción, siempre deployable | — | — | protegida |
+| `develop` | Integración, recibe features | `main` | `main` (en release) | protegida |
+| `feature/<scope>/<kebab>` | Una feature o change de OpenSpec | `develop` | `develop` | el autor, con `--no-ff` |
+| `release/v<semver>` | Estabilizar antes de release | `develop` | `main` + `develop` | cuando todo OK |
+| `hotfix/<kebab>` | Fix crítico en producción | `main` | `main` + `develop` | rápido, con PR |
+
+### Conventional Commits (subject)
+
+- **Tipos permitidos**: `feat`, `fix`, `chore`, `docs`, `perf`, `refactor`, `test`, `build`, `ci`, `revert`, `style`.
+- **Scope** entre paréntesis cuando aplique: `feat(admin):`, `fix(booking):`, etc.
+- **Subject** en imperativo, lowercase, sin punto final, ≤72 chars.
+- **Sin scope** solo cuando el cambio es transversal (ej. `chore:`).
+
+### Body del commit (recomendado, obligatorio para cambios >3 archivos)
+
+Después de una línea en blanco, incluir:
+- **Por qué** (no el qué — el diff ya lo dice)
+- **Áreas afectadas**
+- **Notas de verificación** (qué se probó, qué falta probar)
+
+### Footer
+
+- `Refs: #issue-num` cuando aplique
+- `BREAKING CHANGE: <descripción>` cuando aplique (cambia API, schema, etc.)
+
+### Flujo de trabajo (OpenSpec change)
+
+```bash
+# 1. Asegurarse de estar en develop actualizado
+git switch develop
+git pull --rebase  # o git fetch + merge
+
+# 2. Crear rama para el change
+git switch -c feature/admin/clients-crud
+
+# 3. Crear propuesta OpenSpec
+mkdir -p openspec/changes/admin-clients-crud
+# escribir proposal.md, tasks.md
+
+# 4. Implementar + commit atómico (o varios commits lógicos)
+git add <files>
+git commit -m "feat(admin): clients CRUD with history view
+
+Why: Fase 6 of the project roadmap. Admin needs to manage clients
+beyond the auto-created ones from booking.
+
+Areas: admin (clients, dashboard), server (clients.*), db (Client
+model already exists; no schema changes).
+
+Verified: tsc --noEmit clean, all routes 200, e2e happy path."
+
+# 5. Verificar antes de merge
+npm run typecheck
+npm run lint
+# levantar dev, hacer e2e si hay cambio de UI
+
+# 6. Merge a develop (--no-ff preserva el contexto de la feature)
+git switch develop
+git merge --no-ff feature/admin/clients-crud
+
+# 7. Archivar el change de OpenSpec (opcional pero recomendado)
+openspec archive admin-clients-crud --yes --skip-specs
+
+# 8. Limpiar rama local
+git branch -d feature/admin/clients-crud
+```
+
+### Cuándo mergear develop → main
+
+Cuando develop tenga un conjunto de features testeadas y quieras
+un release. Típicamente: fin de sprint, o cuando hay suficientes
+features para un deploy.
+
+```bash
+git switch main
+git merge --no-ff develop
+git tag v0.2.0
+```
+
+### Anti-patrones
+
+- ❌ Commit directo a `main` o `develop` (rompe el historial)
+- ❌ `git push --force` a `main` o `develop` (pisa trabajo de otros)
+- ❌ Branches con nombres genéricos (`fix-bug`, `stuff`, `wip`)
+- ❌ Un solo mega-commit con 20 archivos y 5 concerns mezclados
+- ❌ Merge de develop a main sin haber probado las features integradas
+- ❌ `git commit --amend` después de push (reescribe historia pública)
+
+### Scopes reconocidos (referencia rápida)
+
+`admin` `public` `booking` `catalog` `auth` `i18n` `db` `schema` `ui` `docs`
+`tooling` `agents` `opendspec` `perf` `deps` `release` `hotfix`
