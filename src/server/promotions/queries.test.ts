@@ -80,7 +80,7 @@ describe("listCoupons", () => {
       serviceIds: ["svc-1", "svc-2"],
       status: "active",
     });
-    expect(typeof result.items[0].validFrom).toBe("string");
+    expect(typeof result.items[0]!.validFrom).toBe("string");
   });
 
   it("deriva status=expired cuando validUntil < now", async () => {
@@ -92,7 +92,7 @@ describe("listCoupons", () => {
     prismaMock.coupon.count.mockResolvedValue(1);
 
     const result = await listCoupons();
-    expect(result.items[0].status).toBe("expired");
+    expect(result.items[0]!.status).toBe("expired");
   });
 
   it("deriva status=exhausted cuando usedCount >= maxUses", async () => {
@@ -101,7 +101,7 @@ describe("listCoupons", () => {
     prismaMock.coupon.count.mockResolvedValue(1);
 
     const result = await listCoupons();
-    expect(result.items[0].status).toBe("exhausted");
+    expect(result.items[0]!.status).toBe("exhausted");
   });
 
   it("deriva status=inactive cuando isActive=false", async () => {
@@ -110,7 +110,7 @@ describe("listCoupons", () => {
     prismaMock.coupon.count.mockResolvedValue(1);
 
     const result = await listCoupons();
-    expect(result.items[0].status).toBe("inactive");
+    expect(result.items[0]!.status).toBe("inactive");
   });
 
   it("normaliza search a uppercase y filtra por code", async () => {
@@ -134,7 +134,7 @@ describe("listCoupons", () => {
 
     const result = await listCoupons({ status: "active" });
     expect(result.items).toHaveLength(1);
-    expect(result.items[0].id).toBe("cpn-1");
+    expect(result.items[0]!.id).toBe("cpn-1");
   });
 
   it("parsea serviceIds JSON y devuelve null si inválido", async () => {
@@ -143,7 +143,7 @@ describe("listCoupons", () => {
     prismaMock.coupon.count.mockResolvedValue(1);
 
     const result = await listCoupons();
-    expect(result.items[0].serviceIds).toBeNull();
+    expect(result.items[0]!.serviceIds).toBeNull();
   });
 
   it("parsea serviceIds null como null", async () => {
@@ -152,7 +152,7 @@ describe("listCoupons", () => {
     prismaMock.coupon.count.mockResolvedValue(1);
 
     const result = await listCoupons();
-    expect(result.items[0].serviceIds).toBeNull();
+    expect(result.items[0]!.serviceIds).toBeNull();
   });
 
   it("respeta paginación", async () => {
@@ -198,7 +198,7 @@ describe("getCouponById", () => {
       invoiceId: "inv-1",
       amount: 15,
     });
-    expect(typeof result!.usages[0].usedAt).toBe("string");
+    expect(typeof result!.usages[0]!.usedAt).toBe("string");
   });
 });
 

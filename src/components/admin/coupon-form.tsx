@@ -46,10 +46,6 @@ export interface CouponFormProps {
 
 type FormData = CreateCouponInput & { id?: string };
 
-function toDateInputValue(iso: string): string {
-  return iso.slice(0, 10);
-}
-
 function fromDateInputValue(value: string): Date {
   // Parse as local date at midnight to avoid timezone shift.
   const [y, m, d] = value.split("-").map(Number);
@@ -101,7 +97,6 @@ export function CouponForm({
 
   async function onSubmit(data: FormData) {
     if (mode === "create") {
-      const fd = new FormData();
       // Data already matches CreateCouponInput (without id).
       const result = await createCouponAction(data as CreateCouponInput);
       if (!result.success) {
