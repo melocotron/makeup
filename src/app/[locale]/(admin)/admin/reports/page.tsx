@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { type ReactNode, Suspense } from "react";
 
 import { DateRangePicker } from "@/components/admin/reports/date-range-picker";
+import { ExportButtons } from "@/components/admin/reports/export-buttons";
 import {
   RevenueChart,
   ServicesChart,
@@ -206,6 +207,15 @@ export default async function ReportsPage({
       <PageHeader
         title={t("title")}
         description={t("subtitle")}
+        actions={
+          <Suspense
+            fallback={
+              <div className="h-9 w-44 rounded-md border border-outline-variant bg-surface-container-lowest" />
+            }
+          >
+            <ExportButtons />
+          </Suspense>
+        }
       />
 
       {/* Date range picker */}
