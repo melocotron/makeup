@@ -1,124 +1,30 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
-import { useRouter, useSearchParams } from "next/navigation";
-import * as React from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
+import { useTranslations } from "next-intl";
+import { useFormStatus } from "react-dom";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { loginAction } from "@/server/auth/login-action";
-import type { Locale } from "@/i18n/routing";
 
-function createLoginSchema(t: (key: string) => string) {
-  return z.object({
-    email: z.string().email({ message: t("login.invalidEmail") }),
-    password: z.string().min(1, { message: t("login.passwordRequired") }),
-  });
-}
-
-type LoginFormData = {
-  email: string;
-  password: string;
-};
-
-export function LoginForm() {
-  const t = useTranslations("auth");
+/**
+ * Botón de submit con loading state. Se usa dentro de un <form> con
+ * `action={loginAction}` (server action) para que el browser muestre
+ * el spinner mientras el server action se ejecuta.
+ */
+export function LoginSubmitButton() {
   const tCommon = useTranslations("common");
-  const locale = useLocale() as Locale;
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || `/${locale}/admin`;
-
-  const loginSchema = React.useMemo(() => createLoginSchema(t), [t]);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    setError,
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "" },
-  });
-
-  async function onSubmit(data: LoginFormData) {
-    try {
-      const formData = new FormData();
-      formData.append("email", data.email);
-      formData.append("password", data.password);
-      formData.append("locale", locale);
-      formData.append("callbackUrl", callbackUrl);
-
-      const result = await loginAction(formData);
-
-      if (!result.success) {
-        toast.error(result.error);
-        setError("password", { message: result.error });
-        return;
-      }
-
-      toast.success(t("login.welcomeBack"));
-      // Usamos callbackUrl que viene del action (sanitizado server-side)
-      const target = "callbackUrl" in result && result.callbackUrl ? result.callbackUrl : callbackUrl;
-      router.push(target);
-      router.refresh();
-    } catch {
-      toast.error(t("login.genericError"));
-    }
-  }
+  const { pending } = useFormStatus();
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-      <div className="space-y-1">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          autoComplete="email"
-          placeholder="admin@radiant-beauty.local"
-          aria-invalid={!!errors.email}
-          {...register("email")}
-        />
-        {errors.email && (
-          <p className="text-xs text-error" role="alert">
-            {errors.email.message}
-          </p>
-        )}
-      </div>
-
-      <div className="space-y-1">
-        <Label htmlFor="password">{t("login.password")}</Label>
-        <Input
-          id="password"
-          type="password"
-          autoComplete="current-password"
-          placeholder="••••••••"
-          aria-invalid={!!errors.password}
-          {...register("password")}
-        />
-        {errors.password && (
-          <p className="text-xs text-error" role="alert">
-            {errors.password.message}
-          </p>
-        )}
-      </div>
-
-      <Button type="submit" disabled={isSubmitting} className="w-full" size="lg">
-        {isSubmitting ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin" />
-            {tCommon("loading")}
-          </>
-        ) : (
-          tCommon("submit")
-        )}
-      </Button>
-    </form>
+    <Button type="submit" disabled={pending} className="w-full" size="lg">
+      {pending ? (
+        <>
+          <Loader2 className="h-4 w-4 animate-spin" />
+          {tCommon("loading")}
+        </>
+      ) : (
+        tCommon("submit")
+      )}
+    </Button>
   );
 }

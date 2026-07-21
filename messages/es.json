@@ -256,7 +256,129 @@
       },
       "deleteConfirmTitle": "¿Eliminar este cliente?",
       "deleteConfirmDesc": "Esta acción no se puede deshacer. El cliente será eliminado permanentemente.",
-      "deleteConfirmDescHasAppts": "Este cliente tiene citas asociadas y no puede ser eliminado. Cancela las citas primero."
+      "deleteConfirmDescHasAppts": "Este cliente tiene citas asociadas y no puede ser eliminado. Cancela las citas primero.",
+      "loyalty": {
+        "title": "Puntos de fidelización",
+        "balanceDesc": "Balance actual: {balance} pts · {earned} ganados · {redeemed} redimidos"
+      }
+    },
+    "promotions": {
+      "description": "{active} activos · {exhausted} agotados · {monthUsages} usos este mes",
+      "newCoupon": "Nuevo cupón",
+      "newCouponDesc": "Crea un cupón de descuento con código, vigencia y uso limitado.",
+      "editDescription": "Edita los parámetros del cupón. El código y el tipo no son editables después de crear.",
+      "form": {
+        "basicInfo": "Datos del cupón",
+        "code": "Código",
+        "codeImmutable": "El código no se puede cambiar una vez creado.",
+        "type": "Tipo",
+        "value": "Valor",
+        "minPurchase": "Compra mínima",
+        "maxUses": "Máximo de usos",
+        "validFrom": "Válido desde",
+        "validUntil": "Válido hasta",
+        "description": {
+          "es": "Descripción (español)",
+          "en": "Descripción (inglés)"
+        },
+        "serviceIds": "Servicios aplicables",
+        "serviceIdsHint": "Si no seleccionas ninguno, el cupón aplica a todos los servicios.",
+        "isActive": "Cupón activo"
+      },
+      "type": {
+        "PERCENTAGE": "Porcentaje",
+        "FIXED": "Monto fijo"
+      },
+      "status": {
+        "active": "Activo",
+        "expired": "Expirado",
+        "exhausted": "Agotado",
+        "inactive": "Desactivado"
+      },
+      "columns": {
+        "code": "Código",
+        "type": "Tipo",
+        "value": "Valor",
+        "validity": "Vigencia",
+        "uses": "Usos",
+        "status": "Estado"
+      },
+      "usages": {
+        "title": "Historial de usos",
+        "description": "{count} usos registrados",
+        "empty": "Este cupón aún no se ha usado.",
+        "invoice": "Factura"
+      },
+      "search": "Buscar por código…",
+      "empty": {
+        "noCoupons": "No hay cupones todavía",
+        "noCouponsDesc": "Crea tu primer cupón para empezar a ofrecer descuentos a tus clientes."
+      },
+      "created": "Cupón creado",
+      "updated": "Cupón actualizado",
+      "deactivated": "Cupón desactivado",
+      "deleted": "Cupón eliminado",
+      "deactivate": "Desactivar",
+      "confirmDeactivate": "¿Desactivar este cupón? Los usos ya registrados se conservan.",
+      "confirmDelete": "¿Eliminar este cupón? Esta acción no se puede deshacer."
+    },
+    "loyalty": {
+      "description": "Configura la regla activa de acumulación y redención de puntos.",
+      "activeRule": "Regla activa",
+      "activeRuleDesc": "Regla actual: {name}. Guardar una nueva regla desactivará la anterior.",
+      "noActiveRule": "No hay regla activa. Crea la primera para empezar a acumular puntos.",
+      "history": "Reglas anteriores",
+      "historyDesc": "{count} reglas inactivas en el histórico",
+      "active": "Activa",
+      "inactive": "Inactiva",
+      "stats": {
+        "earn": "Acumulación",
+        "redeem": "Redención",
+        "value": "Valor"
+      },
+      "form": {
+        "name": "Nombre de la regla",
+        "pointsPerAmount": "Puntos por $",
+        "pointsPerAmountHint": "Ej: 1 = 1 punto por cada $1 gastado. 0.1 = 1 punto por cada $10.",
+        "pointsToRedeem": "Puntos para redimir",
+        "redeemValue": "Valor de redención"
+      },
+      "created": "Regla creada",
+      "updated": "Regla actualizada",
+      "transactions": {
+        "empty": "Este cliente aún no tiene transacciones de puntos.",
+        "columns": {
+          "date": "Fecha",
+          "type": "Tipo",
+          "points": "Puntos",
+          "reason": "Razón"
+        },
+        "type": {
+          "EARNED": "Ganados",
+          "REDEEMED": "Redimidos",
+          "EXPIRED": "Expirados",
+          "ADJUSTED": "Ajustados"
+        }
+      },
+      "adjust": {
+        "trigger": "Ajustar puntos",
+        "title": "Ajustar puntos del cliente",
+        "description": "Modifica el balance de {name}. Balance actual: {balance} pts.",
+        "points": "Puntos (negativo para restar)",
+        "pointsHint": "Usa números positivos para sumar, negativos para restar.",
+        "reasonPreset": "Razón predefinida",
+        "selectReason": "Selecciona una razón…",
+        "reason": "Descripción",
+        "reasonPlaceholder": "Ej: Regalo de cumpleaños, corrección por error…",
+        "success": "Puntos ajustados correctamente",
+        "reasons": {
+          "gift": "Regalo",
+          "correction": "Corrección",
+          "complaint": "Queja",
+          "birthday": "Cumpleaños",
+          "other": "Otra"
+        }
+      }
     },
     "media": {
       "title": "Biblioteca de medios",

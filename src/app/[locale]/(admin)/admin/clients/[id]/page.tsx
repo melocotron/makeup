@@ -1,12 +1,15 @@
 import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 
+import { AdjustPointsDialog } from "@/components/admin/adjust-points-dialog";
 import { ClientDeleteButton } from "@/components/admin/client-delete-button";
 import { ClientForm } from "@/components/admin/client-form";
 import { ClientHistory } from "@/components/admin/client-history";
+import { LoyaltyTransactionsList } from "@/components/admin/loyalty-transactions-list";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/components/admin/page-header";
 import { getClientById } from "@/server/clients/queries";
+import { getClientLoyalty } from "@/server/loyalty/queries";
 
 export default async function ClientDetailPage({
   params,
@@ -16,9 +19,10 @@ export default async function ClientDetailPage({
   const { locale, id } = await params;
   setRequestLocale(locale);
 
-  const [t, client] = await Promise.all([
+  const [t, client, loyalty] = await Promise.all([
     getTranslations({ locale, namespace: "admin" }),
     getClientById(id),
+    getClientLoyalty(id, 20),
   ]);
 
   if (!client) notFound();
@@ -54,7 +58,7 @@ export default async function ClientDetailPage({
           </CardHeader>
           <CardContent className="text-xs text-on-surface-variant">
             {t("clients.stats.memberSince", {
-              date: new Date(client.registeredAt).toLocaleDateString("es-ES"),
+              date: new Date(client.registeredAt).toLocaleDateString(locale),
             })}
           </CardContent>
         </Card>
@@ -74,6 +78,32 @@ export default async function ClientDetailPage({
               phone: client.phone ?? "",
               notes: client.notes ?? "",
             }}
+          />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+          <div>
+            <CardTitle>{t("clients.loyalty.title")}</CardTitle>
+            <CardDescription>
+              {t("clients.loyalty.balanceDesc", {
+                balance: loyalty.balance,
+                earned: loyalty.totalEarned,
+                redeemed: loyalty.totalRedeemed,
+              })}
+            </CardDescription>
+          </div>
+          <AdjustPointsDialog
+            clientId={client.id}
+            clientName={client.name}
+            currentBalance={loyalty.balance}
+          />
+        </CardHeader>
+        <CardContent>
+          <LoyaltyTransactionsList
+            transactions={loyalty.recent}
+            locale={locale}
           />
         </CardContent>
       </Card>

@@ -8,6 +8,14 @@ node_modules/
 coverage/
 *.lcov
 .nyc_output
+test-results/
+playwright-report/
+playwright/.cache/
+
+# debug artifacts (curl cookies, lint output dumps, etc.)
+cookies.txt
+*.baseline.txt
+lint-baseline.txt
 
 # next.js
 .next/

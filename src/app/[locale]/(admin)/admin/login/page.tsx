@@ -1,12 +1,15 @@
 import { Suspense } from "react";
-import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { redirect } from "next/navigation";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/server/auth";
+import { loginFormAction } from "@/server/auth/login-action";
 
-import { LoginForm } from "./login-form";
+import { LoginSubmitButton } from "./login-form";
 
 export default async function AdminLoginPage({
   params,
@@ -22,12 +25,17 @@ export default async function AdminLoginPage({
     redirect(`/${locale}/admin`);
   }
 
-  return <LoginScreen />;
+  return (
+    <Suspense fallback={null}>
+      <LoginScreen locale={locale} />
+    </Suspense>
+  );
 }
 
-function LoginScreen() {
-  const tAdmin = useTranslations("admin");
-  const tAuth = useTranslations("auth");
+async function LoginScreen({ locale }: { locale: string }) {
+  const tAdmin = await getTranslations("admin");
+  const tAuth = await getTranslations("auth");
+  const callbackUrl = `/${locale}/admin`;
 
   return (
     <>
@@ -42,9 +50,36 @@ function LoginScreen() {
             <p className="mt-2 text-sm text-on-surface-variant">{tAuth("login.signInPrompt")}</p>
           </div>
 
-          <Suspense fallback={null}>
-            <LoginForm />
-          </Suspense>
+          <form action={loginFormAction} className="space-y-4">
+            <input type="hidden" name="callbackUrl" value={callbackUrl} />
+            <input type="hidden" name="locale" value={locale} />
+
+            <div className="space-y-1">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                placeholder="admin@radiant-beauty.local"
+                required
+              />
+            </div>
+
+            <div className="space-y-1">
+              <Label htmlFor="password">{tAuth("login.password")}</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+
+            <LoginSubmitButton />
+          </form>
 
           <p className="mt-6 text-center text-xs text-on-surface-variant">
             🔒 {tAuth("login.securityNote")}

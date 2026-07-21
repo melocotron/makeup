@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -17,6 +17,7 @@ import {
   updateClientAction,
 } from "@/server/clients/actions";
 import { createClientSchema, updateClientSchema } from "@/server/clients/validators";
+import type { Locale } from "@/i18n/routing";
 
 interface ClientFormProps {
   mode: "create" | "edit";
@@ -40,6 +41,7 @@ export function ClientForm({ mode, initialData }: ClientFormProps) {
   const t = useTranslations("admin.clients");
   const tCommon = useTranslations("common");
   const router = useRouter();
+  const locale = useLocale() as Locale;
 
   const {
     register,
@@ -72,9 +74,14 @@ export function ClientForm({ mode, initialData }: ClientFormProps) {
     if (result.success) {
       toast.success(mode === "create" ? t("created") : t("updated"));
       if (mode === "create" && "id" in result && result.id) {
-        router.push(`/admin/clients/${result.id}`);
+        // Usamos window.location.assign (no router.push) porque en este
+        // proyecto hemos visto que router.push con router.refresh puede
+        // no completar la navegación SPA en ciertos flujos (ej. después
+        // de un server action que setea una cookie de sesión). Un full
+        // reload fuerza al router a re-evaluar y completar la transición.
+        window.location.assign(`/${locale}/admin/clients/${result.id}`);
       } else {
-        router.refresh();
+        window.location.reload();
       }
     } else {
       toast.error(result.error);
@@ -127,7 +134,7 @@ export function ClientForm({ mode, initialData }: ClientFormProps) {
         <Button
           type="button"
           variant="ghost"
-          onClick={() => router.push("/admin/clients")}
+          onClick={() => router.push(`/${locale}/admin/clients`)}
         >
           {tCommon("cancel")}
         </Button>
