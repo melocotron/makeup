@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Receipt } from "lucide-react";
 
+import { BillingSection } from "@/components/admin/billing-section";
 import { Button } from "@/components/ui/button";
 import { AppointmentDetailView, type AppointmentDetail } from "@/components/admin/appointment-detail";
 import { getAppointmentById } from "@/server/booking/queries";
@@ -54,6 +55,14 @@ export default async function CitaDetailPage({
         {t("title")}
       </h1>
       <AppointmentDetailView appointment={detail} locale={locale} />
+
+      {/* Sección de facturación: server-rendered para que pueda usar
+          getInvoiceForAppointment y mostrar el estado actual. */}
+      <BillingSection
+        appointmentId={appointment.id}
+        appointmentStatus={appointment.status as AppointmentDetail["status"]}
+        locale={locale}
+      />
     </div>
   );
 }
