@@ -39,6 +39,12 @@ export function PublicHeader({ locale }: { locale: Locale }) {
             {t("about")}
           </a>
           <a
+            href={`/${locale}/blog`}
+            className="text-xs font-semibold uppercase tracking-widest text-on-surface-variant transition-colors hover:text-primary"
+          >
+            {t("blog")}
+          </a>
+          <a
             href={`/${locale}#booking`}
             className="text-xs font-semibold uppercase tracking-widest text-on-surface-variant transition-colors hover:text-primary"
           >
