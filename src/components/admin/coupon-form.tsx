@@ -44,10 +44,18 @@ export interface CouponFormProps {
   availableServices: { id: string; name: string }[];
 }
 
+// Form-level shape: las fechas son Date objects (lo que pasamos como
+// default y lo que RHF entrega en onSubmit). El input type="date"
+// emite strings YYYY-MM-DD y `setValueAs` los convierte a Date usando
+// fromDateInputValue.
 type FormData = CreateCouponInput & { id?: string };
 
-function fromDateInputValue(value: string): Date {
-  // Parse as local date at midnight to avoid timezone shift.
+function fromDateInputValue(value: string | Date): Date {
+  // react-hook-form puede pasar un Date (el default value) o un string
+  // (el value del input) según el call site. Aceptamos ambos.
+  if (value instanceof Date) return value;
+  if (typeof value !== "string") return new Date();
+  // Parsear como fecha local a medianoche para evitar timezone shift.
   const [y, m, d] = value.split("-").map(Number);
   return new Date(y!, (m ?? 1) - 1, d ?? 1);
 }
@@ -97,8 +105,8 @@ export function CouponForm({
 
   async function onSubmit(data: FormData) {
     if (mode === "create") {
-      // Data already matches CreateCouponInput (without id).
-      const result = await createCouponAction(data as CreateCouponInput);
+      // Data ya coincide con CreateCouponInput (sin id).
+      const result = await createCouponAction(data);
       if (!result.success) {
         toast.error(result.error);
         return;
@@ -273,8 +281,9 @@ export function CouponForm({
       </div>
 
       <div className="space-y-1.5">
-        <Label>{t("form.description.es")} *</Label>
+        <Label htmlFor="description-es">{t("form.description.es")} *</Label>
         <Input
+          id="description-es"
           placeholder="Promo de verano"
           {...register("description.es")}
         />
@@ -286,8 +295,9 @@ export function CouponForm({
       </div>
 
       <div className="space-y-1.5">
-        <Label>{t("form.description.en")} *</Label>
+        <Label htmlFor="description-en">{t("form.description.en")} *</Label>
         <Input
+          id="description-en"
           placeholder="Summer sale"
           {...register("description.en")}
         />
