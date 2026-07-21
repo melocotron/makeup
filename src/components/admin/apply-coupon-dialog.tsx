@@ -51,6 +51,7 @@ export function ApplyCouponDialog({
   const tDialogs = useTranslations("admin.billing.dialogs");
   const tActions = useTranslations("admin.billing.actions");
   const tCommon = useTranslations("common");
+  const tBilling = useTranslations("admin.billing");
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [code, setCode] = useState("");
@@ -123,7 +124,7 @@ export function ApplyCouponDialog({
                 {tCommon("loading")}
               </>
             ) : (
-              t("applied")
+              tBilling("actions.applyCoupon")
             )}
           </Button>
         </div>
