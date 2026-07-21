@@ -1,5 +1,6 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 import { AboutSection, type PublicAboutData } from "@/components/public/about-section";
 import { EmptyState } from "@/components/public/empty-state";
@@ -126,12 +127,12 @@ export default async function HomePage({
         className="bg-surface-container-low py-20 text-center md:py-24"
       >
         <p className="text-sm text-on-surface-variant">
-          <a
-            href="/es/reservar"
+          <Link
+            href="/reservar"
             className="inline-flex items-center gap-2 border-2 border-primary px-8 py-4 font-semibold uppercase tracking-widest text-primary transition-colors hover:bg-primary hover:text-on-primary"
           >
             {t("heroCta")} →
-          </a>
+          </Link>
         </p>
       </section>
     </>
