@@ -9,14 +9,21 @@ vi.mock("@/lib/prisma", () => ({
     },
     appointment: {
       groupBy: vi.fn(),
+      findMany: vi.fn(),
+      count: vi.fn(),
     },
     client: {
       count: vi.fn(),
+      findMany: vi.fn(),
     },
     loyaltyTransaction: {
       findMany: vi.fn(),
     },
     invoiceItem: {
+      findMany: vi.fn(),
+    },
+    couponUsage: {
+      count: vi.fn(),
       findMany: vi.fn(),
     },
   },
@@ -26,10 +33,14 @@ import { prisma } from "@/lib/prisma";
 
 import {
   getAppointmentsSummary,
+  getCouponRedemptions,
   getCustomersSummary,
   getDailyRevenueSeries,
   getLoyaltySummary,
+  getRecentAppointments,
+  getRecentInvoices,
   getRevenueSummary,
+  getTopClients,
   getTopServices,
 } from "./queries";
 
@@ -39,10 +50,21 @@ const prismaMock = prisma as unknown as {
     count: ReturnType<typeof vi.fn>;
     findMany: ReturnType<typeof vi.fn>;
   };
-  appointment: { groupBy: ReturnType<typeof vi.fn> };
-  client: { count: ReturnType<typeof vi.fn> };
+  appointment: {
+    groupBy: ReturnType<typeof vi.fn>;
+    findMany: ReturnType<typeof vi.fn>;
+    count: ReturnType<typeof vi.fn>;
+  };
+  client: {
+    count: ReturnType<typeof vi.fn>;
+    findMany: ReturnType<typeof vi.fn>;
+  };
   loyaltyTransaction: { findMany: ReturnType<typeof vi.fn> };
   invoiceItem: { findMany: ReturnType<typeof vi.fn> };
+  couponUsage: {
+    count: ReturnType<typeof vi.fn>;
+    findMany: ReturnType<typeof vi.fn>;
+  };
 };
 
 const RANGE = {
@@ -389,5 +411,323 @@ describe("getTopServices", () => {
     const result = await getTopServices(RANGE, 5);
 
     expect(result[0]?.serviceName).toBe("Hair");
+  });
+});
+
+// ============================================================================
+// getTopClients
+// ============================================================================
+
+describe("getTopClients", () => {
+  it("devuelve lista vacía sin clientes activos", async () => {
+    prismaMock.appointment.groupBy.mockResolvedValue([]);
+    prismaMock.invoice.findMany.mockResolvedValue([]);
+
+    const result = await getTopClients(RANGE);
+
+    expect(result.items).toEqual([]);
+    expect(result.total).toBe(0);
+    expect(result.totalPages).toBe(0);
+  });
+
+  it("combina appointments groupBy con invoice findMany para revenue", async () => {
+    prismaMock.appointment.groupBy.mockResolvedValue([
+      { clientId: "c1", _count: { _all: 3 } },
+      { clientId: "c2", _count: { _all: 1 } },
+    ]);
+    prismaMock.invoice.findMany.mockResolvedValue([
+      {
+        total: { toNumber: () => 500 },
+        appointment: { clientId: "c1" },
+      },
+      {
+        total: { toNumber: () => 200 },
+        appointment: { clientId: "c1" },
+      },
+      {
+        total: { toNumber: () => 100 },
+        appointment: { clientId: "c2" },
+      },
+    ]);
+    prismaMock.client.findMany.mockResolvedValue([
+      {
+        id: "c1",
+        name: "Ana",
+        email: "ana@example.com",
+        loyaltyPoints: 150,
+      },
+      {
+        id: "c2",
+        name: "Beto",
+        email: "beto@example.com",
+        loyaltyPoints: 0,
+      },
+    ]);
+
+    const result = await getTopClients(RANGE);
+
+    expect(result.total).toBe(2);
+    expect(result.items[0]?.clientId).toBe("c1");
+    expect(result.items[0]?.revenue).toBe(700);
+    expect(result.items[0]?.appointmentCount).toBe(3);
+    expect(result.items[0]?.invoiceCount).toBe(2);
+    expect(result.items[0]?.loyaltyPoints).toBe(150);
+
+    expect(result.items[1]?.clientId).toBe("c2");
+    expect(result.items[1]?.revenue).toBe(100);
+  });
+
+  it("ordena por nombre cuando sortBy=name", async () => {
+    prismaMock.appointment.groupBy.mockResolvedValue([
+      { clientId: "c1", _count: { _all: 1 } },
+      { clientId: "c2", _count: { _all: 1 } },
+    ]);
+    prismaMock.invoice.findMany.mockResolvedValue([]);
+    prismaMock.client.findMany.mockResolvedValue([
+      { id: "c1", name: "Zoe", email: "z@e.com", loyaltyPoints: 0 },
+      { id: "c2", name: "Ana", email: "a@e.com", loyaltyPoints: 0 },
+    ]);
+
+    const result = await getTopClients(RANGE, { sortBy: "name" });
+
+    expect(result.items.map((r) => r.clientName)).toEqual(["Ana", "Zoe"]);
+  });
+
+  it("pagina los resultados", async () => {
+    const appts = Array.from({ length: 25 }, (_, i) => ({
+      clientId: `c${i}`,
+      _count: { _all: 1 },
+    }));
+    prismaMock.appointment.groupBy.mockResolvedValue(appts);
+    prismaMock.invoice.findMany.mockResolvedValue([]);
+    prismaMock.client.findMany.mockResolvedValue(
+      appts.map((a) => ({
+        id: a.clientId,
+        name: `Client ${a.clientId}`,
+        email: `${a.clientId}@example.com`,
+        loyaltyPoints: 0,
+      })),
+    );
+
+    const result = await getTopClients(RANGE, { page: 2, pageSize: 10 });
+
+    expect(result.total).toBe(25);
+    expect(result.totalPages).toBe(3);
+    expect(result.items).toHaveLength(10);
+    expect(result.page).toBe(2);
+  });
+});
+
+// ============================================================================
+// getRecentAppointments
+// ============================================================================
+
+describe("getRecentAppointments", () => {
+  it("mapea los includes a un shape plano", async () => {
+    prismaMock.appointment.count.mockResolvedValue(1);
+    prismaMock.appointment.findMany.mockResolvedValue([
+      {
+        id: "a1",
+        scheduledAt: new Date("2026-07-15T10:00:00Z"),
+        status: "COMPLETED",
+        durationMin: 60,
+        client: { name: "Ana", email: "ana@example.com" },
+        service: { name: { es: "Maquillaje" } },
+        invoice: { status: "PAID" },
+      },
+    ]);
+
+    const result = await getRecentAppointments(RANGE);
+
+    expect(result.items).toHaveLength(1);
+    expect(result.items[0]).toMatchObject({
+      id: "a1",
+      status: "COMPLETED",
+      clientName: "Ana",
+      clientEmail: "ana@example.com",
+      serviceName: "Maquillaje",
+      hasInvoice: true,
+      invoiceStatus: "PAID",
+    });
+    expect(result.items[0]?.durationMin).toBe(60);
+  });
+
+  it("marca hasInvoice=false cuando no hay invoice", async () => {
+    prismaMock.appointment.count.mockResolvedValue(1);
+    prismaMock.appointment.findMany.mockResolvedValue([
+      {
+        id: "a2",
+        scheduledAt: new Date("2026-07-16T10:00:00Z"),
+        status: "PENDING",
+        durationMin: 30,
+        client: { name: "Beto", email: "b@e.com" },
+        service: { name: { es: "Peinado" } },
+        invoice: null,
+      },
+    ]);
+
+    const result = await getRecentAppointments(RANGE);
+
+    expect(result.items[0]?.hasInvoice).toBe(false);
+    expect(result.items[0]?.invoiceStatus).toBeNull();
+  });
+
+  it("pasa el filtro de status al where", async () => {
+    prismaMock.appointment.count.mockResolvedValue(0);
+    prismaMock.appointment.findMany.mockResolvedValue([]);
+
+    await getRecentAppointments(RANGE, { status: "CANCELLED" });
+
+    expect(prismaMock.appointment.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ status: "CANCELLED" }),
+      }),
+    );
+  });
+});
+
+// ============================================================================
+// getRecentInvoices
+// ============================================================================
+
+describe("getRecentInvoices", () => {
+  it("resume el primer item y convierte decimals a number", async () => {
+    prismaMock.invoice.count.mockResolvedValue(1);
+    prismaMock.invoice.findMany.mockResolvedValue([
+      {
+        id: "i1",
+        number: "INV-2026-0001",
+        status: "PAID",
+        total: { toNumber: () => 150 },
+        subtotal: { toNumber: () => 180 },
+        discountAmount: { toNumber: () => 20 },
+        loyaltyDiscount: { toNumber: () => 10 },
+        paidAt: new Date("2026-07-15T11:00:00Z"),
+        createdAt: new Date("2026-07-15T10:00:00Z"),
+        appointment: {
+          client: { name: "Ana" },
+          service: { name: { es: "Maquillaje" } },
+        },
+        items: [{ description: "Maquillaje social", quantity: 1 }],
+      },
+    ]);
+
+    const result = await getRecentInvoices(RANGE);
+
+    expect(result.items[0]).toMatchObject({
+      number: "INV-2026-0001",
+      status: "PAID",
+      total: 150,
+      subtotal: 180,
+      clientName: "Ana",
+      serviceSummary: "Maquillaje social",
+    });
+  });
+
+  it("agrega sufijo de cantidad cuando quantity > 1", async () => {
+    prismaMock.invoice.count.mockResolvedValue(1);
+    prismaMock.invoice.findMany.mockResolvedValue([
+      {
+        id: "i2",
+        number: "INV-2026-0002",
+        status: "PENDING",
+        total: "50",
+        subtotal: "50",
+        discountAmount: "0",
+        loyaltyDiscount: "0",
+        paidAt: null,
+        createdAt: new Date("2026-07-10T10:00:00Z"),
+        appointment: {
+          client: { name: "Beto" },
+          service: { name: { es: "Servicio" } },
+        },
+        items: [{ description: "Limpieza", quantity: 3 }],
+      },
+    ]);
+
+    const result = await getRecentInvoices(RANGE);
+
+    expect(result.items[0]?.serviceSummary).toBe("Limpieza (×3)");
+  });
+
+  it("filtra por status cuando se pasa", async () => {
+    prismaMock.invoice.count.mockResolvedValue(0);
+    prismaMock.invoice.findMany.mockResolvedValue([]);
+
+    await getRecentInvoices(RANGE, { status: "CANCELLED" });
+
+    expect(prismaMock.invoice.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ status: "CANCELLED" }),
+      }),
+    );
+  });
+});
+
+// ============================================================================
+// getCouponRedemptions
+// ============================================================================
+
+describe("getCouponRedemptions", () => {
+  it("mapea los includes y convierte amounts", async () => {
+    prismaMock.couponUsage.count.mockResolvedValue(1);
+    prismaMock.couponUsage.findMany.mockResolvedValue([
+      {
+        id: "u1",
+        couponId: "cp1",
+        amount: { toNumber: () => 25 },
+        usedAt: new Date("2026-07-15T10:00:00Z"),
+        coupon: { code: "VERANO20" },
+        invoice: {
+          number: "INV-2026-0001",
+          status: "PAID",
+          appointment: { client: { name: "Ana" } },
+        },
+      },
+    ]);
+
+    const result = await getCouponRedemptions(RANGE);
+
+    expect(result.items[0]).toMatchObject({
+      couponCode: "VERANO20",
+      amount: 25,
+      invoiceNumber: "INV-2026-0001",
+      clientName: "Ana",
+    });
+  });
+
+  it("devuelve '—' si el invoice no tiene appointment asociada", async () => {
+    prismaMock.couponUsage.count.mockResolvedValue(1);
+    prismaMock.couponUsage.findMany.mockResolvedValue([
+      {
+        id: "u2",
+        couponId: "cp1",
+        amount: "10",
+        usedAt: new Date("2026-07-10T10:00:00Z"),
+        coupon: { code: "PROMO" },
+        invoice: {
+          number: "INV-2026-0009",
+          status: "PENDING",
+          appointment: null,
+        },
+      },
+    ]);
+
+    const result = await getCouponRedemptions(RANGE);
+
+    expect(result.items[0]?.clientName).toBe("—");
+  });
+
+  it("ordena por amount por defecto", async () => {
+    prismaMock.couponUsage.count.mockResolvedValue(0);
+    prismaMock.couponUsage.findMany.mockResolvedValue([]);
+
+    await getCouponRedemptions(RANGE);
+
+    expect(prismaMock.couponUsage.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        orderBy: { amount: "desc" },
+      }),
+    );
   });
 });

@@ -410,3 +410,403 @@ function extractSpanishName(name: unknown): string {
   if (typeof en === "string" && en.length > 0) return en;
   return "—";
 }
+
+// ============================================================================
+// Top clients (by revenue or by appointments)
+// ============================================================================
+
+export interface TopClientRow {
+  clientId: string;
+  clientName: string;
+  clientEmail: string;
+  revenue: number;
+  appointmentCount: number;
+  invoiceCount: number;
+  loyaltyPoints: number;
+}
+
+export interface PaginatedResult<T> {
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+/**
+ * Top clientes por revenue (default), número de citas o nombre.
+ * Una sola pasada: groupBy por clientId sobre citas del rango
+ * para contar appointments, y join con invoice aggregate para
+ * revenue. Para mantenerlo simple en MVP, hacemos dos queries.
+ */
+export async function getTopClients(
+  range: ResolvedRange,
+  options: {
+    sortBy?: "revenue" | "appointments" | "name";
+    page?: number;
+    pageSize?: number;
+  } = {},
+): Promise<PaginatedResult<TopClientRow>> {
+  const { sortBy = "revenue", page = 1, pageSize = 20 } = options;
+
+  // 1) Conteo de citas por cliente en el rango.
+  const apptGroups = await prisma.appointment.groupBy({
+    by: ["clientId"],
+    where: { scheduledAt: { gte: range.from, lte: range.to } },
+    _count: { _all: true },
+  });
+
+  // 2) Sumar revenue por cliente (vía facturas PAID en el rango).
+  // findMany + groupBy en JS para evitar SQL crudo.
+  const invoices = await prisma.invoice.findMany({
+    where: {
+      status: "PAID",
+      paidAt: { gte: range.from, lte: range.to },
+    },
+    select: {
+      total: true,
+      appointment: { select: { clientId: true } },
+    },
+  });
+
+  const revenueByClient = new Map<string, number>();
+  const invoiceCountByClient = new Map<string, number>();
+  for (const inv of invoices) {
+    const cid = inv.appointment?.clientId;
+    if (!cid) continue;
+    revenueByClient.set(
+      cid,
+      (revenueByClient.get(cid) ?? 0) + decimalToNumber(inv.total),
+    );
+    invoiceCountByClient.set(
+      cid,
+      (invoiceCountByClient.get(cid) ?? 0) + 1,
+    );
+  }
+
+  // 3) Cargar los datos del cliente para los que tienen actividad.
+  const clientIds = Array.from(
+    new Set([
+      ...apptGroups.map((g) => g.clientId),
+      ...revenueByClient.keys(),
+    ]),
+  );
+
+  if (clientIds.length === 0) {
+    return {
+      items: [],
+      total: 0,
+      page: 1,
+      pageSize,
+      totalPages: 0,
+    };
+  }
+
+  const clients = await prisma.client.findMany({
+    where: { id: { in: clientIds } },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      loyaltyPoints: true,
+    },
+  });
+
+  const clientMap = new Map(clients.map((c) => [c.id, c]));
+
+  const rows: TopClientRow[] = clientIds.flatMap((cid) => {
+    const c = clientMap.get(cid);
+    if (!c) return [];
+    return [
+      {
+        clientId: c.id,
+        clientName: c.name,
+        clientEmail: c.email,
+        revenue: Math.round((revenueByClient.get(cid) ?? 0) * 100) / 100,
+        appointmentCount:
+          apptGroups.find((g) => g.clientId === cid)?._count._all ?? 0,
+        invoiceCount: invoiceCountByClient.get(cid) ?? 0,
+        loyaltyPoints: c.loyaltyPoints,
+      },
+    ];
+  });
+
+  // 4) Ordenar.
+  rows.sort((a, b) => {
+    if (sortBy === "revenue") return b.revenue - a.revenue;
+    if (sortBy === "appointments")
+      return b.appointmentCount - a.appointmentCount;
+    return a.clientName.localeCompare(b.clientName);
+  });
+
+  // 5) Paginar.
+  const total = rows.length;
+  const totalPages = Math.ceil(total / pageSize);
+  const skip = (page - 1) * pageSize;
+  return {
+    items: rows.slice(skip, skip + pageSize),
+    total,
+    page,
+    pageSize,
+    totalPages,
+  };
+}
+
+// ============================================================================
+// Recent appointments
+// ============================================================================
+
+export interface RecentAppointmentRow {
+  id: string;
+  scheduledAt: string;
+  status: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED" | "NO_SHOW";
+  clientName: string;
+  clientEmail: string;
+  serviceName: string;
+  durationMin: number;
+  hasInvoice: boolean;
+  invoiceStatus: "PENDING" | "PAID" | "CANCELLED" | null;
+}
+
+export async function getRecentAppointments(
+  range: ResolvedRange,
+  options: {
+    status?: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED" | "NO_SHOW";
+    sortBy?: "scheduledAt" | "createdAt" | "status";
+    page?: number;
+    pageSize?: number;
+  } = {},
+): Promise<PaginatedResult<RecentAppointmentRow>> {
+  const {
+    status,
+    sortBy = "scheduledAt",
+    page = 1,
+    pageSize = 20,
+  } = options;
+
+  const where = {
+    scheduledAt: { gte: range.from, lte: range.to },
+    ...(status ? { status } : {}),
+  };
+
+  const orderBy =
+    sortBy === "scheduledAt"
+      ? { scheduledAt: "desc" as const }
+      : sortBy === "createdAt"
+        ? { createdAt: "desc" as const }
+        : { status: "asc" as const };
+
+  const [total, items] = await Promise.all([
+    prisma.appointment.count({ where }),
+    prisma.appointment.findMany({
+      where,
+      orderBy,
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      include: {
+        client: { select: { name: true, email: true } },
+        service: { select: { name: true } },
+        invoice: { select: { status: true } },
+      },
+    }),
+  ]);
+
+  const rows: RecentAppointmentRow[] = items.map((a) => ({
+    id: a.id,
+    scheduledAt: a.scheduledAt.toISOString(),
+    status: a.status,
+    clientName: a.client.name,
+    clientEmail: a.client.email,
+    serviceName: extractSpanishName(a.service.name),
+    durationMin: a.durationMin,
+    hasInvoice: !!a.invoice,
+    invoiceStatus: a.invoice?.status ?? null,
+  }));
+
+  return {
+    items: rows,
+    total,
+    page,
+    pageSize,
+    totalPages: Math.ceil(total / pageSize),
+  };
+}
+
+// ============================================================================
+// Recent invoices
+// ============================================================================
+
+export interface RecentInvoiceRow {
+  id: string;
+  number: string;
+  status: "PENDING" | "PAID" | "CANCELLED";
+  total: number;
+  subtotal: number;
+  discountAmount: number;
+  loyaltyDiscount: number;
+  paidAt: string | null;
+  createdAt: string;
+  clientName: string;
+  serviceSummary: string; // primer item de la factura
+}
+
+export async function getRecentInvoices(
+  range: ResolvedRange,
+  options: {
+    status?: "PENDING" | "PAID" | "CANCELLED";
+    sortBy?: "createdAt" | "paidAt" | "total" | "status";
+    page?: number;
+    pageSize?: number;
+  } = {},
+): Promise<PaginatedResult<RecentInvoiceRow>> {
+  const {
+    status,
+    sortBy = "createdAt",
+    page = 1,
+    pageSize = 20,
+  } = options;
+
+  const where = {
+    createdAt: { gte: range.from, lte: range.to },
+    ...(status ? { status } : {}),
+  };
+
+  const orderBy =
+    sortBy === "createdAt"
+      ? { createdAt: "desc" as const }
+      : sortBy === "paidAt"
+        ? { paidAt: "desc" as const }
+        : sortBy === "total"
+          ? { total: "desc" as const }
+          : { status: "asc" as const };
+
+  const [total, items] = await Promise.all([
+    prisma.invoice.count({ where }),
+    prisma.invoice.findMany({
+      where,
+      orderBy,
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      include: {
+        appointment: {
+          include: {
+            client: { select: { name: true } },
+            service: { select: { name: true } },
+          },
+        },
+        items: {
+          take: 1,
+          orderBy: { id: "asc" },
+          select: { description: true, quantity: true },
+        },
+      },
+    }),
+  ]);
+
+  const rows: RecentInvoiceRow[] = items.map((inv) => {
+    const firstItem = inv.items[0];
+    const qty = firstItem?.quantity ?? 1;
+    const summary = firstItem
+      ? qty > 1
+        ? `${firstItem.description} (×${qty})`
+        : firstItem.description
+      : extractSpanishName(inv.appointment.service?.name);
+    return {
+      id: inv.id,
+      number: inv.number,
+      status: inv.status,
+      total: decimalToNumber(inv.total),
+      subtotal: decimalToNumber(inv.subtotal),
+      discountAmount: decimalToNumber(inv.discountAmount),
+      loyaltyDiscount: decimalToNumber(inv.loyaltyDiscount),
+      paidAt: inv.paidAt ? inv.paidAt.toISOString() : null,
+      createdAt: inv.createdAt.toISOString(),
+      clientName: inv.appointment.client.name,
+      serviceSummary: summary,
+    };
+  });
+
+  return {
+    items: rows,
+    total,
+    page,
+    pageSize,
+    totalPages: Math.ceil(total / pageSize),
+  };
+}
+
+// ============================================================================
+// Coupon redemptions
+// ============================================================================
+
+export interface CouponRedemptionRow {
+  id: string;
+  couponId: string;
+  couponCode: string;
+  amount: number;
+  usedAt: string;
+  invoiceNumber: string;
+  invoiceStatus: "PENDING" | "PAID" | "CANCELLED";
+  clientName: string;
+}
+
+export async function getCouponRedemptions(
+  range: ResolvedRange,
+  options: {
+    sortBy?: "amount" | "usedAt" | "code";
+    page?: number;
+    pageSize?: number;
+  } = {},
+): Promise<PaginatedResult<CouponRedemptionRow>> {
+  const { sortBy = "amount", page = 1, pageSize = 20 } = options;
+
+  const where = {
+    usedAt: { gte: range.from, lte: range.to },
+  };
+
+  const orderBy =
+    sortBy === "amount"
+      ? { amount: "desc" as const }
+      : sortBy === "usedAt"
+        ? { usedAt: "desc" as const }
+        : { coupon: { code: "asc" as const } };
+
+  const [total, items] = await Promise.all([
+    prisma.couponUsage.count({ where }),
+    prisma.couponUsage.findMany({
+      where,
+      orderBy,
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      include: {
+        coupon: { select: { code: true } },
+        invoice: {
+          select: {
+            number: true,
+            status: true,
+            appointment: { select: { client: { select: { name: true } } } },
+          },
+        },
+      },
+    }),
+  ]);
+
+  const rows: CouponRedemptionRow[] = items.map((u) => ({
+    id: u.id,
+    couponId: u.couponId,
+    couponCode: u.coupon.code,
+    amount: decimalToNumber(u.amount),
+    usedAt: u.usedAt.toISOString(),
+    invoiceNumber: u.invoice.number,
+    invoiceStatus: u.invoice.status,
+    clientName: u.invoice.appointment?.client.name ?? "—",
+  }));
+
+  return {
+    items: rows,
+    total,
+    page,
+    pageSize,
+    totalPages: Math.ceil(total / pageSize),
+  };
+}
