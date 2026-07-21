@@ -658,6 +658,86 @@
         "deleted": "Package deleted",
         "basicInfo": "Basic information"
       }
+    },
+    "blog": {
+      "description": "Manage your blog posts, categories, and content.",
+      "stats": {
+        "drafts": "Drafts",
+        "published": "Published",
+        "archived": "Archived",
+        "categories": "Categories"
+      },
+      "table": {
+        "title": "Title",
+        "category": "Category",
+        "status": "Status",
+        "publishedAt": "Published",
+        "updatedAt": "Updated",
+        "search": "Search by title or slug…"
+      },
+      "status": {
+        "DRAFT": "Draft",
+        "PUBLISHED": "Published",
+        "ARCHIVED": "Archived"
+      },
+      "newPost": "New post",
+      "newPostDesc": "Create a new blog article.",
+      "empty": {
+        "noPosts": "No posts yet",
+        "noPostsDesc": "Create your first post to start publishing content.",
+        "noCategories": "No categories yet. Create the first one above."
+      },
+      "form": {
+        "titleSection": "Titles",
+        "titleEs": "Title (ES)",
+        "titleEn": "Title (EN)",
+        "settingsSection": "Settings",
+        "slug": "Slug",
+        "slugHint": "URL identifier: lowercase letters, numbers, and hyphens only.",
+        "status": "Status",
+        "category": "Category",
+        "noCategory": "No category",
+        "excerptSection": "Excerpts",
+        "excerptEs": "Excerpt (ES)",
+        "excerptEn": "Excerpt (EN)",
+        "content": "Content",
+        "mediaSection": "Cover image and tags",
+        "image": "Cover image",
+        "tags": "Tags",
+        "tagsHint": "Separate with commas. e.g. tutorial, nextjs, prisma",
+        "create": "Create post",
+        "save": "Save changes",
+        "created": "Post created",
+        "updated": "Post updated",
+        "deleted": "Post deleted",
+        "statusUpdated": "Status updated"
+      },
+      "actions": {
+        "publish": "Publish",
+        "archive": "Archive",
+        "unarchive": "Back to draft"
+      },
+      "confirmDelete": "Delete this post? This cannot be undone.",
+      "cancelEdit": "Cancel",
+      "save": "Save",
+      "create": "Create",
+      "edit": "Edit",
+      "delete": "Delete",
+      "category": {
+        "title": "Categories",
+        "description": "Organize your posts into categories. Posts without a category appear in the unfiltered list.",
+        "createTitle": "New category",
+        "editTitle": "Edit category",
+        "slug": "Slug",
+        "nameEs": "Name (ES)",
+        "nameEn": "Name (EN)",
+        "order": "Order",
+        "orderLabel": "order {order}",
+        "confirmDelete": "Delete this category? Associated posts are not deleted, they just lose their category.",
+        "created": "Category created",
+        "updated": "Category updated",
+        "deleted": "Category deleted"
+      }
     }
   },
   "auth": {
@@ -762,6 +842,27 @@
     "common": {
       "menu": "Menu",
       "close": "Close"
+    },
+    "blog": {
+      "listTitle": "Blog",
+      "listSubtitle": "Tutorials, news and tips on personal care and makeup.",
+      "emptyTitle": "We'll publish content soon",
+      "emptySubtitle": "Come back in a few days — we're preparing the first articles.",
+      "readingTime": "{minutes} min read",
+      "relatedTitle": "You may also like",
+      "backToList": "Back to blog",
+      "tagsLabel": "Tags",
+      "filter": {
+        "label": "Filter by category",
+        "all": "All"
+      },
+      "pagination": {
+        "label": "Pagination",
+        "prev": "Previous",
+        "next": "Next",
+        "summary": "Page {page} of {total}"
+      },
+      "totalLabel": "articles"
     }
   }
 }

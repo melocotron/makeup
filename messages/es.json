@@ -655,6 +655,86 @@
         "deleted": "Paquete eliminado",
         "basicInfo": "Información básica"
       }
+    },
+    "blog": {
+      "description": "Gestiona los posts, categorías y el contenido del blog.",
+      "stats": {
+        "drafts": "Borradores",
+        "published": "Publicados",
+        "archived": "Archivados",
+        "categories": "Categorías"
+      },
+      "table": {
+        "title": "Título",
+        "category": "Categoría",
+        "status": "Estado",
+        "publishedAt": "Publicado",
+        "updatedAt": "Actualizado",
+        "search": "Buscar por título o slug…"
+      },
+      "status": {
+        "DRAFT": "Borrador",
+        "PUBLISHED": "Publicado",
+        "ARCHIVED": "Archivado"
+      },
+      "newPost": "Nuevo post",
+      "newPostDesc": "Crea un nuevo artículo para el blog.",
+      "empty": {
+        "noPosts": "Aún no hay posts",
+        "noPostsDesc": "Crea tu primer post para empezar a publicar contenido.",
+        "noCategories": "Aún no hay categorías. Crea la primera arriba."
+      },
+      "form": {
+        "titleSection": "Títulos",
+        "titleEs": "Título (ES)",
+        "titleEn": "Título (EN)",
+        "settingsSection": "Configuración",
+        "slug": "Slug",
+        "slugHint": "Identificador en la URL: solo minúsculas, números y guiones.",
+        "status": "Estado",
+        "category": "Categoría",
+        "noCategory": "Sin categoría",
+        "excerptSection": "Extractos",
+        "excerptEs": "Extracto (ES)",
+        "excerptEn": "Extracto (EN)",
+        "content": "Contenido",
+        "mediaSection": "Imagen y tags",
+        "image": "Imagen de portada",
+        "tags": "Tags",
+        "tagsHint": "Separa con comas. Ej: tutorial, nextjs, prisma",
+        "create": "Crear post",
+        "save": "Guardar cambios",
+        "created": "Post creado",
+        "updated": "Post actualizado",
+        "deleted": "Post eliminado",
+        "statusUpdated": "Estado actualizado"
+      },
+      "actions": {
+        "publish": "Publicar",
+        "archive": "Archivar",
+        "unarchive": "Volver a borrador"
+      },
+      "confirmDelete": "¿Eliminar este post? Esta acción no se puede deshacer.",
+      "cancelEdit": "Cancelar",
+      "save": "Guardar",
+      "create": "Crear",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "category": {
+        "title": "Categorías",
+        "description": "Organiza los posts en categorías. Los posts sin categoría se muestran sin filtro.",
+        "createTitle": "Nueva categoría",
+        "editTitle": "Editar categoría",
+        "slug": "Slug",
+        "nameEs": "Nombre (ES)",
+        "nameEn": "Nombre (EN)",
+        "order": "Orden",
+        "orderLabel": "orden {order}",
+        "confirmDelete": "¿Eliminar esta categoría? Los posts asociados no se eliminan, solo dejan de tener categoría.",
+        "created": "Categoría creada",
+        "updated": "Categoría actualizada",
+        "deleted": "Categoría eliminada"
+      }
     }
   },
   "auth": {
@@ -759,6 +839,27 @@
     "common": {
       "menu": "Menú",
       "close": "Cerrar"
+    },
+    "blog": {
+      "listTitle": "Blog",
+      "listSubtitle": "Tutoriales, novedades y consejos sobre cuidado personal y maquillaje.",
+      "emptyTitle": "Pronto publicaremos contenido",
+      "emptySubtitle": "Vuelve en unos días, estamos preparando los primeros artículos.",
+      "readingTime": "{minutes} min de lectura",
+      "relatedTitle": "También te puede interesar",
+      "backToList": "Volver al blog",
+      "tagsLabel": "Tags",
+      "filter": {
+        "label": "Filtrar por categoría",
+        "all": "Todas"
+      },
+      "pagination": {
+        "label": "Paginación",
+        "prev": "Anterior",
+        "next": "Siguiente",
+        "summary": "Página {page} de {total}"
+      },
+      "totalLabel": "artículos"
     }
   }
 }
