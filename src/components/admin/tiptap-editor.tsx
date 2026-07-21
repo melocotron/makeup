@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import { EditorContent, useEditor, type JSONContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -34,10 +33,9 @@ export interface TiptapEditorProps {
  * Wrapper client de Tiptap para el editor de posts del blog.
  *
  * Configuración:
- * - StarterKit: paragraph, bold, italic, headings h2/h3, lists,
- *   blockquote, code, codeBlock, hard break, horizontal rule,
- *   undo/redo.
- * - Link con openOnClick: false (no se abre en el editor) y autolink.
+ * - StarterKit (Tiptap 3.x): paragraph, bold, italic, headings h2/h3,
+ *   lists, blockquote, code, codeBlock, hard break, horizontal rule,
+ *   link (configurable), undo/redo.
  * - Image con inline: false (block images) y allowBase64 (para
  *   previews sin upload).
  *
@@ -48,6 +46,11 @@ export interface TiptapEditorProps {
  * Decisión: el componente se monta con `immediatelyRender: false`
  * para evitar el warning de Next.js sobre renderizado inmediato
  * en SSR. El editor solo funciona en cliente.
+ *
+ * Importante: en Tiptap 3.x el StarterKit ya incluye la extension
+ * `link` (importarla por separado causa el warning "Duplicate
+ * extension names found"). Por eso configuramos link vía la opción
+ * `link` de StarterKit, no vía un import aparte.
  */
 export function TiptapEditor({
   value,
@@ -62,11 +65,11 @@ export function TiptapEditor({
     extensions: [
       StarterKit.configure({
         heading: { levels: [2, 3] },
-      }),
-      Link.configure({
-        openOnClick: false,
-        autolink: true,
-        HTMLAttributes: { class: "text-primary underline" },
+        link: {
+          openOnClick: false,
+          autolink: true,
+          HTMLAttributes: { class: "text-primary underline" },
+        },
       }),
       Image.configure({
         inline: false,

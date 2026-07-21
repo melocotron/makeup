@@ -1,5 +1,4 @@
 import { generateHTML } from "@tiptap/core";
-import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import StarterKit from "@tiptap/starter-kit";
 
@@ -16,18 +15,24 @@ import StarterKit from "@tiptap/starter-kit";
  * admin (`tiptap-editor.tsx`). Si agregamos una extensión nueva,
  * hay que actualizarla en ambos lados.
  *
- * Nota: las extensiones son server-safe aquí porque `generateHTML`
- * no necesita un DOM, solo un schema. Por eso no usamos
- * `@tiptap/html` (específico para browser) ni `<Editor>` con `getHTML`.
+ * Importante: en Tiptap 3.x el StarterKit ya incluye la extension
+ * `link`. No la importamos por separado para evitar duplicados.
+ *
+ * Caveat: algunas extensiones de Tiptap (e.g. extension-image) leen
+ * `window` en su `addProseMirrorPlugins`. Eso significa que
+ * `generateHTML` lanza `ReferenceError: window is not defined` en
+ * algunos entornos (e.g. tests jsdom, algunas configuraciones de
+ * serverless). El catch de abajo degrada con un fallback legible
+ * en lugar de romper la página entera.
  */
 const tiptapExtensions = [
   StarterKit.configure({
     heading: { levels: [2, 3] },
-  }),
-  Link.configure({
-    openOnClick: true,
-    autolink: true,
-    HTMLAttributes: { class: "text-primary underline" },
+    link: {
+      openOnClick: true,
+      autolink: true,
+      HTMLAttributes: { class: "text-primary underline" },
+    },
   }),
   Image.configure({
     inline: false,
@@ -37,7 +42,7 @@ const tiptapExtensions = [
 ];
 
 export function PostContent({ json }: { json: unknown }) {
-  // Defensive: si el JSON no es un objeto válido, mostramos un fallback.
+  // Defensive: si el JSON no es un objeto válido, no renderizamos nada.
   if (!json || typeof json !== "object") {
     return null;
   }
@@ -47,10 +52,11 @@ export function PostContent({ json }: { json: unknown }) {
     html = generateHTML(json as never, tiptapExtensions);
   } catch {
     // Si por alguna razón Tiptap no puede parsear el doc (versión
-    // incompatible, JSON corrupto), evitamos romper la página.
+    // incompatible, JSON corrupto, o un entorno sin `window`),
+    // evitamos romper la página con un fallback legible.
     return (
       <div className="rounded-md border border-outline-variant bg-surface-container-low p-6 text-sm text-on-surface-variant">
-        No se pudo renderizar el contenido.
+        El contenido de este post no está disponible temporalmente.
       </div>
     );
   }
