@@ -292,6 +292,14 @@ describe("deletePostSchema", () => {
     });
     expect(result.success).toBe(true);
   });
+
+  it("acepta delete con force: true", () => {
+    const result = deletePostSchema.safeParse({
+      id: "post-1",
+      force: true,
+    });
+    expect(result.success).toBe(true);
+  });
 });
 
 // ============================================================================

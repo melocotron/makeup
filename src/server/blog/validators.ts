@@ -135,10 +135,11 @@ export type ChangePostStatusInput = z.infer<typeof changePostStatusSchema>;
 /**
  * Schema para eliminar un post. `force` es necesario si el post está
  * PUBLISHED (defensa contra borrado accidental de contenido público).
+ * Default: false (omitir force es seguro para DRAFT/ARCHIVED).
  */
 export const deletePostSchema = z.object({
   id: z.string().min(1),
-  force: z.boolean().default(false),
+  force: z.boolean().optional().default(false),
 });
 
 export type DeletePostInput = z.infer<typeof deletePostSchema>;
