@@ -132,6 +132,7 @@
     "clients": "Clientes",
     "promotions": "Promociones",
     "loyalty": "Fidelidad",
+    "billing": "Facturación",
     "home": "Inicio",
     "media": "Medios",
     "blog": "Blog",
@@ -189,6 +190,7 @@
       "clients": "Clientes",
       "promotions": "Promociones",
       "loyalty": "Fidelidad",
+      "billing": "Facturación",
       "home": "Inicio",
       "media": "Medios",
       "credentials": "Credenciales",
@@ -204,6 +206,7 @@
         "clients": "6",
         "promotions": "7",
         "loyalty": "7",
+        "billing": "8",
         "blog": "9",
         "reports": "10"
       }
@@ -383,6 +386,93 @@
     "media": {
       "title": "Biblioteca de medios",
       "description": "Sube y organiza todas las imágenes que usarás en tu sitio web."
+    },
+    "billing": {
+      "title": "Facturas",
+      "description": "Cobros manuales y aplicación de cupones a facturas de citas confirmadas o completadas.",
+      "kpi": {
+        "pending": "Pendientes",
+        "paidThisMonth": "Pagadas (mes)",
+        "revenueThisMonth": "Ingresos (mes)",
+        "couponsRedeemedThisMonth": "Cupones canjeados (mes)"
+      },
+      "table": {
+        "number": "Número",
+        "client": "Cliente",
+        "date": "Fecha",
+        "total": "Total",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "status": {
+        "PENDING": "Pendiente",
+        "PAID": "Pagada",
+        "CANCELLED": "Cancelada"
+      },
+      "detail": {
+        "summary": "Resumen",
+        "summaryDesc": "Desglose de la factura.",
+        "subtotal": "Subtotal",
+        "discount": "Descuento",
+        "loyaltyDiscount": "Descuento por fidelidad",
+        "total": "Total",
+        "paymentMethod": "Método de pago",
+        "paidAt": "Fecha de pago",
+        "notes": "Notas",
+        "linkedAppointment": "Cita asociada",
+        "linkedAppointmentDesc": "Datos de la cita que originó esta factura.",
+        "appointmentDate": "Fecha y hora",
+        "service": "Servicio",
+        "duration": "Duración",
+        "client": "Cliente",
+        "noCoupons": "Esta factura no tiene cupones aplicados.",
+        "appliedCoupons": "Cupones aplicados",
+        "appliedCouponsDesc": "Cupones canjeados en esta factura y sus descuentos."
+      },
+      "actions": {
+        "markPaid": "Marcar como pagada",
+        "cancel": "Cancelar factura",
+        "createInvoice": "Crear factura",
+        "applyCoupon": "Aplicar cupón",
+        "removeCoupon": "Quitar cupón",
+        "editNotes": "Editar notas",
+        "viewInvoice": "Ver factura",
+        "saveNotes": "Guardar notas"
+      },
+      "dialogs": {
+        "markPaidTitle": "Marcar factura como pagada",
+        "markPaidDesc": "Confirma el método de pago y la fecha.",
+        "cancelTitle": "Cancelar factura",
+        "cancelDesc": "Indica el motivo de la cancelación. Esta acción no se puede deshacer.",
+        "applyCouponTitle": "Aplicar cupón",
+        "applyCouponDesc": "Ingresa el código del cupón que quieres aplicar a esta factura.",
+        "editNotesTitle": "Editar notas"
+      },
+      "coupon": {
+        "placeholder": "Código del cupón",
+        "notFound": "El cupón no existe",
+        "inactive": "El cupón está inactivo",
+        "expired": "El cupón está fuera de vigencia",
+        "exhausted": "El cupón ya alcanzó su máximo de usos",
+        "alreadyApplied": "Este cupón ya está aplicado a esta factura",
+        "notApplicableToService": "El cupón no aplica a este servicio",
+        "minPurchaseNotReached": "El subtotal no alcanza la compra mínima del cupón",
+        "applied": "Cupón aplicado",
+        "removed": "Cupón quitado"
+      },
+      "empty": {
+        "noInvoices": "No hay facturas todavía",
+        "noInvoicesDesc": "Crea una factura desde una cita confirmada o completada para empezar a registrar cobros.",
+        "notFacturable": "Esta cita no es facturable en su estado actual",
+        "notFacturableDesc": "Solo se pueden facturar citas confirmadas o completadas."
+      },
+      "errors": {
+        "notFound": "La factura no existe",
+        "notPending": "Solo se pueden modificar facturas pendientes",
+        "couponUsageNotFound": "El uso de cupón no pertenece a esta factura"
+      },
+      "tableSearch": "Buscar por número o cliente…",
+      "filterAll": "Todas"
     },
     "settings": {
       "title": "Ajustes del sitio",

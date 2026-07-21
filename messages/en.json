@@ -132,6 +132,7 @@
     "clients": "Clients",
     "promotions": "Promotions",
     "loyalty": "Loyalty",
+    "billing": "Billing",
     "home": "Home",
     "media": "Media",
     "blog": "Blog",
@@ -189,6 +190,7 @@
       "clients": "Clients",
       "promotions": "Promotions",
       "loyalty": "Loyalty",
+      "billing": "Billing",
       "home": "Home",
       "media": "Media",
       "credentials": "Credentials",
@@ -204,6 +206,7 @@
         "clients": "6",
         "promotions": "7",
         "loyalty": "7",
+        "billing": "8",
         "blog": "9",
         "reports": "10"
       }
@@ -382,6 +385,96 @@
     },
     "media": {
       "title": "Media library",
+      "description": "Upload and organize all the images you will use on your website."
+    },
+    "billing": {
+      "title": "Invoices",
+      "description": "Manual payments and coupon application for invoices of confirmed or completed appointments.",
+      "kpi": {
+        "pending": "Pending",
+        "paidThisMonth": "Paid (month)",
+        "revenueThisMonth": "Revenue (month)",
+        "couponsRedeemedThisMonth": "Coupons redeemed (month)"
+      },
+      "table": {
+        "number": "Number",
+        "client": "Client",
+        "date": "Date",
+        "total": "Total",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "PENDING": "Pending",
+        "PAID": "Paid",
+        "CANCELLED": "Cancelled"
+      },
+      "detail": {
+        "summary": "Summary",
+        "summaryDesc": "Invoice breakdown.",
+        "subtotal": "Subtotal",
+        "discount": "Discount",
+        "loyaltyDiscount": "Loyalty discount",
+        "total": "Total",
+        "paymentMethod": "Payment method",
+        "paidAt": "Paid at",
+        "notes": "Notes",
+        "linkedAppointment": "Linked appointment",
+        "linkedAppointmentDesc": "Details of the appointment this invoice is based on.",
+        "appointmentDate": "Date and time",
+        "service": "Service",
+        "duration": "Duration",
+        "client": "Client",
+        "noCoupons": "This invoice has no coupons applied.",
+        "appliedCoupons": "Applied coupons",
+        "appliedCouponsDesc": "Coupons redeemed in this invoice and their discounts."
+      },
+      "actions": {
+        "markPaid": "Mark as paid",
+        "cancel": "Cancel invoice",
+        "createInvoice": "Create invoice",
+        "applyCoupon": "Apply coupon",
+        "removeCoupon": "Remove coupon",
+        "editNotes": "Edit notes",
+        "viewInvoice": "View invoice",
+        "saveNotes": "Save notes"
+      },
+      "dialogs": {
+        "markPaidTitle": "Mark invoice as paid",
+        "markPaidDesc": "Confirm the payment method and date.",
+        "cancelTitle": "Cancel invoice",
+        "cancelDesc": "Indicate the reason for cancellation. This action cannot be undone.",
+        "applyCouponTitle": "Apply coupon",
+        "applyCouponDesc": "Enter the coupon code you want to apply to this invoice.",
+        "editNotesTitle": "Edit notes"
+      },
+      "coupon": {
+        "placeholder": "Coupon code",
+        "notFound": "Coupon does not exist",
+        "inactive": "Coupon is inactive",
+        "expired": "Coupon is out of validity",
+        "exhausted": "Coupon has reached its maximum uses",
+        "alreadyApplied": "This coupon is already applied to this invoice",
+        "notApplicableToService": "Coupon does not apply to this service",
+        "minPurchaseNotReached": "Subtotal does not meet the coupon's minimum purchase",
+        "applied": "Coupon applied",
+        "removed": "Coupon removed"
+      },
+      "empty": {
+        "noInvoices": "No invoices yet",
+        "noInvoicesDesc": "Create an invoice from a confirmed or completed appointment to start recording payments.",
+        "notFacturable": "This appointment is not billable in its current state",
+        "notFacturableDesc": "Only confirmed or completed appointments can be invoiced."
+      },
+      "errors": {
+        "notFound": "Invoice does not exist",
+        "notPending": "Only pending invoices can be modified",
+        "couponUsageNotFound": "Coupon usage does not belong to this invoice"
+      },
+      "tableSearch": "Search by number or client…",
+      "filterAll": "All"
+    },
+    "settings": {
       "description": "Upload and organize all the images used across your website."
     },
     "settings": {
