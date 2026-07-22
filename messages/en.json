@@ -129,88 +129,6 @@
     },
     "services": "Services",
     "packages": "Packages",
-    "clients": "Clients",
-    "promotions": "Promotions",
-    "loyalty": "Loyalty",
-    "billing": "Billing",
-    "home": "Home",
-    "media": "Media",
-    "blog": "Blog",
-    "reports": "Reports",
-    "settings": "Settings",
-    "help": "Help",
-    "signOut": "Sign Out",
-    "loggedInAs": "Logged in as",
-    "dashboardTitle": "Welcome back",
-    "dashboardSubtitle": "Here's a quick summary of your business. Real data will appear once you start receiving appointments.",
-    "upcomingAppointments": "Upcoming appointments",
-    "quickSummary": "Quick summary",
-    "quickAccess": {
-      "title": "Quick access",
-      "newAppointment": "Schedule",
-      "newService": "New service",
-      "newPackage": "New package",
-      "newClient": "New client",
-      "newPromotion": "New promo",
-      "newPost": "New post",
-      "viewAll": "View all"
-    },
-    "projectProgress": "Project progress",
-    "emptyStates": {
-      "noUpcoming": "No upcoming appointments",
-      "noUpcomingDesc": "When you book the first appointment it will appear here."
-    },
-    "kpi": {
-      "appointmentsToday": "Appointments today",
-      "revenueMonth": "Revenue (month)",
-      "newClientsMonth": "New clients (month)",
-      "topService": "Top service",
-      "pendingInvoices": "Pending invoices",
-      "loyaltyMembers": "Loyalty members",
-      "activeCoupons": "Active coupons",
-      "postsPublished": "Published posts"
-    },
-    "userMenu": {
-      "openMenu": "Open user menu",
-      "account": "Account",
-      "myAccount": "My account"
-    },
-    "navGroup": {
-      "main": "Operations",
-      "marketing": "Marketing",
-      "content": "Content",
-      "system": "System"
-    },
-    "nav": {
-      "dashboard": "Dashboard",
-      "appointments": "Appointments",
-      "horarios": "Hours",
-      "services": "Services",
-      "packages": "Packages",
-      "clients": "Clients",
-      "promotions": "Promotions",
-      "loyalty": "Loyalty",
-      "billing": "Billing",
-      "home": "Home",
-      "media": "Media",
-      "credentials": "Credentials",
-      "blog": "Blog",
-      "reports": "Reports",
-      "settings": "Settings"
-    },
-    "comingSoon": {
-      "title": "Coming soon",
-      "description": "This section will be available in a later project phase.",
-      "phaseLabel": "Phase {phase} — {name}",
-      "phase": {
-        "clients": "6",
-        "promotions": "7",
-        "loyalty": "7",
-        "billing": "8",
-        "blog": "9",
-        "reports": "10"
-      }
-    },
     "clients": {
       "description": "{count, plural, =0 {No clients yet} one {# registered client} other {# registered clients}}",
       "newClient": "New client",
@@ -383,10 +301,6 @@
         }
       }
     },
-    "media": {
-      "title": "Media library",
-      "description": "Upload and organize all the images you will use on your website."
-    },
     "billing": {
       "title": "Invoices",
       "description": "Manual payments and coupon application for invoices of confirmed or completed appointments.",
@@ -474,8 +388,90 @@
       "tableSearch": "Search by number or client…",
       "filterAll": "All"
     },
-    "settings": {
-      "description": "Upload and organize all the images used across your website."
+    "home": "Home",
+    "media": {
+      "title": "Media library",
+      "description": "Upload and organize all the images you will use on your website."
+    },
+    "blog": {
+      "description": "Manage your blog posts, categories, and content.",
+      "stats": {
+        "drafts": "Drafts",
+        "published": "Published",
+        "archived": "Archived",
+        "categories": "Categories"
+      },
+      "table": {
+        "title": "Title",
+        "category": "Category",
+        "status": "Status",
+        "publishedAt": "Published",
+        "updatedAt": "Updated",
+        "search": "Search by title or slug…"
+      },
+      "status": {
+        "DRAFT": "Draft",
+        "PUBLISHED": "Published",
+        "ARCHIVED": "Archived"
+      },
+      "newPost": "New post",
+      "newPostDesc": "Create a new blog article.",
+      "empty": {
+        "noPosts": "No posts yet",
+        "noPostsDesc": "Create your first post to start publishing content.",
+        "noCategories": "No categories yet. Create the first one above."
+      },
+      "form": {
+        "titleSection": "Titles",
+        "titleEs": "Title (ES)",
+        "titleEn": "Title (EN)",
+        "settingsSection": "Settings",
+        "slug": "Slug",
+        "slugHint": "URL identifier: lowercase letters, numbers, and hyphens only.",
+        "status": "Status",
+        "category": "Category",
+        "noCategory": "No category",
+        "excerptSection": "Excerpts",
+        "excerptEs": "Excerpt (ES)",
+        "excerptEn": "Excerpt (EN)",
+        "content": "Content",
+        "mediaSection": "Cover image and tags",
+        "image": "Cover image",
+        "tags": "Tags",
+        "tagsHint": "Separate with commas. e.g. tutorial, nextjs, prisma",
+        "create": "Create post",
+        "save": "Save changes",
+        "created": "Post created",
+        "updated": "Post updated",
+        "deleted": "Post deleted",
+        "statusUpdated": "Status updated"
+      },
+      "actions": {
+        "publish": "Publish",
+        "archive": "Archive",
+        "unarchive": "Back to draft"
+      },
+      "confirmDelete": "Delete this post? This cannot be undone.",
+      "cancelEdit": "Cancel",
+      "save": "Save",
+      "create": "Create",
+      "edit": "Edit",
+      "delete": "Delete",
+      "category": {
+        "title": "Categories",
+        "description": "Organize your posts into categories. Posts without a category appear in the unfiltered list.",
+        "createTitle": "New category",
+        "editTitle": "Edit category",
+        "slug": "Slug",
+        "nameEs": "Name (ES)",
+        "nameEn": "Name (EN)",
+        "order": "Order",
+        "orderLabel": "order {order}",
+        "confirmDelete": "Delete this category? Associated posts are not deleted, they just lose their category.",
+        "created": "Category created",
+        "updated": "Category updated",
+        "deleted": "Category deleted"
+      }
     },
     "settings": {
       "title": "Site settings",
@@ -524,6 +520,79 @@
         "mode": "Enable maintenance",
         "modeDesc": "Public site will show a message instead of normal content",
         "message": "Message for visitors"
+      }
+    },
+    "help": "Help",
+    "signOut": "Sign Out",
+    "loggedInAs": "Logged in as",
+    "dashboardTitle": "Welcome back",
+    "dashboardSubtitle": "Last 30 days summary. Check the state of the business at a glance.",
+    "upcomingAppointments": "Upcoming appointments",
+    "quickSummary": "Quick summary",
+    "quickAccess": {
+      "title": "Quick access",
+      "newAppointment": "Schedule",
+      "newService": "New service",
+      "newPackage": "New package",
+      "newClient": "New client",
+      "newPromotion": "New promo",
+      "newPost": "New post",
+      "viewAll": "View all"
+    },
+    "projectProgress": "Project progress",
+    "emptyStates": {
+      "noUpcoming": "No upcoming appointments",
+      "noUpcomingDesc": "When you book the first appointment it will appear here."
+    },
+    "kpi": {
+      "appointmentsToday": "Appointments today",
+      "revenueMonth": "Revenue (month)",
+      "newClientsMonth": "New clients (month)",
+      "topService": "Top service",
+      "pendingInvoices": "Pending invoices",
+      "loyaltyMembers": "Loyalty members",
+      "activeCoupons": "Active coupons",
+      "postsPublished": "Published posts"
+    },
+    "userMenu": {
+      "openMenu": "Open user menu",
+      "account": "Account",
+      "myAccount": "My account"
+    },
+    "navGroup": {
+      "main": "Operations",
+      "marketing": "Marketing",
+      "content": "Content",
+      "system": "System"
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "appointments": "Appointments",
+      "horarios": "Hours",
+      "services": "Services",
+      "packages": "Packages",
+      "clients": "Clients",
+      "promotions": "Promotions",
+      "loyalty": "Loyalty",
+      "billing": "Billing",
+      "home": "Home",
+      "media": "Media",
+      "credentials": "Credentials",
+      "blog": "Blog",
+      "reports": "Reports",
+      "settings": "Settings"
+    },
+    "comingSoon": {
+      "title": "Coming soon",
+      "description": "This section will be available in a later project phase.",
+      "phaseLabel": "Phase {phase} — {name}",
+      "phase": {
+        "clients": "6",
+        "promotions": "7",
+        "loyalty": "7",
+        "billing": "8",
+        "blog": "9",
+        "reports": "10"
       }
     },
     "profile": {
@@ -659,84 +728,107 @@
         "basicInfo": "Basic information"
       }
     },
-    "blog": {
-      "description": "Manage your blog posts, categories, and content.",
-      "stats": {
-        "drafts": "Drafts",
-        "published": "Published",
-        "archived": "Archived",
-        "categories": "Categories"
+    "reports": {
+      "title": "Reports",
+      "subtitle": "Business metrics, charts and detail tables.",
+      "dateRange": {
+        "label": "Date range",
+        "presets": {
+          "today": "Today",
+          "last7": "Last 7 days",
+          "last30": "Last 30 days",
+          "last90": "Last 90 days",
+          "ytd": "Year to date",
+          "custom": "Custom"
+        },
+        "from": "From",
+        "to": "To",
+        "apply": "Apply",
+        "invalid": "Invalid range: start date cannot be after end date"
       },
-      "table": {
-        "title": "Title",
-        "category": "Category",
+      "kpis": {
+        "totalRevenue": "Total revenue",
+        "totalRevenueHint": "Sum of paid invoices in the range",
+        "couponDiscount": "Coupon discount",
+        "loyaltyDiscount": "Loyalty discount",
+        "averageTicket": "Average ticket",
+        "netRevenue": "Net revenue",
+        "appointmentsTotal": "Total appointments",
+        "appointmentsCompleted": "Completed",
+        "appointmentsCancelled": "Cancelled",
+        "appointmentsNoShow": "No-show",
+        "completionRate": "Completion rate",
+        "cancellationRate": "Cancellation rate",
+        "newCustomers": "New customers",
+        "returningCustomers": "Returning",
+        "totalActive": "Active customers",
+        "pointsEarned": "Points earned",
+        "pointsRedeemed": "Points redeemed",
+        "redemptionValue": "Redemption value",
+        "redemptionCount": "Redemptions"
+      },
+      "charts": {
+        "revenueTitle": "Daily revenue",
+        "revenueEmpty": "No revenue in the selected range",
+        "servicesTitle": "Top 5 services by revenue",
+        "servicesEmpty": "No billed services in the range",
+        "statusTitle": "Appointments by status",
+        "statusEmpty": "No appointments in the range"
+      },
+      "tables": {
+        "topClients": "Top clients",
+        "topClientsSort": {
+          "revenue": "By revenue",
+          "appointments": "By appointments",
+          "name": "By name"
+        },
+        "topServices": "Top services",
+        "recentAppointments": "Recent appointments",
+        "recentAppointmentsStatus": "Status",
+        "recentAppointmentsAll": "All",
+        "recentInvoices": "Recent invoices",
+        "recentInvoicesStatus": "Status",
+        "recentInvoicesAll": "All",
+        "couponRedemptions": "Coupon redemptions",
+        "couponRedemptionsSort": {
+          "amount": "By amount",
+          "usedAt": "By date",
+          "code": "By code"
+        },
+        "empty": "No data for the selected range.",
+        "pageOf": "Page {page} of {total}",
+        "prev": "Previous",
+        "next": "Next",
+        "showing": "Showing {from}-{to} of {total}"
+      },
+      "columns": {
+        "client": "Client",
+        "email": "Email",
+        "revenue": "Revenue",
+        "appointments": "Appointments",
+        "invoices": "Invoices",
+        "loyaltyPoints": "Points",
+        "service": "Service",
+        "scheduledAt": "Date",
         "status": "Status",
-        "publishedAt": "Published",
-        "updatedAt": "Updated",
-        "search": "Search by title or slug…"
+        "duration": "Duration",
+        "number": "Number",
+        "total": "Total",
+        "subtotal": "Subtotal",
+        "discount": "Discount",
+        "paidAt": "Paid at",
+        "createdAt": "Created at",
+        "coupon": "Coupon",
+        "code": "Code",
+        "amount": "Amount",
+        "usedAt": "Used at"
       },
-      "status": {
-        "DRAFT": "Draft",
-        "PUBLISHED": "Published",
-        "ARCHIVED": "Archived"
-      },
-      "newPost": "New post",
-      "newPostDesc": "Create a new blog article.",
-      "empty": {
-        "noPosts": "No posts yet",
-        "noPostsDesc": "Create your first post to start publishing content.",
-        "noCategories": "No categories yet. Create the first one above."
-      },
-      "form": {
-        "titleSection": "Titles",
-        "titleEs": "Title (ES)",
-        "titleEn": "Title (EN)",
-        "settingsSection": "Settings",
-        "slug": "Slug",
-        "slugHint": "URL identifier: lowercase letters, numbers, and hyphens only.",
-        "status": "Status",
-        "category": "Category",
-        "noCategory": "No category",
-        "excerptSection": "Excerpts",
-        "excerptEs": "Excerpt (ES)",
-        "excerptEn": "Excerpt (EN)",
-        "content": "Content",
-        "mediaSection": "Cover image and tags",
-        "image": "Cover image",
-        "tags": "Tags",
-        "tagsHint": "Separate with commas. e.g. tutorial, nextjs, prisma",
-        "create": "Create post",
-        "save": "Save changes",
-        "created": "Post created",
-        "updated": "Post updated",
-        "deleted": "Post deleted",
-        "statusUpdated": "Status updated"
-      },
-      "actions": {
-        "publish": "Publish",
-        "archive": "Archive",
-        "unarchive": "Back to draft"
-      },
-      "confirmDelete": "Delete this post? This cannot be undone.",
-      "cancelEdit": "Cancel",
-      "save": "Save",
-      "create": "Create",
-      "edit": "Edit",
-      "delete": "Delete",
-      "category": {
-        "title": "Categories",
-        "description": "Organize your posts into categories. Posts without a category appear in the unfiltered list.",
-        "createTitle": "New category",
-        "editTitle": "Edit category",
-        "slug": "Slug",
-        "nameEs": "Name (ES)",
-        "nameEn": "Name (EN)",
-        "order": "Order",
-        "orderLabel": "order {order}",
-        "confirmDelete": "Delete this category? Associated posts are not deleted, they just lose their category.",
-        "created": "Category created",
-        "updated": "Category updated",
-        "deleted": "Category deleted"
+      "export": {
+        "title": "Export",
+        "csv": "Export CSV",
+        "pdf": "Export PDF",
+        "downloading": "Generating file…",
+        "error": "Could not generate the file. Please try again."
       }
     }
   },
