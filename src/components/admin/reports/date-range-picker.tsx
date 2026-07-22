@@ -48,7 +48,11 @@ export function DateRangePicker() {
 
   function navigate(params: URLSearchParams) {
     const qs = params.toString();
-    router.push(qs ? `?${qs}` : "?");
+    // Next.js 15 necesita una URL completa para que el cambio de
+    // search params se refleje en router events. Construimos la URL
+    // absoluta desde el pathname actual.
+    const currentPath = window.location.pathname;
+    router.push(qs ? `${currentPath}?${qs}` : currentPath, { scroll: false });
   }
 
   function setPreset(preset: DatePreset) {

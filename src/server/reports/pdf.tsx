@@ -12,6 +12,16 @@ import type { ResolvedRange } from "./validators";
 // ============================================================================
 // PDF export (server-side, via @react-pdf/renderer)
 // ============================================================================
+//
+// Decisiones de implementación:
+// - Todos los valores numéricos en StyleSheet van SIN unidad; @react-pdf
+//   los interpreta en puntos (pt). No usamos "1pt solid" shorthand:
+//   las propiedades de borde se configuran por separado
+//   (borderTopWidth, borderTopColor, borderTopStyle).
+// - @react-pdf/renderer no soporta `gap` en flex container, por lo que
+//   evitamos flexWrap/gap. En su lugar usamos porcentajes y marginBottom.
+// - El import dinámico de renderToBuffer se hace en el route handler,
+//   no acá, para mantener este módulo "tree-shake friendly".
 
 const CURRENCY = new Intl.NumberFormat("es-MX", {
   style: "currency",
@@ -23,69 +33,63 @@ const styles = StyleSheet.create({
   page: {
     padding: 32,
     fontSize: 10,
-    fontFamily: "Helvetica",
     color: "#0f172a",
   },
   header: {
     marginBottom: 16,
-    borderBottom: "1pt solid #cbd5e1",
     paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#cbd5e1",
+    borderBottomStyle: "solid",
   },
   title: {
     fontSize: 18,
-    fontWeight: 700,
+    marginBottom: 4,
   },
   subtitle: {
     fontSize: 10,
     color: "#475569",
-    marginTop: 4,
   },
   section: {
     marginTop: 16,
   },
   sectionTitle: {
     fontSize: 12,
-    fontWeight: 700,
     marginBottom: 6,
     color: "#1e293b",
   },
-  kpiGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
+  // Layout de 6 KPI cards: 2 filas de 3 columnas usando width y marginRight.
   kpiCard: {
-    width: "32%",
-    border: "1pt solid #cbd5e1",
-    borderRadius: 4,
+    width: "30%",
     padding: 8,
+    borderWidth: 1,
+    borderColor: "#cbd5e1",
+    borderStyle: "solid",
+    borderRadius: 4,
+    marginBottom: 8,
   },
   kpiLabel: {
     fontSize: 8,
     color: "#64748b",
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
   },
   kpiValue: {
     fontSize: 14,
-    fontWeight: 700,
     marginTop: 2,
-  },
-  table: {
-    borderTop: "1pt solid #cbd5e1",
-    borderLeft: "1pt solid #cbd5e1",
   },
   tableRow: {
     flexDirection: "row",
-    borderBottom: "1pt solid #cbd5e1",
+    borderBottomWidth: 1,
+    borderBottomColor: "#cbd5e1",
+    borderBottomStyle: "solid",
   },
   tableHeader: {
     backgroundColor: "#f1f5f9",
-    fontWeight: 700,
   },
   tableCell: {
     padding: 4,
-    borderRight: "1pt solid #cbd5e1",
+    borderRightWidth: 1,
+    borderRightColor: "#cbd5e1",
+    borderRightStyle: "solid",
     fontSize: 9,
   },
   footer: {
@@ -95,7 +99,6 @@ const styles = StyleSheet.create({
     right: 32,
     fontSize: 8,
     color: "#94a3b8",
-    textAlign: "center",
   },
   metric: {
     fontSize: 9,
@@ -103,54 +106,6 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
 });
-
-interface ColumnSpec {
-  key: string;
-  header: string;
-  width: string;
-  align?: "left" | "right";
-}
-
-function Table({
-  columns,
-  rows,
-}: {
-  columns: ColumnSpec[];
-  rows: Array<Record<string, string | number>>;
-}) {
-  return (
-    <View style={styles.table}>
-      <View style={[styles.tableRow, styles.tableHeader]}>
-        {columns.map((c) => (
-          <Text
-            key={c.key}
-            style={[
-              styles.tableCell,
-              { width: c.width, textAlign: c.align ?? "left" },
-            ]}
-          >
-            {c.header}
-          </Text>
-        ))}
-      </View>
-      {rows.map((row, idx) => (
-        <View key={idx} style={styles.tableRow}>
-          {columns.map((c) => (
-            <Text
-              key={c.key}
-              style={[
-                styles.tableCell,
-                { width: c.width, textAlign: c.align ?? "left" },
-              ]}
-            >
-              {row[c.key] ?? ""}
-            </Text>
-          ))}
-        </View>
-      ))}
-    </View>
-  );
-}
 
 export async function buildReportPdf(
   range: ResolvedRange,
@@ -165,6 +120,8 @@ export async function buildReportPdf(
       getTopServices(range, 5),
     ]);
 
+  // Import dinámico: el route handler ya hace esto, pero acá lo
+  // hacemos también para que buildReportPdf sea portable.
   const { renderToBuffer } = await import("@react-pdf/renderer");
 
   const doc = (
@@ -181,10 +138,11 @@ export async function buildReportPdf(
           </Text>
         </View>
 
-        {/* KPIs principales */}
+        {/* Resumen financiero: 6 cards en filas de 3 (sin flexWrap/gap) */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Resumen financiero</Text>
-          <View style={styles.kpiGrid}>
+
+          <View style={{ flexDirection: "row" }}>
             <View style={styles.kpiCard}>
               <Text style={styles.kpiLabel}>Ingresos totales</Text>
               <Text style={styles.kpiValue}>
@@ -203,6 +161,9 @@ export async function buildReportPdf(
                 {CURRENCY.format(revenue.couponDiscount)}
               </Text>
             </View>
+          </View>
+
+          <View style={{ flexDirection: "row" }}>
             <View style={styles.kpiCard}>
               <Text style={styles.kpiLabel}>Descuento fidelidad</Text>
               <Text style={styles.kpiValue}>
@@ -246,7 +207,7 @@ export async function buildReportPdf(
           </Text>
         </View>
 
-        {/* Top servicios */}
+        {/* Top 5 servicios */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Top 5 servicios por ingresos</Text>
           {topServices.length === 0 ? (
@@ -254,28 +215,52 @@ export async function buildReportPdf(
               Sin servicios facturados en el rango.
             </Text>
           ) : (
-            <Table
-              columns={[
-                { key: "name", header: "Servicio", width: "60%" },
-                {
-                  key: "revenue",
-                  header: "Ingresos",
-                  width: "25%",
-                  align: "right",
-                },
-                {
-                  key: "appointments",
-                  header: "Citas",
-                  width: "15%",
-                  align: "right",
-                },
-              ]}
-              rows={topServices.map((s) => ({
-                name: s.serviceName,
-                revenue: CURRENCY.format(s.revenue),
-                appointments: String(s.appointmentCount),
-              }))}
-            />
+            <View>
+              <View style={[styles.tableRow, styles.tableHeader]}>
+                <Text style={[styles.tableCell, { width: "60%" }]}>
+                  Servicio
+                </Text>
+                <Text
+                  style={[
+                    styles.tableCell,
+                    { width: "25%", textAlign: "right" },
+                  ]}
+                >
+                  Ingresos
+                </Text>
+                <Text
+                  style={[
+                    styles.tableCell,
+                    { width: "15%", textAlign: "right" },
+                  ]}
+                >
+                  Citas
+                </Text>
+              </View>
+              {topServices.map((s, idx) => (
+                <View key={idx} style={styles.tableRow}>
+                  <Text style={[styles.tableCell, { width: "60%" }]}>
+                    {s.serviceName}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.tableCell,
+                      { width: "25%", textAlign: "right" },
+                    ]}
+                  >
+                    {CURRENCY.format(s.revenue)}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.tableCell,
+                      { width: "15%", textAlign: "right" },
+                    ]}
+                  >
+                    {s.appointmentCount}
+                  </Text>
+                </View>
+              ))}
+            </View>
           )}
         </View>
 
